@@ -1,0 +1,136 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.guest-signup {
+  background: white;
+  padding: 1rem;
+  border-radius: 1rem;
+  width: 100%;
+  max-width: 480px;
+}
+
+.signup-header {
+  text-align: center;
+}
+
+.signup-header h2 {
+  font-size: 1.75rem;
+  color: #333;
+}
+
+.subtitle {
+  color: #666;
+  font-size: 1rem;
+}
+
+.guest-signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 0.9rem;
+  color: #555;
+  font-weight: 500;
+}
+
+.form-group input {
+  width: 100%;
+  height: 48px;
+  padding: 0 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+}
+
+.form-group input::placeholder {
+  color: #999;
+}
+
+.button-group {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.back-button,
+.submit-button {
+  flex: 1;
+  height: 48px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  outline: none;
+}
+
+.back-button:focus,
+.submit-button:focus {
+  outline: none;
+}
+
+.back-button {
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  color: #666;
+}
+
+.back-button:hover {
+  opacity: 0.8;
+}
+
+.submit-button {
+  background-color: #007bff;
+  border: none;
+  color: white;
+}
+
+.submit-button:hover {
+  opacity: 0.8;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 480px) {
+  .guest-signup {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+
+  .signup-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .form-group input {
+    height: 44px;
+  }
+
+  .back-button,
+  .submit-button {
+    height: 44px;
+  }
+} 
