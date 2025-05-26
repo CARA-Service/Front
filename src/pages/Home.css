@@ -193,7 +193,8 @@ p {
   justify-content: center;
 }
 
-.start-button, .faq-button {
+.start-button,
+.faq-button {
   min-width: 140px;
   width: 50%;
   padding: clamp(0.8rem, 2vw, 1rem) clamp(1.5rem, 3vw, 2rem);
@@ -265,7 +266,7 @@ p {
 }
 
 .reviews-section h2::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -10px;
   left: 50%;
@@ -381,7 +382,7 @@ p {
 }
 
 .reviewer-name::before {
-  content: '';
+  content: "";
   display: inline-block;
   width: 6px;
   height: 6px;
@@ -460,4 +461,4 @@ p {
   .reviews-section {
     min-width: 600px;
   }
-} 
+}

@@ -1,45 +1,45 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { useState } from 'react'
-import Home from './pages/Home'
-import Chat from './pages/Chat'
-import SignUp from './pages/SignUp'
-import GuestSignUp from './pages/GuestSignUp'
-import Header from './components/Header'
-import Footer from './components/Footer'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useState } from "react";
+import Home from "./pages/Home";
+import Prompt from "./pages/Prompt";
+import SignUp from "./pages/SignUp";
+import GuestSignUp from "./pages/GuestSignUp";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import "./App.css";
 
 function App() {
-  const [isSignUpOpen, setIsSignUpOpen] = useState(false)
-  const [isGuestSignUpOpen, setIsGuestSignUpOpen] = useState(false)
+  const [isSignUpOpen, setIsSignUpOpen] = useState(false);
+  const [isGuestSignUpOpen, setIsGuestSignUpOpen] = useState(false);
 
   const handleGuestSignUp = () => {
-    setIsSignUpOpen(false)
-    setIsGuestSignUpOpen(true)
-  }
+    setIsSignUpOpen(false);
+    setIsGuestSignUpOpen(true);
+  };
 
   return (
     <Router>
-      <Header 
-        onSignUpClick={() => setIsSignUpOpen(true)} 
+      <Header
+        onSignUpClick={() => setIsSignUpOpen(true)}
         onGuestSignUpClick={() => setIsGuestSignUpOpen(true)}
       />
       <div className="main-content">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/chat" element={<Chat />} />
+          <Route path="/prompt" element={<Prompt />} />
         </Routes>
       </div>
-      <Footer />
+      {/* <Footer /> */}
       {isSignUpOpen && (
-        <SignUp 
-          isOpen={isSignUpOpen} 
+        <SignUp
+          isOpen={isSignUpOpen}
           onClose={() => setIsSignUpOpen(false)}
           onGuestSignUp={handleGuestSignUp}
         />
       )}
       {isGuestSignUpOpen && (
-        <GuestSignUp 
-          isOpen={isGuestSignUpOpen} 
+        <GuestSignUp
+          isOpen={isGuestSignUpOpen}
           onClose={() => setIsGuestSignUpOpen(false)}
           onBack={() => {
             setIsGuestSignUpOpen(false);
@@ -48,7 +48,7 @@ function App() {
         />
       )}
     </Router>
-  )
+  );
 }
 
-export default App
+export default App;
