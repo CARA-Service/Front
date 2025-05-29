@@ -8,6 +8,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 9999;
   animation: fadeIn 0.3s ease-in-out;
 }
 
@@ -113,7 +114,7 @@ body.modal-open {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1100;
+  z-index: 9999;
   animation: fadeIn 0.3s ease-in-out;
 }
 
@@ -126,6 +127,8 @@ body.modal-open {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   animation: slideIn 0.3s ease-in-out;
   text-align: center;
+  position: relative;
+  z-index: 10000;
 }
 
 .modal-content h2 {

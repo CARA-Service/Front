@@ -32,7 +32,7 @@
   padding: 0.5rem 0;
   min-width: 200px;
   margin-top: 0.5rem;
-  z-index: 1000;
+  z-index: 9999;
 }
 
 .menu-item {
@@ -88,7 +88,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1100;
+  z-index: 9999;
 }
 
 .modal-content {
@@ -100,6 +100,7 @@
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
+  z-index: 10000;
 }
 
 .modal-close {
