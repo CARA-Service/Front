@@ -1,0 +1,91 @@
+.analysis-page {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.analysis-page h1 {
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+.analysis-content {
+  display: grid;
+  gap: 2rem;
+}
+
+.analysis-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.analysis-card {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.analysis-card h3 {
+  color: #666;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+.analysis-card .number {
+  font-size: 2rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.analysis-card .text {
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.monthly-visits {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+}
+
+.monthly-visits h2 {
+  color: #666;
+  margin-bottom: 1.5rem;
+  font-size: 1.2rem;
+}
+
+.visits-chart {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  height: 200px;
+  padding: 1rem 0;
+}
+
+.month-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.bar {
+  width: 40px;
+  background: #ff8d13;
+  border-radius: 4px 4px 0 0;
+  transition: height 0.3s ease;
+}
+
+.month {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.visits {
+  color: #333;
+  font-size: 0.9rem;
+  font-weight: 500;
+} 

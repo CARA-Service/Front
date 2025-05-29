@@ -24,6 +24,7 @@ body.modal-open {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   animation: slideIn 0.3s ease-in-out;
   padding: 2rem;
+  text-align: center;
 }
 
 .signup-container h1 {
@@ -102,22 +103,6 @@ body.modal-open {
   font-size: 0.9rem;
 }
 
-.guest-signup {
-  text-align: center;
-  margin-top: 1.2rem;
-}
-
-.guest-signup span {
-  color: #666;
-  font-size: 0.9rem;
-  cursor: pointer;
-  text-decoration: underline;
-}
-
-.guest-signup span:hover {
-  color: #ff8d13;
-}
-
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -140,6 +125,7 @@ body.modal-open {
   max-width: 500px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   animation: slideIn 0.3s ease-in-out;
+  text-align: center;
 }
 
 .modal-content h2 {
@@ -162,12 +148,15 @@ body.modal-open {
   flex-direction: column;
   gap: 0.2rem;
   margin-top: 0.4rem;
+  align-items: center;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
   gap: 0.08rem;
+  width: 100%;
+  max-width: 300px;
 }
 
 .form-group label {
@@ -197,11 +186,6 @@ body.modal-open {
   font-size: 0.85rem;
 }
 
-.modal-buttons {
-  display: flex;
-  gap: 0.8rem;
-  margin-top: 0.5rem;
-}
 
 .cancel-button,
 .signup-button {
@@ -234,113 +218,6 @@ body.modal-open {
   background-color: #e67e00;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateY(-20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-@media (max-width: 600px) {
-  .signup-container {
-    padding: 1.5rem;
-    margin: 1rem;
-  }
-
-  .signup-container h1 {
-    font-size: 1.4rem;
-    margin-bottom: 1.2rem;
-  }
-
-  .modal-content {
-    padding: 1rem;
-    margin: 0.6rem;
-    width: 90%;
-  }
-
-  .modal-content h2 {
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .signup-form {
-    gap: 0.15rem;
-    margin-top: 0.3rem;
-  }
-
-  .form-group {
-    gap: 0.06rem;
-  }
-
-  .form-group label {
-    margin-bottom: 0.04rem;
-  }
-
-  .form-group input {
-    padding: 0.4rem;
-  }
-
-  .modal-buttons {
-    margin-top: 0.6rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .signup-container {
-    padding: 1.2rem;
-    margin: 0.8rem;
-  }
-  
-  .signup-container h1 {
-    font-size: 1.3rem;
-  }
-  
-  .modal-content {
-    padding: 0.8rem;
-    margin: 0.5rem;
-    width: 95%;
-  }
-  
-  .modal-content h2 {
-    font-size: 1.1rem;
-    margin-bottom: 0.4rem;
-  }
-  
-  .signup-form {
-    gap: 0.1rem;
-    margin-top: 0.25rem;
-  }
-
-  .form-group {
-    gap: 0.04rem;
-  }
-
-  .form-group label {
-    margin-bottom: 0.03rem;
-  }
-
-  .form-group input {
-    padding: 0.35rem;
-  }
-  
-  .modal-buttons {
-    margin-top: 0.5rem;
-  }
-}
-
 .license-image-preview {
   width: 100%;
   max-height: 200px;
@@ -357,6 +234,8 @@ body.modal-open {
   flex-direction: column;
   align-items: center;
   margin: 1rem 0;
+  width: 100%;
+  text-align: center;
 }
 
 .license-image-container p {

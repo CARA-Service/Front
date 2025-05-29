@@ -30,12 +30,19 @@ const IdVerificationModal: React.FC<IdVerificationModalProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!licenseNumber && !selectedFile) {
+      alert('운전면허증 번호 또는 사진을 입력해주세요.');
+      return;
+    }
     // TODO: 실제 운전면허증 인증 API 연동
     await new Promise(resolve => setTimeout(resolve, 1000));
     
     // 인증 완료 후 로컬 스토리지에 상태 저장
     localStorage.setItem('token', 'verified');
-    localStorage.setItem('profileImage', '/default-profile.png');
+    localStorage.setItem('profileImage', '/프로필.jpg');
+    
+    // storageChange 이벤트 발생
+    window.dispatchEvent(new Event('storageChange'));
     
     onVerify();
   };
@@ -47,7 +54,6 @@ const IdVerificationModal: React.FC<IdVerificationModalProps> = ({
       <div className="modal-content" onClick={e => e.stopPropagation()}>
         <h2>운전면허증 인증</h2>
         <p>운전면허증 번호를 입력하거나 사진을 업로드해주세요.</p>
-        
         <form onSubmit={handleSubmit} className="verification-form">
           <div className="form-group">
             <label htmlFor="licenseNumber">운전면허증 번호</label>
@@ -72,15 +78,14 @@ const IdVerificationModal: React.FC<IdVerificationModalProps> = ({
                 onChange={handleFileChange}
                 className="image-upload-input"
               />
-              <label htmlFor="licenseImage" className="image-upload-label">
-                {previewUrl ? '사진 변경하기' : '사진 업로드하기'}
+              <label 
+                htmlFor="licenseImage" 
+                className={`image-upload-label ${previewUrl ? 'has-image' : ''}`}
+                style={previewUrl ? { backgroundImage: `url(${previewUrl})` } : undefined}
+              >
+                {!previewUrl && '사진 업로드하기'}
               </label>
             </div>
-            {previewUrl && (
-              <div className="image-preview">
-                <img src={previewUrl} alt="운전면허증 미리보기" />
-              </div>
-            )}
           </div>
 
           <div className="modal-buttons">

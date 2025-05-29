@@ -1,17 +1,15 @@
 import { Link } from 'react-router-dom';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
+import Profile from './Profile';
 import './Header.css';
 
 interface HeaderProps {
   onSignUpClick: () => void;
-  onGuestSignUpClick: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ onSignUpClick, onGuestSignUpClick }) => {
+const Header: React.FC<HeaderProps> = ({ onSignUpClick }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [profileImage, setProfileImage] = useState<string | null>(null);
-  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
-  const profileMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // 로컬 스토리지에서 로그인 상태와 프로필 이미지 확인
@@ -40,30 +38,15 @@ const Header: React.FC<HeaderProps> = ({ onSignUpClick, onGuestSignUpClick }) =>
 
     window.addEventListener('storageChange', handleStorageChange);
 
-    // 클릭 이벤트 리스너 추가
-    const handleClickOutside = (event: MouseEvent) => {
-      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) {
-        setIsProfileMenuOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-
     return () => {
       window.removeEventListener('storageChange', handleStorageChange);
-      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
-  const handleProfileClick = () => {
-    setIsProfileMenuOpen(!isProfileMenuOpen);
-  };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('profileImage');
     setIsLoggedIn(false);
-    setIsProfileMenuOpen(false);
     window.dispatchEvent(new Event('storageChange'));
   };
 
@@ -77,22 +60,7 @@ const Header: React.FC<HeaderProps> = ({ onSignUpClick, onGuestSignUpClick }) =>
           <Link to="/faq" className="nav-link">FAQ</Link>
           <Link to="/contact" className="nav-link">문의하기</Link>
           {isLoggedIn ? (
-            <div className="profile-container" ref={profileMenuRef}>
-              <div className="profile-image-container" onClick={handleProfileClick}>
-                <img 
-                  src={profileImage || '/default-profile.png'} 
-                  alt="프로필" 
-                  className="profile-image"
-                />
-              </div>
-              {isProfileMenuOpen && (
-                <div className="profile-menu">
-                  <button onClick={handleLogout} className="logout-button">
-                    로그아웃
-                  </button>
-                </div>
-              )}
-            </div>
+            <Profile onLogout={handleLogout} />
           ) : (
             <button onClick={onSignUpClick} className="nav-link signup-link">
               간편 회원가입

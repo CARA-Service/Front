@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Footer from "../components/Footer";
 import "./Home.css";
 
 const Home = () => {
@@ -71,20 +72,6 @@ const Home = () => {
     },
   ];
 
-  const handlePrevReview = () => {
-    if (isTransitioning) return;
-    setIsTransitioning(true);
-    setCurrentReviewIndex((prev) => (prev > 0 ? prev - 1 : reviews.length - 1));
-    setTimeout(() => setIsTransitioning(false), 800);
-  };
-
-  const handleNextReview = () => {
-    if (isTransitioning) return;
-    setIsTransitioning(true);
-    setCurrentReviewIndex((prev) => (prev < reviews.length - 1 ? prev + 1 : 0));
-    setTimeout(() => setIsTransitioning(false), 800);
-  };
-
   const getVisibleReviews = () => {
     const totalReviews = reviews.length;
     const prevIndex = (currentReviewIndex - 1 + totalReviews) % totalReviews;
@@ -101,7 +88,9 @@ const Home = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       if (!isTransitioning) {
-        handleNextReview();
+        setCurrentReviewIndex((prev) => (prev < reviews.length - 1 ? prev + 1 : 0));
+        setIsTransitioning(true);
+        setTimeout(() => setIsTransitioning(false), 800);
       }
     }, 5000);
 
@@ -188,6 +177,7 @@ const Home = () => {
             </div>
           </div>
         </div>
+        <Footer />
       </div>
     </div>
   );

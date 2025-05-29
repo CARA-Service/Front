@@ -3,48 +3,35 @@ import { useState } from "react";
 import Home from "./pages/Home";
 import Prompt from "./pages/Prompt";
 import SignUp from "./pages/SignUp";
-import GuestSignUp from "./pages/GuestSignUp";
 import Header from "./components/Header";
-import Footer from "./components/Footer";
+import ProfilePage from "./pages/ProfilePage";
+import ReservationsPage from "./pages/ReservationsPage";
+import HistoryPage from "./pages/HistoryPage";
+import AnalysisPage from "./pages/AnalysisPage";
 import "./App.css";
 
 function App() {
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
-  const [isGuestSignUpOpen, setIsGuestSignUpOpen] = useState(false);
-
-  const handleGuestSignUp = () => {
-    setIsSignUpOpen(false);
-    setIsGuestSignUpOpen(true);
-  };
 
   return (
     <Router>
       <Header
         onSignUpClick={() => setIsSignUpOpen(true)}
-        onGuestSignUpClick={() => setIsGuestSignUpOpen(true)}
       />
       <div className="main-content">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/prompt" element={<Prompt />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/reservations" element={<ReservationsPage />} />
+          <Route path="/history" element={<HistoryPage />} />
+          <Route path="/analysis" element={<AnalysisPage />} />
         </Routes>
       </div>
-      {/* <Footer /> */}
       {isSignUpOpen && (
         <SignUp
           isOpen={isSignUpOpen}
           onClose={() => setIsSignUpOpen(false)}
-          onGuestSignUp={handleGuestSignUp}
-        />
-      )}
-      {isGuestSignUpOpen && (
-        <GuestSignUp
-          isOpen={isGuestSignUpOpen}
-          onClose={() => setIsGuestSignUpOpen(false)}
-          onBack={() => {
-            setIsGuestSignUpOpen(false);
-            setIsSignUpOpen(true);
-          }}
         />
       )}
     </Router>
