@@ -1,7 +1,7 @@
 import React from 'react';
 import './AnalysisPage.css';
 
-const AnalysisPage: React.FC = () => {
+const AnalysisPage = () => {
   return (
     <div className="analysis-page">
       <div className="analysis-content">

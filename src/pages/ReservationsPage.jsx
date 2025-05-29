@@ -1,7 +1,7 @@
 import React from 'react';
 import './ReservationsPage.css';
 
-const ReservationsPage: React.FC = () => {
+const ReservationsPage = () => {
   return (
     <div className="reservations-page">
       <div className="reservations-content">

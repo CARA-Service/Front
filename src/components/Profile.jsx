@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaUser, FaCalendarAlt, FaHistory, FaChartBar, FaSignOutAlt, FaTimes } from 'react-icons/fa';
 import ProfilePage from '../pages/ProfilePage';
 import ReservationsPage from '../pages/ReservationsPage';
@@ -6,20 +6,26 @@ import HistoryPage from '../pages/HistoryPage';
 import AnalysisPage from '../pages/AnalysisPage';
 import './Profile.css';
 
-interface ProfileProps {
-  onLogout: () => void;
-}
-
-const Profile: React.FC<ProfileProps> = ({ onLogout }) => {
+const Profile = ({ onLogout }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeModal, setActiveModal] = useState<string | null>(null);
+  const [activeModal, setActiveModal] = useState(null);
+  const [profileImage, setProfileImage] = useState('/default-profile.png');
+
+  useEffect(() => {
+    // 로컬 스토리지에서 프로필 이미지 가져오기
+    const storedImage = localStorage.getItem('profileImage');
+    if (storedImage) {
+      setProfileImage(storedImage);
+    }
+  }, []);
 
   const handleLogout = () => {
     onLogout();
     setIsMenuOpen(false);
+    setActiveModal(null);
   };
 
-  const handleMenuClick = (modalType: string) => {
+  const handleMenuClick = (modalType) => {
     setActiveModal(modalType);
     setIsMenuOpen(false);
   };
@@ -50,7 +56,7 @@ const Profile: React.FC<ProfileProps> = ({ onLogout }) => {
       }
     };
 
-    const modal = modalContents[activeModal as keyof typeof modalContents];
+    const modal = modalContents[activeModal];
 
     return (
       <div className="modal-overlay" onClick={closeModal}>
@@ -72,9 +78,13 @@ const Profile: React.FC<ProfileProps> = ({ onLogout }) => {
         onClick={() => setIsMenuOpen(!isMenuOpen)}
       >
         <img 
-          src="/default-profile.png" 
+          src={profileImage}
           alt="Profile" 
           className="profile-image"
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = '/default-profile.png';
+          }}
         />
       </div>
 

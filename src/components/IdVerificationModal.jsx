@@ -1,50 +1,66 @@
 import React, { useState } from 'react';
 import './IdVerificationModal.css';
 
-interface IdVerificationModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onVerify: () => void;
-}
-
-const IdVerificationModal: React.FC<IdVerificationModalProps> = ({
+const IdVerificationModal = ({
   isOpen,
   onClose,
   onVerify,
 }) => {
   const [licenseNumber, setLicenseNumber] = useState('');
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [isVerifying, setIsVerifying] = useState(false);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     if (file) {
       setSelectedFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
-        setPreviewUrl(reader.result as string);
+        setPreviewUrl(reader.result);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const verifyLicenseNumber = (number) => {
+    // 운전면허증 번호 형식 검증 (예: 12자리)
+    return /^\d{12}$/.test(number);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!licenseNumber && !selectedFile) {
-      alert('운전면허증 번호 또는 사진을 입력해주세요.');
-      return;
+    setIsVerifying(true);
+
+    try {
+      if (!licenseNumber && !selectedFile) {
+        alert('운전면허증 번호 또는 사진을 입력해주세요.');
+        return;
+      }
+
+      if (licenseNumber && !verifyLicenseNumber(licenseNumber)) {
+        alert('올바른 운전면허증 번호를 입력해주세요.');
+        return;
+      }
+
+      // TODO: 실제 운전면허증 인증 API 연동
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // 인증 완료 후 로컬 스토리지에 상태 저장
+      localStorage.setItem('token', 'verified');
+      localStorage.setItem('profileImage', '/프로필.jpg');
+      localStorage.setItem('licenseVerified', 'true');
+      
+      // storageChange 이벤트 발생
+      window.dispatchEvent(new Event('storageChange'));
+      
+      onVerify();
+    } catch (error) {
+      console.error('인증 중 오류 발생:', error);
+      alert('인증 중 오류가 발생했습니다. 다시 시도해주세요.');
+    } finally {
+      setIsVerifying(false);
     }
-    // TODO: 실제 운전면허증 인증 API 연동
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // 인증 완료 후 로컬 스토리지에 상태 저장
-    localStorage.setItem('token', 'verified');
-    localStorage.setItem('profileImage', '/프로필.jpg');
-    
-    // storageChange 이벤트 발생
-    window.dispatchEvent(new Event('storageChange'));
-    
-    onVerify();
   };
 
   if (!isOpen) return null;
@@ -93,14 +109,16 @@ const IdVerificationModal: React.FC<IdVerificationModalProps> = ({
               type="button"
               className="cancel-button"
               onClick={onClose}
+              disabled={isVerifying}
             >
               취소
             </button>
             <button
               type="submit"
               className="verify-button"
+              disabled={isVerifying}
             >
-              인증하기
+              {isVerifying ? '인증 중...' : '인증하기'}
             </button>
           </div>
         </form>

@@ -1,7 +1,7 @@
 import React from 'react';
 import './HistoryPage.css';
 
-const HistoryPage: React.FC = () => {
+const HistoryPage = () => {
   return (
     <div className="history-page">
       <div className="history-content">

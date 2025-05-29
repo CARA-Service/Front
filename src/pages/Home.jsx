@@ -9,7 +9,7 @@ const Home = () => {
   const [currentReviewIndex, setCurrentReviewIndex] = useState(1);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     navigate("/prompt");
   };

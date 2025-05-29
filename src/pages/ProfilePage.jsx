@@ -1,7 +1,7 @@
 import React from 'react';
 import './ProfilePage.css';
 
-const ProfilePage: React.FC = () => {
+const ProfilePage = () => {
   return (
     <div className="profile-page">
       <div className="profile-content">

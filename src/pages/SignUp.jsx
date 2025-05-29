@@ -3,12 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import IdVerificationModal from '../components/IdVerificationModal';
 import './SignUp.css';
 
-interface SignUpProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-const SignUp: React.FC<SignUpProps> = ({ isOpen, onClose }) => {
+const SignUp = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
 
@@ -24,7 +19,7 @@ const SignUp: React.FC<SignUpProps> = ({ isOpen, onClose }) => {
     };
   }, [isOpen, isVerificationModalOpen]);
 
-  const handleSocialLogin = async (provider: string) => {
+  const handleSocialLogin = async (provider) => {
     try {
       // TODO: 실제 소셜 로그인 API 연동
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -47,7 +42,7 @@ const SignUp: React.FC<SignUpProps> = ({ isOpen, onClose }) => {
     navigate('/');
   };
 
-  const handleOverlayClick = (e: React.MouseEvent) => {
+  const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
       onClose();
     }
