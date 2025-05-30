@@ -1,0 +1,51 @@
+.history-page {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.history-page h1 {
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+.history-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.history-card {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.history-date {
+  margin-bottom: 1rem;
+}
+
+.history-date span {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.history-details h3 {
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.history-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.duration {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.rating {
+  display: flex;
+  gap: 0.25rem;
+}
