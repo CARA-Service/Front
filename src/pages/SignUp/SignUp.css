@@ -8,8 +8,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9999;
-  animation: fadeIn 0.3s ease-in-out;
+  z-index: 1000;
 }
 
 body.modal-open {
@@ -17,44 +16,34 @@ body.modal-open {
 }
 
 .signup-container {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
   width: 100%;
   max-width: 400px;
-  background: white;
-  gap: 1rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  animation: slideIn 0.3s ease-in-out;
-  padding: 2rem;
-  text-align: center;
+  position: relative;
 }
 
 .signup-container h1 {
   text-align: center;
+  margin-bottom: 2rem;
   color: #333;
-  margin-bottom: 1.5rem;
-  font-size: 1.6rem;
 }
 
 .social-login {
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
-  margin-bottom: 3rem;
+  gap: 1rem;
 }
 
 .social-button {
-  width: 100%;
-  padding: 0.9rem;
+  padding: 1rem;
   border: none;
-  border-radius: 8px;
-  font-size: 0.95rem;
+  border-radius: 4px;
+  font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s;
 }
 
 .social-button.kakao {
@@ -62,18 +51,10 @@ body.modal-open {
   color: #000000;
 }
 
-.social-button.kakao:hover {
-  background-color: #F4DC00;
-}
-
 .social-button.google {
   background-color: #FFFFFF;
   color: #000000;
-  border: 1px solid #E0E0E0;
-}
-
-.social-button.google:hover {
-  background-color: #F8F8F8;
+  border: 1px solid #DDDDDD;
 }
 
 .social-button.naver {
@@ -81,27 +62,108 @@ body.modal-open {
   color: #FFFFFF;
 }
 
-.social-button.naver:hover {
-  background-color: #02B350;
+.social-button:hover {
+  opacity: 0.9;
 }
 
-.divider {
+/* Error Popup Styles */
+.error-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
+  justify-content: center;
   align-items: center;
+  z-index: 1100;
+  animation: fadeIn 0.3s ease-in-out;
+  backdrop-filter: blur(4px);
+}
+
+.error-content {
+  background-color: white;
+  padding: 2.5rem;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 400px;
   text-align: center;
+  animation: slideIn 0.3s ease-in-out;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.error-icon {
+  width: 64px;
+  height: 64px;
+  background-color: #ff8d13;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin: 0 auto 1.5rem;
+  box-shadow: 0 4px 12px rgba(255, 141, 19, 0.2);
+}
+
+.error-content h3 {
+  color: #333;
+  margin-bottom: 1rem;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.error-content p {
   color: #666;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+  font-size: 1.1rem;
 }
 
-.divider::before,
-.divider::after {
-  content: '';
-  flex: 1;
-  border-bottom: 1px solid #E0E0E0;
+.error-close-button {
+  background-color: #ff8d13;
+  color: white;
+  border: none;
+  padding: 1rem 2.5rem;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(255, 141, 19, 0.2);
 }
 
-.divider span {
-  padding: 0 1rem;
-  font-size: 0.9rem;
+.error-close-button:hover {
+  background-color: #e67e00;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(255, 141, 19, 0.3);
+}
+
+.error-close-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(255, 141, 19, 0.2);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .modal-overlay {
@@ -188,7 +250,6 @@ body.modal-open {
   color: #999;
   font-size: 0.85rem;
 }
-
 
 .cancel-button,
 .signup-button {

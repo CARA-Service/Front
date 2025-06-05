@@ -6,6 +6,7 @@ import './SignUp.css';
 const SignUp = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (isOpen || isVerificationModalOpen) {
@@ -21,12 +22,24 @@ const SignUp = ({ isOpen, onClose }) => {
 
   const handleSocialLogin = async (provider) => {
     try {
+      setError(null);
       // TODO: 실제 소셜 로그인 API 연동
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setIsVerificationModalOpen(true);
+      const response = await new Promise((resolve, reject) => {
+        setTimeout(() => {
+          if (true) {
+            reject(new Error('로그인에 실패했습니다. 다시 시도해주세요.'));
+          } else {
+            resolve({ success: true });
+          }
+        }, 1000);
+      });
+
+      if (response.success) {
+        setIsVerificationModalOpen(true);
+      }
     } catch (error) {
       console.error('소셜 로그인 중 오류가 발생했습니다:', error);
-      alert('소셜 로그인 중 오류가 발생했습니다. 다시 시도해주세요.');
+      setError(error.message);
     }
   };
 
@@ -46,6 +59,10 @@ const SignUp = ({ isOpen, onClose }) => {
     if (e.target === e.currentTarget) {
       onClose();
     }
+  };
+
+  const handleErrorClose = () => {
+    setError(null);
   };
 
   if (!isOpen) return null;
@@ -75,6 +92,19 @@ const SignUp = ({ isOpen, onClose }) => {
             네이버로 시작하기
           </button>
         </div>
+
+        {error && (
+          <div className="error-popup">
+            <div className="error-content">
+              <div className="error-icon">!</div>
+              <h3>오류 발생</h3>
+              <p>{error}</p>
+              <button className="error-close-button" onClick={handleErrorClose}>
+                확인
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {isVerificationModalOpen && (
