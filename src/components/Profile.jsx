@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { FaUser, FaCalendarAlt, FaHistory, FaChartBar, FaSignOutAlt, FaTimes } from 'react-icons/fa';
-import ProfilePage from '../pages/ProfilePage';
-import ReservationsPage from '../pages/ReservationsPage';
-import HistoryPage from '../pages/HistoryPage';
-import AnalysisPage from '../pages/AnalysisPage';
+import ProfilePage from '../pages/ProfilePage/ProfilePage.jsx';
+import ReservationsPage from '../pages/ReservationsPage/ReservationsPage.jsx';
+import HistoryPage from '../pages/HistoryPage/HistoryPage.jsx';
+import AnalysisPage from '../pages/AnalysisPage/AnalysisPage.jsx';
 import './Profile.css';
 
 const Profile = ({ onLogout }) => {

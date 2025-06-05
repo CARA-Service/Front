@@ -1,13 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useState } from "react";
-import Home from "./pages/Home";
-import Prompt from "./pages/Prompt";
-import SignUp from "./pages/SignUp";
-import Header from "./components/Header";
-import ProfilePage from "./pages/ProfilePage";
-import ReservationsPage from "./pages/ReservationsPage";
-import HistoryPage from "./pages/HistoryPage";
-import AnalysisPage from "./pages/AnalysisPage";
+import Home from "./pages/Home/Home.jsx";
+import Prompt from "./pages/Prompt/Prompt.jsx";
+import SignUp from "./pages/SignUp/SignUp.jsx";
+import Header from "./components/Header.jsx";
+import ProfilePage from "./pages/ProfilePage/ProfilePage.jsx";
+import ReservationsPage from "./pages/ReservationsPage/ReservationsPage.jsx";
+import HistoryPage from "./pages/HistoryPage/HistoryPage.jsx";
+import AnalysisPage from "./pages/AnalysisPage/AnalysisPage.jsx";
 import "./App.css";
 
 function App() {
