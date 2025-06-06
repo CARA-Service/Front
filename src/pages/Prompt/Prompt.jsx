@@ -2,9 +2,13 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/Header.jsx';
 import Footer from '../../components/Footer.jsx';
+import {parseRecommendationInput } from "../../utils/parseRecommendationInput.js"
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./Prompt.css";
+
+import { postRecommendation } from '../../api/llmAPI.js';
+
 
 // const chatHistoryDummy = [
 //   {
@@ -109,73 +113,6 @@ const Prompt = () => {
     }
   }, [chatHistory, selectedChat]);
 
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     if (!input.trim()) return;
-
-//     const userMessage = { text: input, mine: true };
-
-//     // case 1: 기존 채팅방이 선택된 상태
-//     if (selectedChat !== null) {
-//       setChatHistory((prev) =>
-//         prev.map((chat) =>
-//           chat.id === selectedChat
-//             ? {
-//                 ...chat,
-//                 messages: [...chat.messages, userMessage],
-//               }
-//             : chat
-//         )
-//       );
-//     } else {
-//       // case 2: 아무 채팅방도 없는 경우 → 새 채팅방 생성
-//       const newId = Date.now();
-//       setChatHistory((prev) => [
-//         ...prev,
-//         { id: newId, messages: [userMessage] }
-//       ]);
-//       setSelectedChat(newId);
-//     }
-
-//     // API 호출
-//     try {
-//       const response = await fetch(`${import.meta.env.VITE_APP_API_URL}/api/v1/llm/recommendations`, {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({ query: input }),
-//       });
-//       const data = await response.json();
-//       console.log(data);
-
-//       const replyMessage =
-//         data && data[0] && data[0].modelName === "죄송합니다. 현재는 렌터카 관련 질문만 도와드릴 수 있습니다."
-//           ? data[0].modelName
-//           : data
-//               .map((item) =>
-//                 `모델: ${item.modelName}, 연료: ${item.fuelType}, 연비: ${item.fuelEfficiency}, 가격: ${item.totalPrice}`
-//               )
-//               .join("\n");
-
-//       // 응답 메시지를 현재 선택된 채팅방에 추가
-//       setChatHistory((prev) =>
-//         prev.map((chat) =>
-//           chat.id === selectedChat
-//             ? {
-//                 ...chat,
-//                 messages: [...chat.messages, { text: replyMessage, mine: false }],
-//               }
-//             : chat
-//         )
-//       );
-//     } catch (error) {
-//       console.error("Error:", error);
-//   }
-
-//   setInput("");
-// };
-
 const handleSubmit = async (e) => {
   e.preventDefault();
   if (!input.trim()) return;
@@ -207,29 +144,45 @@ const handleSubmit = async (e) => {
     ]);
     setSelectedChat(newId); // selectedChat도 업데이트
   }
-
-  // 👉 이후에는 selectedChat 대신 activeChatId를 사용해서 응답을 넣음
-  try {
-    const response = await fetch(`${import.meta.env.VITE_APP_API_URL}/api/v1/llm/recommendations`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ query: input }),
-    });
-    const data = await response.json();
-
-    const replyMessage =
-      data && data[0] && data[0].modelName === "죄송합니다. 현재는 렌터카 관련 질문만 도와드릴 수 있습니다."
-        ? data[0].modelName
-        : data
-            .map((item) =>
-              `모델: ${item.modelName}, 연료: ${item.fuelType}, 연비: ${item.fuelEfficiency}, 가격: ${item.totalPrice}`
-            )
-            .join("\n");
-
-    // ✅ 응답 메시지도 activeChatId 기준으로 추가
+  const payload = parseRecommendationInput(input);
+  console.log(input)
+  console.log(payload)
+  if (!payload) {
     setChatHistory((prev) =>
+      prev.map((chat) =>
+        chat.id === activeChatId
+          ? {
+              ...chat,
+              messages: [
+                ...chat.messages,
+                { text: "죄송합니다. 차량 관련 질문만 도와드릴 수 있어요.", mine: false }
+              ],
+            }
+          : chat
+      )
+    );
+    setInput("");
+    return;
+  }
+
+
+  try {
+    const data = await postRecommendation(payload);
+    let replyMessage = "";
+    if (Array.isArray(data)) {
+      replyMessage =
+        data[0]?.modelName === "죄송합니다. 현재는 렌터카 관련 질문만 도와드릴 수 있습니다."
+          ? data[0].modelName
+          : data
+              .map((item) =>
+                `모델: ${item.modelName}, 연료: ${item.fuelType}, 연비: ${item.fuelEfficiency}, 가격: ${item.totalPrice}`
+              )
+              .join("\n");
+    } else {
+      replyMessage = data.message || "죄송합니다. 알 수 없는 오류가 발생했습니다.";
+    }
+  
+      setChatHistory((prev) =>
       prev.map((chat) =>
         chat.id === activeChatId
           ? {
@@ -239,14 +192,13 @@ const handleSubmit = async (e) => {
           : chat
       )
     );
-  } catch (error) {
-    console.error("Error:", error);
+
+  } catch (err) {
+    console.error(err);
   }
 
   setInput("");
 };
-
-
 
 
   return (
