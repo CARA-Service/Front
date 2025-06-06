@@ -6,33 +6,33 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./Prompt.css";
 
-const chatHistoryDummy = [
-  {
-    id: 1,
-    title: "Chat 1",
-    messages: [
-      { text: "안녕하세요!", mine: false },
-      { text: "제주도 여행은 언제?", mine: true },
-      { text: "날짜를 선택해 주세요.", mine: false },
-    ],
-  },
-  {
-    id: 2,
-    title: "Chat 2",
-    messages: [
-      { text: "GPT야, 너 뭐 할 수 있어?", mine: false },
-      { text: "저는 다양한 질문에 답변할 수 있어요!", mine: true },
-    ],
-  },
-  {
-    id: 3,
-    title: "Chat 3",
-    messages: [
-      { text: "오늘 할 일 알려줘.", mine: false },
-      { text: "1. 공부하기\n2. 운동하기\n3. 산책하기", mine: true },
-    ],
-  },
-];
+// const chatHistoryDummy = [
+//   {
+//     id: 1,
+//     title: "Chat 1",
+//     messages: [
+//       { text: "안녕하세요!", mine: false },
+//       { text: "제주도 여행은 언제?", mine: true },
+//       { text: "날짜를 선택해 주세요.", mine: false },
+//     ],
+//   },
+//   {
+//     id: 2,
+//     title: "Chat 2",
+//     messages: [
+//       { text: "GPT야, 너 뭐 할 수 있어?", mine: false },
+//       { text: "저는 다양한 질문에 답변할 수 있어요!", mine: true },
+//     ],
+//   },
+//   {
+//     id: 3,
+//     title: "Chat 3",
+//     messages: [
+//       { text: "오늘 할 일 알려줘.", mine: false },
+//       { text: "1. 공부하기\n2. 운동하기\n3. 산책하기", mine: true },
+//     ],
+//   },
+// ];
 
 function formatRange(start, end) {
   const format = (date) =>
@@ -45,8 +45,10 @@ function formatRange(start, end) {
 
 const Prompt = () => {
   const [input, setInput] = useState("");
-  const [chatHistory, setChatHistory] = useState(chatHistoryDummy);
-  const [selectedChat, setSelectedChat] = useState(chatHistoryDummy[0].id);
+  // const [chatHistory, setChatHistory] = useState(chatHistoryDummy);
+  // const [selectedChat, setSelectedChat] = useState(chatHistoryDummy[0].id);
+  const [chatHistory, setChatHistory] = useState([]); // 더미 데이터 제거
+  const [selectedChat, setSelectedChat] = useState(null); // 초기값을 null로 설정
   const [showCalendar, setShowCalendar] = useState(false);
   const [dateRange, setDateRange] = useState([null, null]);
   const [calendarMsgIdx, setCalendarMsgIdx] = useState(null);
@@ -100,40 +102,176 @@ const Prompt = () => {
     }
   }, [currentMessages.length, showCalendar]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!input.trim()) return;
+  // 채팅방 선택
+  useEffect(() => {
+    if (chatHistory.length > 0 && selectedChat === null) {
+      setSelectedChat(chatHistory[0].id); // 첫 번째 채팅방을 기본값으로 선택
+    }
+  }, [chatHistory, selectedChat]);
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     if (!input.trim()) return;
+
+//     const userMessage = { text: input, mine: true };
+
+//     // case 1: 기존 채팅방이 선택된 상태
+//     if (selectedChat !== null) {
+//       setChatHistory((prev) =>
+//         prev.map((chat) =>
+//           chat.id === selectedChat
+//             ? {
+//                 ...chat,
+//                 messages: [...chat.messages, userMessage],
+//               }
+//             : chat
+//         )
+//       );
+//     } else {
+//       // case 2: 아무 채팅방도 없는 경우 → 새 채팅방 생성
+//       const newId = Date.now();
+//       setChatHistory((prev) => [
+//         ...prev,
+//         { id: newId, messages: [userMessage] }
+//       ]);
+//       setSelectedChat(newId);
+//     }
+
+//     // API 호출
+//     try {
+//       const response = await fetch(`${import.meta.env.VITE_APP_API_URL}/api/v1/llm/recommendations`, {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({ query: input }),
+//       });
+//       const data = await response.json();
+//       console.log(data);
+
+//       const replyMessage =
+//         data && data[0] && data[0].modelName === "죄송합니다. 현재는 렌터카 관련 질문만 도와드릴 수 있습니다."
+//           ? data[0].modelName
+//           : data
+//               .map((item) =>
+//                 `모델: ${item.modelName}, 연료: ${item.fuelType}, 연비: ${item.fuelEfficiency}, 가격: ${item.totalPrice}`
+//               )
+//               .join("\n");
+
+//       // 응답 메시지를 현재 선택된 채팅방에 추가
+//       setChatHistory((prev) =>
+//         prev.map((chat) =>
+//           chat.id === selectedChat
+//             ? {
+//                 ...chat,
+//                 messages: [...chat.messages, { text: replyMessage, mine: false }],
+//               }
+//             : chat
+//         )
+//       );
+//     } catch (error) {
+//       console.error("Error:", error);
+//   }
+
+//   setInput("");
+// };
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!input.trim()) return;
+
+  const userMessage = { text: input, mine: true };
+
+  // 🔑 실제로 메시지를 넣을 채팅방 ID를 기억
+  let activeChatId = selectedChat;
+
+  // case 1: 기존 채팅방이 선택된 상태
+  if (selectedChat !== null) {
     setChatHistory((prev) =>
       prev.map((chat) =>
         chat.id === selectedChat
           ? {
               ...chat,
-              messages: [...chat.messages, { text: input, mine: true }],
+              messages: [...chat.messages, userMessage],
             }
           : chat
       )
     );
-    setInput("");
-  };
+  } else {
+    // case 2: 채팅방이 없으면 새로 만들고, 그 ID를 기억
+    const newId = Date.now();
+    activeChatId = newId;
+    setChatHistory((prev) => [
+      ...prev,
+      { id: newId, messages: [userMessage] },
+    ]);
+    setSelectedChat(newId); // selectedChat도 업데이트
+  }
+
+  // 👉 이후에는 selectedChat 대신 activeChatId를 사용해서 응답을 넣음
+  try {
+    const response = await fetch(`${import.meta.env.VITE_APP_API_URL}/api/v1/llm/recommendations`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ query: input }),
+    });
+    const data = await response.json();
+
+    const replyMessage =
+      data && data[0] && data[0].modelName === "죄송합니다. 현재는 렌터카 관련 질문만 도와드릴 수 있습니다."
+        ? data[0].modelName
+        : data
+            .map((item) =>
+              `모델: ${item.modelName}, 연료: ${item.fuelType}, 연비: ${item.fuelEfficiency}, 가격: ${item.totalPrice}`
+            )
+            .join("\n");
+
+    // ✅ 응답 메시지도 activeChatId 기준으로 추가
+    setChatHistory((prev) =>
+      prev.map((chat) =>
+        chat.id === activeChatId
+          ? {
+              ...chat,
+              messages: [...chat.messages, { text: replyMessage, mine: false }],
+            }
+          : chat
+      )
+    );
+  } catch (error) {
+    console.error("Error:", error);
+  }
+
+  setInput("");
+};
+
+
+
 
   return (
     <div className="chat-root">
       <aside className="chat-sidebar">
         <h2>채팅 내역</h2>
         <ul>
+          {/* 채팅방 목록 렌더링 */}
           {chatHistory.map((chat) => (
             <li
               key={chat.id}
               className={selectedChat === chat.id ? "active" : ""}
-              onClick={() => setSelectedChat(chat.id)}>
-              {chat.title}
+              onClick={() => setSelectedChat(chat.id)}
+            >
+              Chat {chat.id}
             </li>
           ))}
         </ul>
       </aside>
       <div className="chat-main">
         <div className="chat-messages" ref={messagesEndRef}>
-          {currentMessages.map((msg, idx) => (
+          {/* {currentMessages.map((msg, idx) => ( */}
+           {/* 채팅방 메시지 렌더링 */}
+           {selectedChat && chatHistory.length > 0 &&
+            chatHistory.find((chat) => chat.id === selectedChat)?.messages.map((msg, idx) => (
             <React.Fragment key={idx}>
               <div className={`chat-message${msg.mine ? " mine" : ""}`}>
                 {msg.text.split("\n").map((line, i) => (
