@@ -1,0 +1,125 @@
+.ph-header {
+  height: 70px;
+  display: flex;
+  align-items: center;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.07);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1001;
+  padding: 0 1.3rem;
+  justify-content: space-between;
+}
+.ph-hamburger {
+  background: none;
+  border: none;
+  font-size: 1.7rem;
+  color: #222;
+  cursor: pointer;
+  margin-right: 1.3rem;
+  margin-top: 5px;
+}
+
+.ph-sidebar-backdrop {
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.ph-sidebar-backdrop.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+.ph-sidebar {
+  position: fixed;
+  top: 0;
+  left: -260px;
+  width: 240px;
+  height: 100%;
+  background: #fff;
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.08);
+  z-index: 1002;
+  transition: left 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+}
+.ph-sidebar.open {
+  left: 0;
+}
+.ph-sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+  padding: 0 1.2rem;
+  border-bottom: 1px solid #f1f1f1;
+}
+.ph-sidebar-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #222;
+}
+.ph-sidebar-close {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #888;
+  cursor: pointer;
+}
+.ph-menu {
+  list-style: none;
+  padding: 1.2rem 0 0 0;
+  margin: 0;
+  flex: 1;
+}
+.ph-menu > li {
+  padding: 0.7rem 1.3rem;
+}
+.ph-menu a,
+.ph-menu-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  color: #222;
+  text-decoration: none;
+  font-size: 1.09rem;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.14s;
+}
+.ph-menu a:hover,
+.ph-menu-toggle:hover {
+  background: #f3f4f6;
+  color: #ff8d13;
+}
+.ph-menu-icon {
+  font-size: 1.13rem;
+}
+.ph-menu-chevron {
+  margin-left: auto;
+  font-size: 1rem;
+}
+.ph-submenu {
+  list-style: none;
+  padding: 0.2rem 0 0.2rem 1.7rem;
+  margin: 0;
+}
+.ph-submenu li {
+  padding: 0.4rem 0;
+}
+.ph-submenu a {
+  color: #666;
+  font-size: 0.98rem;
+  text-decoration: none;
+}
+.ph-submenu a:hover {
+  color: #ff8d13;
+}
