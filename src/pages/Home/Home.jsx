@@ -88,7 +88,9 @@ const Home = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       if (!isTransitioning) {
-        setCurrentReviewIndex((prev) => (prev < reviews.length - 1 ? prev + 1 : 0));
+        setCurrentReviewIndex((prev) =>
+          prev < reviews.length - 1 ? prev + 1 : 0
+        );
         setIsTransitioning(true);
         setTimeout(() => setIsTransitioning(false), 800);
       }
