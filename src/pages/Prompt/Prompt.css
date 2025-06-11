@@ -16,15 +16,13 @@ body,
   width: 100vw;
   height: 100vh;
   background: #fafbfc;
-  min-height: 100vh;
-  min-width: 100vw;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .chat-sidebar {
   margin-top: 50px;
   width: var(--sidebar-width);
-  height: 100vh;
+  /* height: 100vh; */
   background: #fff;
   border-right: 1px solid #ececec;
   padding: 2rem 1rem 1rem 1rem;
@@ -84,8 +82,8 @@ body,
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  margin: 60px 0 10px;
+  gap: 1.5rem;
+  margin: 60px 0 0;
 }
 
 .chat-message {
@@ -239,5 +237,21 @@ body,
   }
   .chat-input-bar {
     padding: 0.5rem 1rem;
+  }
+}
+
+.map-container {
+  width: 400px; /* 고정 너비 대신 100%로 변경 */
+  height: 400px;
+  margin: 20px 0 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0; /* 컨테이너가 줄어들지 않도록 설정 */
+}
+
+@media (max-width: 400px) {
+  .map-container {
+    width: 250px;
+    height: 250px;
   }
 }
