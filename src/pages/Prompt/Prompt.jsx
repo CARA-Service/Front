@@ -165,16 +165,23 @@ const Prompt = () => {
 
   return (
     <div className="chat-root">
-      {is400px && (
-        <PromptHeader
-          // onSignUpClick={/* 회원가입 핸들러 */}
-          chatHistory={chatHistory}
-          onSelectChat={handleSelectChat}
-        />
-      )}
       {!is400px && (
         <aside className="chat-sidebar">
-          <h2>채팅 내역</h2>
+          <div className="chat-sidebar-header">
+            <h2>채팅 내역</h2>
+            <button
+              className="chat-new-btn"
+              onClick={() => {
+                const newId = Date.now();
+                setChatHistory((prev) => [
+                  ...prev,
+                  { id: newId, messages: [] },
+                ]);
+                setSelectedChat(newId);
+              }}>
+              +
+            </button>
+          </div>
           <ul>
             {chatHistory.map((chat) => (
               <li

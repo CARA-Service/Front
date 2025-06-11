@@ -50,6 +50,7 @@ body,
   flex: 1;
   overflow: auto;
   overflow-x: hidden;
+  margin-bottom: 50px;
 }
 
 .chat-sidebar li {
@@ -194,6 +195,28 @@ body,
 }
 .arrow-up {
   font-size: 1.2rem;
+}
+
+.chat-new-btn {
+  position: absolute;
+  background: none;
+  border: 1px solid #e2e2e2;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #666;
+  transition: background 0.13s;
+  top: 45px;
+  right: 15px;
+  z-index: 1000;
+}
+.chat-new-btn:hover {
+  background: #f3f4f6;
 }
 
 @media (max-width: 800px) {
