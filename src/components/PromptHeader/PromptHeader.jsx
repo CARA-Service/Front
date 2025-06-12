@@ -9,9 +9,9 @@ import {
   FaChevronDown,
   FaChevronUp,
 } from "react-icons/fa";
-import Profile from "../Profile";
-import "../Profile.css";
-import "../Header.css";
+import Profile from "../Profile/Profile";
+import "../Profile/Profile.css";
+import "../Header/Header.css";
 import "./PromptHeader.css";
 
 export default function PromptHeader({

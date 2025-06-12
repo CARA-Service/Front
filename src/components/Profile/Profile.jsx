@@ -7,11 +7,11 @@ import {
   FaSignOutAlt,
   FaTimes,
 } from "react-icons/fa";
-import ProfilePage from "../pages/ProfilePage/ProfilePage.jsx";
-import ReservationsPage from "../pages/ReservationsPage/ReservationsPage.jsx";
-import HistoryPage from "../pages/HistoryPage/HistoryPage.jsx";
-import AnalysisPage from "../pages/AnalysisPage/AnalysisPage.jsx";
-import "./Profile.css";
+import ProfilePage from "../../pages/ProfilePage/ProfilePage.jsx";
+import ReservationsPage from "../../pages/ReservationsPage/ReservationsPage.jsx";
+import HistoryPage from "../../pages/HistoryPage/HistoryPage.jsx";
+import AnalysisPage from "../../pages/AnalysisPage/AnalysisPage.jsx";
+import './Profile.css';
 
 const Profile = ({ onLogout }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

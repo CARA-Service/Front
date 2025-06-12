@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaUser } from 'react-icons/fa';
-import Profile from './Profile';
+import Profile from '../Profile/Profile';
 import './Header.css';
 
 function Header({ onSignUpClick }) {

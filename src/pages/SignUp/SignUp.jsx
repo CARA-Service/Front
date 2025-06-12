@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import IdVerificationModal from '../../components/IdVerificationModal.jsx';
+import IdVerificationModal from '../../components/IdVerificationModal/IdVerificationModal.jsx';
 import './SignUp.css';
 
 const SignUp = ({ isOpen, onClose }) => {
