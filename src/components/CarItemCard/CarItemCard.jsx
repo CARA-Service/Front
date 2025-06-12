@@ -5,52 +5,44 @@ const CarItemCard = ({ car }) => {
   const {
     brand,
     model,
-    price,
+    originalPrice,
+    discountRate,
     imageUrl,
-    mileage,
-    fuelType,
-    transmission,
-    location
+    comment,
+    features
   } = car;
 
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('ko-KR', {
-      style: 'currency',
-      currency: 'KRW',
-      maximumFractionDigits: 0
-    }).format(price);
+  const calculateCostPerKm = (price) => {
+    const baseCost = price / 10000; // 기본 주행거리 10,000km로 고정
+    const minCost = Math.floor(baseCost * 0.85);
+    const maxCost = Math.ceil(baseCost * 1.15);
+    return `${minCost} ~ ${maxCost}`;
   };
 
-  const formatMileage = (mileage) => {
-    return new Intl.NumberFormat('ko-KR').format(mileage);
+  const calculateDiscountedPrice = (originalPrice, discountRate) => {
+    return Math.floor(originalPrice * (1 - discountRate / 100));
   };
 
-  // 주행거리별 비용 계산 (예시: 1km당 100원)
-  const calculateCostPerKm = (price, mileage) => {
-    const costPerKm = Math.round(price / mileage);
-    const minCost = Math.round(costPerKm * 0.85); // 최소 비용 (85%)
-    const maxCost = Math.round(costPerKm * 1.15); // 최대 비용 (115%)
-    return {
-      min: minCost.toLocaleString(),
-      max: maxCost.toLocaleString()
-    };
+  const handleReservation = () => {
+    // 예약 처리 로직
+    console.log('예약하기 클릭:', brand, model);
   };
 
-  const costRange = calculateCostPerKm(price, mileage);
+  const costRange = calculateCostPerKm(originalPrice);
 
   return (
     <div className="car-item-card">
       <div className="car-header">
         <h3 className="car-title">{brand} {model}</h3>
         <span className="cost-per-km">
-          <span className="cost-icon">💲</span>
-          {costRange.min} ~ {costRange.max} 원 / km
+          <span className="cost-icon">$</span>
+          {costRange} 원 / km
         </span>
       </div>
       <div className="car-image">
         <img 
           src={imageUrl} 
-          alt={`${brand} ${model}`}
+          alt={`${brand} ${model}`} 
           onError={(e) => {
             console.error('이미지 로드 실패:', imageUrl);
             e.target.src = './default-profile.png';
@@ -58,13 +50,26 @@ const CarItemCard = ({ car }) => {
         />
       </div>
       <div className="car-info">
-        <div className="car-details">
-          <span>주행거리: {formatMileage(mileage)}km</span>
-          <span>연료: {fuelType}</span>
-          <span>변속기: {transmission}</span>
+        <p className="car-comment">{comment}</p>
+        <div className="car-features">
+          {features.map((feature, index) => (
+            <span key={index} className="feature-tag">{feature}</span>
+          ))}
         </div>
-        <p className="car-location">{location}</p>
-        <p className="car-price">{formatPrice(price)}</p>
+        <div className="price-section">
+          <div className="price-container">
+            <div className="price-header">
+              <span className="discount-rate">{discountRate}% 할인</span>
+              <span className="original-price">{originalPrice.toLocaleString()} 원</span>
+            </div>
+            <div className="discounted-price">
+              {calculateDiscountedPrice(originalPrice, discountRate).toLocaleString()} 원
+            </div>
+          </div>
+          <button className="reservation-button" onClick={handleReservation}>
+            예약하기
+          </button>
+        </div>
       </div>
     </div>
   );

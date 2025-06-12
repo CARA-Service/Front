@@ -9,34 +9,31 @@ const CarListPage = () => {
       id: 1,
       brand: '현대',
       model: '엘란트라',
-      price: 23500000,
+      originalPrice: 185000,
+      discountRate: 20,
       imageUrl: './현대엘란트라세단(측면).png',
-      mileage: 12000,
-      fuelType: '가솔린',
-      transmission: '자동',
-      location: '서울시 강남구'
+      comment: '1일 이상 운행하면 20% 페이백 !',
+      features: ['5인승', '후방센서', '블루투스', '자동주차']
     },
     {
       id: 2,
       brand: '도요타',
       model: '코롤라',
-      price: 22800000,
+      originalPrice: 222000,
+      discountRate: 15,
       imageUrl: './도요타COROLLA(측면).png',
-      mileage: 18000,
-      fuelType: '가솔린',
-      transmission: '자동',
-      location: '서울시 서초구'
+      comment: ' ⚠️ 사고 차량입니다 주의 요망 ',
+      features: ['5인승', '후방카메라', '스마트키', '블루투스']
     },
     {
       id: 3,
       brand: '벤츠',
       model: 'C클래스',
-      price: 52800000,
+      originalPrice: 52800000,
+      discountRate: -140,
       imageUrl: './벤츠메르세데스C(측면).png',
-      mileage: 8000,
-      fuelType: '가솔린',
-      transmission: '자동',
-      location: '서울시 송파구'
+      comment: '많은 사용자들이 이용한 차량입니다!',
+      features: ['5인승', '파노라마루프', '헤드업디스플레이', '자율주행']
     }
   ];
 
