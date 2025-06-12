@@ -29,20 +29,18 @@ const CarItemCard = ({ car }) => {
   return (
     <div className="car-item-card">
       <div className="car-header">
-        <div className="car-title-section">
-          <h3 className="car-title">{brand} {model}</h3>
-          <p className="car-year">{year}년식</p>
-        </div>
-        <div className="car-image">
-          <img 
-            src={imageUrl} 
-            alt={`${brand} ${model}`}
-            onError={(e) => {
-              console.error('이미지 로드 실패:', imageUrl);
-              e.target.src = './default-profile.png';
-            }}
-          />
-        </div>
+        <h3 className="car-title">{brand} {model}</h3>
+        <p className="car-year">{year}년식</p>
+      </div>
+      <div className="car-image">
+        <img 
+          src={imageUrl} 
+          alt={`${brand} ${model}`}
+          onError={(e) => {
+            console.error('이미지 로드 실패:', imageUrl);
+            e.target.src = './default-profile.png';
+          }}
+        />
       </div>
       <div className="car-info">
         <div className="car-details">
