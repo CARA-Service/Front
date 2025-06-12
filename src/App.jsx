@@ -13,6 +13,9 @@ import ProfilePage from "./pages/ProfilePage/ProfilePage.jsx";
 import ReservationsPage from "./pages/ReservationsPage/ReservationsPage.jsx";
 import HistoryPage from "./pages/HistoryPage/HistoryPage.jsx";
 import AnalysisPage from "./pages/AnalysisPage/AnalysisPage.jsx";
+// 차후 삭제 필요
+import CarListPage from "./pages/CarListPage/CarListPage";
+// 차후 삭제 필요
 import "./App.css";
 import use400px from "./hooks/use400px";
 
@@ -35,6 +38,7 @@ function App() {
           <Route path="/reservations" element={<ReservationsPage />} />
           <Route path="/history" element={<HistoryPage />} />
           <Route path="/analysis" element={<AnalysisPage />} />
+          <Route path="/cars" element={<CarListPage />} />
         </Routes>
       </div>
       {isSignUpOpen && (

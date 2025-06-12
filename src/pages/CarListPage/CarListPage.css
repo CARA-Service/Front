@@ -1,0 +1,19 @@
+.car-list-page {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.car-list-page h1 {
+  margin-bottom: 24px;
+  color: #333;
+  font-size: 2rem;
+}
+
+.car-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+  padding: 16px;
+  margin-top: 100px;
+} 
