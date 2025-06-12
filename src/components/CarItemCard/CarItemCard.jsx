@@ -5,7 +5,6 @@ const CarItemCard = ({ car }) => {
   const {
     brand,
     model,
-    year,
     price,
     imageUrl,
     mileage,
@@ -26,11 +25,27 @@ const CarItemCard = ({ car }) => {
     return new Intl.NumberFormat('ko-KR').format(mileage);
   };
 
+  // 주행거리별 비용 계산 (예시: 1km당 100원)
+  const calculateCostPerKm = (price, mileage) => {
+    const costPerKm = Math.round(price / mileage);
+    const minCost = Math.round(costPerKm * 0.85); // 최소 비용 (85%)
+    const maxCost = Math.round(costPerKm * 1.15); // 최대 비용 (115%)
+    return {
+      min: minCost.toLocaleString(),
+      max: maxCost.toLocaleString()
+    };
+  };
+
+  const costRange = calculateCostPerKm(price, mileage);
+
   return (
     <div className="car-item-card">
       <div className="car-header">
         <h3 className="car-title">{brand} {model}</h3>
-        <p className="car-year">{year}년식</p>
+        <span className="cost-per-km">
+          <span className="cost-icon">💲</span>
+          {costRange.min} ~ {costRange.max} 원 / km
+        </span>
       </div>
       <div className="car-image">
         <img 

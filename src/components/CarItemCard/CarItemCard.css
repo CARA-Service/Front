@@ -17,12 +17,24 @@
   color: #333;
 }
 
-.car-year {
-  margin: 0 0 0 10px;
-  padding: 5px;
-  color: #666;
-  font-size: 0.9rem;
-  text-align: left;
+.cost-per-km {
+  margin: 5px 0 0 15px;
+  padding: 2px 8px;
+  color: #3a3a3a;
+  font-size: 0.7rem;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #d7d7d7;
+  border-radius: 20px;
+  border: 1px solid #e0e0e0;
+  white-space: nowrap;
+}
+
+.cost-icon {
+  font-size: 0.7rem;
+  margin-right: 4px;
 }
 
 .car-image {
