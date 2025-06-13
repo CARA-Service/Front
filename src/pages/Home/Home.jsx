@@ -185,7 +185,9 @@ const Home = () => {
           </div>
           <Footer />
         </div>
-        {isSignUpOpen && (<SignUp isOpen={isSignUpOpen} onClose={() => setIsSignUpOpen(false)} />)}
+        {isSignUpOpen && (
+        <SignUp isOpen={isSignUpOpen} onClose={() => setIsSignUpOpen(false)} />
+      )}
       </div>
   );
 };
