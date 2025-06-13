@@ -9,7 +9,6 @@ import { ErrorBoundary } from "react-error-boundary";
 import Home from "./pages/Home/Home.jsx";
 import PromptPage from "./pages/PromptPage/PromptPage.jsx";
 import SignUp from "./pages/SignUp/SignUp.jsx";
-import Header from "./components/Header/Header.jsx";
 import ProfilePage from "./pages/ProfilePage/ProfilePage.jsx";
 import ReservationsPage from "./pages/ReservationsPage/ReservationsPage.jsx";
 import HistoryPage from "./pages/HistoryPage/HistoryPage.jsx";
@@ -35,11 +34,13 @@ function App() {
   const is400px = use400px();
   const location = useLocation();
 
+<<<<<<< HEAD
+=======
   const hideHeader = location.pathname === "/prompt" && is400px;
 
+>>>>>>> 4df04faae669f520f19db97d27cd600fbc3536fe
   return (
     <>
-      {!hideHeader && <Header onSignUpClick={() => setIsSignUpOpen(true)} />}
       <div className="main-content">
         <Routes>
           <Route path="/" element={<Home />} />

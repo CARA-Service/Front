@@ -5,13 +5,18 @@ import "./CarItemCard.css";
 
 const CarItemCard = ({ car, dateRange }) => {
   const {
-    brand,
-    model,
-    originalPrice,
+    manufacturer,
+    model_name,
+    daily_price,
     discountRate,
-    imageUrl,
+    image_url,
     comment,
-    features,
+    additional_options,
+    category,
+    capacity,
+    luggage_size,
+    fuel_type,
+    fuel_efficiency
   } = car;
 
   const [isExpanded, setIsExpanded] = useState(false);
@@ -73,7 +78,19 @@ const CarItemCard = ({ car, dateRange }) => {
     setIsExpanded(true);
   };
 
-  const costRange = calculateCostPerKm(originalPrice);
+  // 연비에 따른 클래스 반환 함수
+  const getFuelEfficiencyClass = (efficiency) => {
+    if (efficiency >= 20) return 'excellent';
+    if (efficiency >= 5) return 'normal';
+    return 'poor';
+  };
+
+  // 연비 등급 설명 반환 함수
+  const getEfficiencyDescription = (efficiency) => {
+    if (efficiency >= 20) return '최고 등급 (20 km/L 이상)\n\n• 매우 경제적인 연비\n• 장거리 주행에 적합\n• 연료비 절감 효과 최대';
+    if (efficiency >= 5) return '보통 등급 (5-19.9 km/L)\n\n• 평균적인 연비\n• 일반적인 주행에 적합\n• 일반적인 연료비';
+    return '낮은 등급 (5 km/L 미만)\n\n• 높은 연료 소비\n• 단거리 주행 권장\n• 연료비 고려 필요';
+  };
 
   return (
     <div>
