@@ -16,8 +16,16 @@
 }
 
 .car-item-card.expanded {
-  width: 600px;
+  width: 500px;
 }
+
+.car-item-card.expanded .car-features {
+  transform: translateY(10px);
+}
+
+.car-item-card.expanded .car-comment {
+    transform: translateX(10px) translateY(5px);
+  }
 
 .car-header {
   padding: 8px;
@@ -110,6 +118,7 @@
   font-size: 0.7rem;
   margin-left: 6px;
   text-align: left;
+  transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .car-features {
@@ -124,6 +133,7 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
   padding-left: 16px;
+  transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .car-features::-webkit-scrollbar {
@@ -230,38 +240,48 @@
 }
 
 .additional-info {
-  background: rgba(0, 0, 0, 0.03);
-  border-radius: 8px;
   max-height: 0;
-  overflow: hidden;
   transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
   opacity: 0;
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
   padding: 0 16px;
+  overflow: hidden;
 }
 
 .additional-info.show {
-  max-height: 200px;
+  max-height: 400px;
   opacity: 1;
   padding: 16px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
-.info-item {
-  flex: 1;
-  min-width: 200px;
+.additional-info.show::-webkit-scrollbar {
+  display: none;
+}
+
+.car-info-item {
   display: flex;
+  width: 100%;
   flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 8px;
 }
 
 .info-label {
-  font-size: 0.8rem;
-  color: #666;
+  font-size: 1rem;
+  color: #1c1c1c;
+  margin-bottom: 10px;
+  font-weight: 800;
 }
 
 .info-value {
   font-size: 0.9rem;
   font-weight: 500;
+  margin-left: 5px;
   color: #333;
 } 

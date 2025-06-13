@@ -86,21 +86,29 @@ const CarItemCard = ({ car }) => {
           ))}
         </div>
         <div className={`additional-info ${isExpanded ? 'show' : ''}`}>
-          <div className="info-item">
-            <span className="info-label">연식</span>
-            <span className="info-value">2023년</span>
-          </div>
-          <div className="info-item">
+          <div className="car-info-item">
             <span className="info-label">주행거리</span>
             <span className="info-value">15,000km</span>
           </div>
-          <div className="info-item">
+          <div className="car-info-item">
+            <span className="info-label">연식</span>
+            <span className="info-value">2023년</span>
+          </div>
+          <div className="car-info-item">
+            <span className="info-label">주행거리</span>
+            <span className="info-value">15,000km</span>
+          </div>
+          <div className="car-info-item">
             <span className="info-label">연료</span>
             <span className="info-value">가솔린</span>
           </div>
-          <div className="info-item">
+          <div className="car-info-item">
             <span className="info-label">변속기</span>
             <span className="info-value">자동</span>
+          </div>
+          <div className="car-info-item">
+            <span className="info-label">잡다한 설명들</span>
+            <span className="info-value">.<br />.<br />.<br />.<br />.<br />.<br />.<br />.<br />.<br />.<br /></span>
           </div>
         </div>
         <div className="price-section">
