@@ -4,6 +4,7 @@
   padding: 16px;
   margin: 16px;
   width: 400px;
+  min-width: 340;
   position: relative;
   min-height: 200px;
   display: flex;
@@ -160,24 +161,74 @@
   color: rgb(255, 255, 255);
 }
 
-.cost-per-km {
-  margin: 5px 0 0 15px;
-  padding: 2px 8px;
-  color: #3a3a3a;
-  font-size: 0.7rem;
+.fuel-efficiency {
+  margin: 5px 0 0 2px;
+  padding: 4px 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
   text-align: center;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: #d7d7d7;
-  border-radius: 20px;
-  border: 1px solid #e0e0e0;
+  border-radius: 6px;
   white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  position: relative;
+  cursor: help;
 }
 
-.cost-icon {
-  font-size: 0.7rem;
-  margin-right: 4px;
+.fuel-efficiency:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  transform: translateY(-50%);
+  padding: 8px 12px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  font-size: 0.8rem;
+  border-radius: 4px;
+  white-space: pre-line;
+  z-index: 1000;
+  margin-left: 12px;
+  width: max-content;
+  max-width: 200px;
+  text-align: left;
+  line-height: 1.4;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.fuel-efficiency:hover::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: calc(100% - 4px);
+  transform: translateY(-50%);
+  border-width: 4px;
+  border-style: solid;
+  border-color: transparent rgba(0, 0, 0, 0.8) transparent transparent;
+  z-index: 1000;
+}
+
+.fuel-efficiency.excellent {
+  background-color: #f0fdf4;
+  color: #16a34a;
+}
+
+.fuel-efficiency.normal {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.fuel-efficiency.poor {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+.efficiency-icon {
+  font-size: 0.85rem;
+  margin-right: 6px;
+  opacity: 0.7;
 }
 
 .price-section {
@@ -243,20 +294,21 @@
   max-height: 0;
   transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
   opacity: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  padding: 0 16px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  padding: 0 24px;
   overflow: hidden;
 }
 
 .additional-info.show {
   max-height: 400px;
   opacity: 1;
-  padding: 16px;
+  padding: 24px;
   overflow-y: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  background-color: #ffffff;
 }
 
 .additional-info.show::-webkit-scrollbar {
@@ -265,23 +317,21 @@
 
 .car-info-item {
   display: flex;
-  width: 100%;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  padding: 8px;
+  gap: 4px;
 }
 
 .info-label {
-  font-size: 1rem;
-  color: #1c1c1c;
-  margin-bottom: 10px;
-  font-weight: 800;
+  font-size: 0.85rem;
+  color: #64748b;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .info-value {
-  font-size: 0.9rem;
-  font-weight: 500;
-  margin-left: 5px;
-  color: #333;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1e293b;
+  text-align: center;
 } 
