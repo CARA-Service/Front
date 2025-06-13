@@ -1,5 +1,5 @@
-import React from 'react';
-import './ReservationsPage.css';
+import React from "react";
+import "./ReservationsPage.css";
 
 const ReservationsPage = () => {
   return (
@@ -35,4 +35,4 @@ const ReservationsPage = () => {
   );
 };
 
-export default ReservationsPage; 
+export default ReservationsPage;

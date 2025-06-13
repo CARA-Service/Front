@@ -13,7 +13,7 @@ function formatRange(start, end) {
   const format = (date) =>
     `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(
       2,
-      "0"
+      "0",
     )}.${String(date.getDate()).padStart(2, "0")}`;
   return start && end ? `${format(start)}~${format(end)}` : format(start);
 }
@@ -38,7 +38,7 @@ const Prompt = () => {
 
   useEffect(() => {
     const idx = currentMessages.findIndex(
-      (msg) => !msg.mine && /언제|날짜|date|when/i.test(msg.text)
+      (msg) => !msg.mine && /언제|날짜|date|when/i.test(msg.text),
     );
     if (idx !== -1) {
       setShowCalendar(true);
@@ -60,8 +60,8 @@ const Prompt = () => {
                 ...chat,
                 messages: [...chat.messages, { text: rangeText, mine: true }],
               }
-            : chat
-        )
+            : chat,
+        ),
       );
       setInput("");
       setShowCalendar(false);
@@ -93,8 +93,8 @@ const Prompt = () => {
         prev.map((chat) =>
           chat.id === selectedChat
             ? { ...chat, messages: [...chat.messages, userMessage] }
-            : chat
-        )
+            : chat,
+        ),
       );
     } else {
       const newId = Date.now();
@@ -121,8 +121,8 @@ const Prompt = () => {
                   },
                 ],
               }
-            : chat
-        )
+            : chat,
+        ),
       );
       setInput("");
       return;
@@ -139,7 +139,7 @@ const Prompt = () => {
             : data
                 .map(
                   (item) =>
-                    `모델: ${item.modelName}, 연료: ${item.fuelType}, 연비: ${item.fuelEfficiency}, 가격: ${item.totalPrice}`
+                    `모델: ${item.modelName}, 연료: ${item.fuelType}, 연비: ${item.fuelEfficiency}, 가격: ${item.totalPrice}`,
                 )
                 .join("\n");
       } else {
@@ -157,8 +157,8 @@ const Prompt = () => {
                   { text: replyMessage, mine: false },
                 ],
               }
-            : chat
-        )
+            : chat,
+        ),
       );
     } catch (err) {
       console.error(err);
@@ -184,7 +184,8 @@ const Prompt = () => {
               <li
                 key={chat.id}
                 className={selectedChat === chat.id ? "active" : ""}
-                onClick={() => setSelectedChat(chat.id)}>
+                onClick={() => setSelectedChat(chat.id)}
+              >
                 Chat {chat.id}
               </li>
             ))}
@@ -240,12 +241,15 @@ const Prompt = () => {
           <button
             type="submit"
             className="chat-send-btn"
-            disabled={showCalendar}>
+            disabled={showCalendar}
+          >
             <span className="arrow-up">&#8593;</span>
           </button>
         </form>
       </div>
-      {isSignUpOpen && (<SignUp isOpen={isSignUpOpen} onClose={() => setIsSignUpOpen(false)} />)}
+      {isSignUpOpen && (
+        <SignUp isOpen={isSignUpOpen} onClose={() => setIsSignUpOpen(false)} />
+      )}
     </div>
   );
 };

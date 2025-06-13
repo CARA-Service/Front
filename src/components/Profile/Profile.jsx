@@ -11,7 +11,7 @@ import ProfilePage from "../../pages/ProfilePage/ProfilePage.jsx";
 import ReservationsPage from "../../pages/ReservationsPage/ReservationsPage.jsx";
 import HistoryPage from "../../pages/HistoryPage/HistoryPage.jsx";
 import AnalysisPage from "../../pages/AnalysisPage/AnalysisPage.jsx";
-import './Profile.css';
+import "./Profile.css";
 
 const Profile = ({ onLogout }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -82,7 +82,8 @@ const Profile = ({ onLogout }) => {
     <div className="profile-container">
       <div
         className="profile-image-container"
-        onClick={() => setIsMenuOpen(!isMenuOpen)}>
+        onClick={() => setIsMenuOpen(!isMenuOpen)}
+      >
         <img
           src={profileImage}
           alt="Profile"
@@ -98,22 +99,26 @@ const Profile = ({ onLogout }) => {
         <div className="profile-menu">
           <button
             className="menu-item"
-            onClick={() => handleMenuClick("profile")}>
+            onClick={() => handleMenuClick("profile")}
+          >
             <FaUser /> 내 프로필
           </button>
           <button
             className="menu-item"
-            onClick={() => handleMenuClick("reservations")}>
+            onClick={() => handleMenuClick("reservations")}
+          >
             <FaCalendarAlt /> 예약 내역
           </button>
           <button
             className="menu-item"
-            onClick={() => handleMenuClick("history")}>
+            onClick={() => handleMenuClick("history")}
+          >
             <FaHistory /> 이용 기록
           </button>
           <button
             className="menu-item"
-            onClick={() => handleMenuClick("analysis")}>
+            onClick={() => handleMenuClick("analysis")}
+          >
             <FaChartBar /> 분석
           </button>
           <div className="menu-divider" />

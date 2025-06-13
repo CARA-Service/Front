@@ -80,13 +80,15 @@ export default function PromptHeader({
       {/* 사이드바 및 백드롭 */}
       <div
         className={`ph-sidebar-backdrop${sidebarOpen ? " show" : ""}`}
-        onClick={handleBackdropClick}>
+        onClick={handleBackdropClick}
+      >
         <nav className={`ph-sidebar${sidebarOpen ? " open" : ""}`}>
           <div className="ph-sidebar-header">
             <span className="ph-sidebar-title">perplexity</span>
             <button
               className="ph-sidebar-close"
-              onClick={() => setSidebarOpen(false)}>
+              onClick={() => setSidebarOpen(false)}
+            >
               ×
             </button>
           </div>
@@ -99,7 +101,8 @@ export default function PromptHeader({
             <li>
               <div
                 className="ph-menu-toggle"
-                onClick={() => setChatOpen((v) => !v)}>
+                onClick={() => setChatOpen((v) => !v)}
+              >
                 <FaBookOpen className="ph-menu-icon" /> 채팅내역
                 {chatOpen ? (
                   <FaChevronUp className="ph-menu-chevron" />
@@ -116,7 +119,8 @@ export default function PromptHeader({
                       onClick={() => {
                         onSelectChat(chat.id); // 채팅방 선택 핸들러 호출
                         setSidebarOpen(false); // 사이드바 닫기
-                      }}>
+                      }}
+                    >
                       Chat {chat.id}
                     </li>
                   ))}

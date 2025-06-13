@@ -1,5 +1,5 @@
-import React from 'react';
-import './HistoryPage.css';
+import React from "react";
+import "./HistoryPage.css";
 
 const HistoryPage = () => {
   return (
@@ -26,4 +26,4 @@ const HistoryPage = () => {
   );
 };
 
-export default HistoryPage; 
+export default HistoryPage;

@@ -3,21 +3,22 @@
   border-radius: 12px;
   padding: 16px;
   margin: 16px;
-  width: 400px;
-  min-width: 340;
+  max-width: 400px;
+  min-width: 400px;
   position: relative;
   min-height: 200px;
+  height: auto;
   display: flex;
   flex-direction: column;
   transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .car-item-card:hover {
-    transform: scale(1.02);
+  transform: scale(1.02);
 }
 
 .car-item-card.expanded {
-  width: 500px;
+  width: 600px;
 }
 
 .car-item-card.expanded .car-features {
@@ -25,8 +26,8 @@
 }
 
 .car-item-card.expanded .car-comment {
-    transform: translateX(10px) translateY(5px);
-  }
+  transform: translateX(10px) translateY(5px);
+}
 
 .car-header {
   padding: 8px;
@@ -64,7 +65,7 @@
 }
 
 .car-item-card.expanded .car-image {
-  transform:scale(1.2) translateX(-20px);
+  transform: scale(1.2) translateX(-20px);
 }
 
 .car-image img {
@@ -199,7 +200,7 @@
 }
 
 .fuel-efficiency:hover::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: calc(100% - 4px);
@@ -302,7 +303,7 @@
 }
 
 .additional-info.show {
-  max-height: 400px;
+  max-height: 200px;
   opacity: 1;
   padding: 24px;
   overflow-y: auto;
@@ -334,4 +335,4 @@
   font-weight: 600;
   color: #1e293b;
   text-align: center;
-} 
+}

@@ -1,5 +1,5 @@
-import React from 'react';
-import './AnalysisPage.css';
+import React from "react";
+import "./AnalysisPage.css";
 
 const AnalysisPage = () => {
   return (
@@ -27,4 +27,4 @@ const AnalysisPage = () => {
   );
 };
 
-export default AnalysisPage; 
+export default AnalysisPage;

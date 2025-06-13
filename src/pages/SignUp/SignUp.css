@@ -47,19 +47,19 @@ body.modal-open {
 }
 
 .social-button.kakao {
-  background-color: #FEE500;
+  background-color: #fee500;
   color: #000000;
 }
 
 .social-button.google {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   color: #000000;
-  border: 1px solid #DDDDDD;
+  border: 1px solid #dddddd;
 }
 
 .social-button.naver {
-  background-color: #03C75A;
-  color: #FFFFFF;
+  background-color: #03c75a;
+  color: #ffffff;
 }
 
 .social-button:hover {
@@ -306,4 +306,4 @@ body.modal-open {
   color: #666;
   font-size: 0.9rem;
   margin-bottom: 0.5rem;
-} 
+}

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 export default function use400px() {
   const [is400px, setIs400px] = useState(
-    window.matchMedia("(max-width: 400px)").matches
+    window.matchMedia("(max-width: 400px)").matches,
   );
   useEffect(() => {
     const media = window.matchMedia("(max-width: 400px)");

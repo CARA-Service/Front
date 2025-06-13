@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import IdVerificationModal from '../../components/IdVerificationModal/IdVerificationModal.jsx';
-import './SignUp.css';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import IdVerificationModal from "../../components/IdVerificationModal/IdVerificationModal.jsx";
+import "./SignUp.css";
 
 const SignUp = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
@@ -10,13 +10,13 @@ const SignUp = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     if (isOpen || isVerificationModalOpen) {
-      document.body.classList.add('modal-open');
+      document.body.classList.add("modal-open");
     } else {
-      document.body.classList.remove('modal-open');
+      document.body.classList.remove("modal-open");
     }
 
     return () => {
-      document.body.classList.remove('modal-open');
+      document.body.classList.remove("modal-open");
     };
   }, [isOpen, isVerificationModalOpen]);
 
@@ -27,7 +27,7 @@ const SignUp = ({ isOpen, onClose }) => {
       const response = await new Promise((resolve, reject) => {
         setTimeout(() => {
           if (false) {
-            reject(new Error('로그인에 실패했습니다. 다시 시도해주세요.'));
+            reject(new Error("로그인에 실패했습니다. 다시 시도해주세요."));
           } else {
             resolve({ success: true });
           }
@@ -38,7 +38,7 @@ const SignUp = ({ isOpen, onClose }) => {
         setIsVerificationModalOpen(true);
       }
     } catch (error) {
-      console.error('소셜 로그인 중 오류가 발생했습니다:', error);
+      console.error("소셜 로그인 중 오류가 발생했습니다:", error);
       setError(error.message);
     }
   };
@@ -46,13 +46,13 @@ const SignUp = ({ isOpen, onClose }) => {
   const handleVerificationComplete = () => {
     setIsVerificationModalOpen(false);
     onClose();
-    navigate('/');
+    navigate("/");
   };
 
   const handleVerificationClose = () => {
     setIsVerificationModalOpen(false);
     onClose();
-    navigate('/');
+    navigate("/");
   };
 
   const handleOverlayClick = (e) => {
@@ -71,23 +71,23 @@ const SignUp = ({ isOpen, onClose }) => {
     <div className="signup-overlay" onClick={handleOverlayClick}>
       <div className="signup-container">
         <h1>회원가입</h1>
-        
+
         <div className="social-login">
-          <button 
+          <button
             className="social-button kakao"
-            onClick={() => handleSocialLogin('kakao')}
+            onClick={() => handleSocialLogin("kakao")}
           >
             카카오로 시작하기
           </button>
-          <button 
+          <button
             className="social-button google"
-            onClick={() => handleSocialLogin('google')}
+            onClick={() => handleSocialLogin("google")}
           >
             구글로 시작하기
           </button>
-          <button 
+          <button
             className="social-button naver"
-            onClick={() => handleSocialLogin('naver')}
+            onClick={() => handleSocialLogin("naver")}
           >
             네이버로 시작하기
           </button>
@@ -118,4 +118,4 @@ const SignUp = ({ isOpen, onClose }) => {
   );
 };
 
-export default SignUp; 
+export default SignUp;
