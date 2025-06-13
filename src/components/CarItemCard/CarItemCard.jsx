@@ -92,6 +92,15 @@ const CarItemCard = ({ car, dateRange }) => {
     return '낮은 등급 (5 km/L 미만)\n\n• 높은 연료 소비\n• 단거리 주행 권장\n• 연료비 고려 필요';
   };
 
+  
+  const costRange = calculateCostPerKm(daily_price); // ✅ JSX보다 위에서 미리 선언
+  // const features = typeof additional_options === 'string'
+  // ? additional_options.split(',').map(opt => opt.trim())
+  // : [];
+  //   const originalPrice = daily_price;
+
+
+
   return (
     <div>
       <div
@@ -100,7 +109,7 @@ const CarItemCard = ({ car, dateRange }) => {
         onClick={handleCardClick}>
         <div className="car-header">
           <h3 className="car-title">
-            {brand} {model}
+            {manufacturer} {model_name}
           </h3>
           <span className="cost-per-km">
             <span className="cost-icon">$</span>
@@ -109,10 +118,10 @@ const CarItemCard = ({ car, dateRange }) => {
         </div>
         <div className="car-image">
           <img
-            src={imageUrl}
-            alt={`${brand} ${model}`}
+            src={image_url}
+            alt={`${manufacturer} ${model_name}`}
             onError={(e) => {
-              console.error("이미지 로드 실패:", imageUrl);
+              console.error("이미지 로드 실패:", image_url);
               e.target.src = "./default-profile.png";
             }}
           />
