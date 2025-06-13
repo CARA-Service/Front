@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Footer from "../../components/Footer.jsx";
+import Footer from "../../components/Footer/Footer.jsx";
 import "./Home.css";
 
 const Home = () => {

@@ -1,0 +1,267 @@
+.car-item-card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 16px;
+  width: 400px;
+  position: relative;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.car-item-card:hover {
+    transform: scale(1.02);
+}
+
+.car-item-card.expanded {
+  width: 600px;
+}
+
+.car-header {
+  padding: 8px;
+  text-align: left;
+}
+
+.car-title {
+  margin: 0 0 0 5px;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.car-image-container {
+  width: 100%;
+  height: 180px;
+  margin: 12px 0;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+}
+
+.car-image {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  width: 200px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+}
+
+.car-item-card.expanded .car-image {
+  transform:scale(1.2) translateX(-20px);
+}
+
+.car-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.zoom-icon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  cursor: pointer;
+}
+
+.zoom-icon svg {
+  color: white;
+}
+
+.car-image:hover .zoom-icon {
+  opacity: 1;
+}
+
+.car-info {
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+  background-color: white;
+  text-align: left;
+}
+
+.car-price {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2c5282;
+  text-align: left;
+}
+
+.car-comment {
+  color: #858585;
+  font-size: 0.7rem;
+  margin-left: 6px;
+  text-align: left;
+}
+
+.car-features {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 14px;
+  margin: 8px 0;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 40px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding-left: 16px;
+}
+
+.car-features::-webkit-scrollbar {
+  display: none;
+}
+
+.feature-tag {
+  background-color: #cccfd2;
+  color: #000000;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.feature-tag:hover {
+  background-color: #7b7b7b;
+  color: rgb(255, 255, 255);
+}
+
+.cost-per-km {
+  margin: 5px 0 0 15px;
+  padding: 2px 8px;
+  color: #3a3a3a;
+  font-size: 0.7rem;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #d7d7d7;
+  border-radius: 20px;
+  border: 1px solid #e0e0e0;
+  white-space: nowrap;
+}
+
+.cost-icon {
+  font-size: 0.7rem;
+  margin-right: 4px;
+}
+
+.price-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  padding: 0 16px;
+}
+
+.price-container {
+  flex: 1;
+}
+
+.price-header {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  margin-bottom: 4px;
+  gap: 10px;
+}
+
+.discount-rate {
+  color: #4d8bff;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.original-price {
+  color: #858585;
+  font-size: 0.9rem;
+  text-decoration: line-through;
+}
+
+.discounted-price {
+  color: #000000;
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+.reservation-button {
+  background-color: #000000;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 25px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-left: 16px;
+}
+
+.reservation-button:hover {
+  background-color: #3a7ae8;
+}
+
+.reservation-button:active {
+  background-color: #2d6cd9;
+}
+
+.additional-info {
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 8px;
+  max-height: 0;
+  overflow: hidden;
+  transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 0 16px;
+}
+
+.additional-info.show {
+  max-height: 200px;
+  opacity: 1;
+  padding: 16px;
+}
+
+.info-item {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+}
+
+.info-label {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.info-value {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #333;
+} 
