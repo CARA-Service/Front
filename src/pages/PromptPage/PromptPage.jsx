@@ -315,7 +315,7 @@ const Prompt = () => {
                   <h3>추천차량</h3>
                   <div className="car-cards">
                     {AVAILABLE_CARS.map((car, idx) => (
-                      <CarItemCard key={idx} car={car} />
+                      <CarItemCard key={idx} car={car} dateRange={dateRange} />
                     ))}
                   </div>
                 </div>
