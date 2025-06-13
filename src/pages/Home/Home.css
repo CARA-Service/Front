@@ -16,24 +16,19 @@
   flex-direction: column;
   align-items: center;
   gap: 4rem;
-  /* padding: 0 2rem; */
 }
 
 .features {
   width: 100%;
   display: flex;
   justify-content: center;
-  /* gap: 2rem; */
   margin-top: 2rem;
-  /* padding: 0 1rem; */
 }
 
 .feature-card {
   flex: 1;
-  /* min-width: 300px;
-  max-width: 400px; */
   width: 400px;
-  height: 250px;
+  min-height: 250px;
   background: white;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -57,7 +52,7 @@
   justify-content: center;
   font-size: 1.8rem;
   font-weight: bold;
-  margin: 0 auto 2rem;
+  margin: 10px auto 2rem;
 }
 
 .feature-card h3 {
@@ -84,56 +79,6 @@
     margin-bottom: 15px;
   }
 
-  .reviews-section {
-    width: 100%;
-    margin-top: 3rem;
-    padding: 2rem;
-    height: 450px;
-    margin-bottom: 3rem;
-  }
-
-  .reviews-section h2 {
-    font-size: 1.8rem;
-    margin-bottom: 2rem;
-  }
-
-  .reviews-container {
-    padding: 1rem 0;
-    height: 320px;
-    width: 100%;
-  }
-
-  .review-card {
-    flex: 0 0 280px;
-    min-width: 280px;
-    padding: 1.5rem;
-  }
-
-  .review-card.active {
-    flex: 0 0 320px;
-    min-width: 320px;
-  }
-}
-
-h1 {
-  font-size: clamp(1.5rem, 5vw, 2.2rem);
-  margin-bottom: 0.5rem;
-  color: #333;
-  text-align: center;
-  width: 100%;
-}
-
-h3 {
-  color: #444;
-  margin-bottom: 0.5rem;
-  font-size: clamp(1rem, 3vw, 1.3rem);
-}
-
-p {
-  color: #666;
-  margin-bottom: 0;
-  text-align: center;
-  width: 100%;
 }
 
 .input-form {
@@ -221,12 +166,10 @@ p {
 }
 
 .reviews-section {
+  overflow-x: hidden;
   width: 100%;
-  /* min-width: 1200px; */
   margin-top: 4rem;
-  /* padding: 3rem; */
   background-color: #f8f9fa;
-  border-radius: 20px;
   height: 500px;
   display: flex;
   flex-direction: column;
@@ -235,10 +178,10 @@ p {
 }
 
 .reviews-section h2 {
+  padding: 1.8rem;
   text-align: center;
   font-size: 2rem;
   color: #333;
-  margin-bottom: 3rem;
   position: relative;
   width: 100%;
 }
@@ -259,26 +202,21 @@ p {
   display: flex;
   flex-direction: row;
   width: 100%;
-  gap: 2rem;
   margin: 0 auto;
   overflow: hidden;
-  padding: 2rem 0;
   position: relative;
   height: 380px;
-  display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .review-slider {
   display: flex;
-  gap: 2rem;
   transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
   width: 100%;
   justify-content: center;
   align-items: center;
   position: relative;
-  /* padding: 0 3rem; */
 }
 
 .review-card {
@@ -301,7 +239,7 @@ p {
 
 .review-card.active {
   flex: 0 0 380px;
-  min-width: 380px;
+  max-width: 380px;
   opacity: 1;
   transform: scale(1);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
@@ -369,6 +307,7 @@ p {
 .rating {
   display: flex;
   gap: 0.25rem;
+  margin-left: 15px;
 }
 
 .star {
@@ -376,6 +315,7 @@ p {
   font-size: 1.1rem;
   text-shadow: 0 2px 4px rgba(255, 141, 19, 0.2);
   transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-left: 2px;
 }
 
 .star.filled {

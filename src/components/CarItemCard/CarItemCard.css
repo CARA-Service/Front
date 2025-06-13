@@ -1,9 +1,9 @@
 .car-item-card {
-  background: white;
   border-radius: 12px;
   padding: 16px;
   margin: 16px;
-  max-width: 400px;
+  max-width: 600px;
+  width: 400px;
   min-width: 400px;
   position: relative;
   min-height: 200px;
@@ -26,8 +26,8 @@
 }
 
 .car-item-card.expanded .car-comment {
-    transform: translateX(10px) translateY(5px);
-  }
+  transform: translateX(10px) translateY(5px);
+}
 
 .car-header {
   padding: 8px;
@@ -118,7 +118,8 @@
 .car-comment {
   color: #858585;
   font-size: 0.7rem;
-  margin-left: 6px;
+  margin-left: 8px;
+  margin-top: 10px;
   text-align: left;
   transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -158,7 +159,7 @@
 }
 
 .feature-tag:hover {
-  background-color: #7b7b7b;
+  background-color: #3a7ae8;
   color: rgb(255, 255, 255);
 }
 
@@ -284,11 +285,11 @@
 }
 
 .reservation-button:hover {
-  background-color: #3a7ae8;
+  background-color: #ec8b12;
 }
 
 .reservation-button:active {
-  background-color: #2d6cd9;
+  background-color: #b56a08;
 }
 
 .additional-info {
@@ -320,91 +321,20 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+  background-color: transparent;
 }
 
 .info-label {
   font-size: 0.85rem;
-  color: #64748b;
+  color: #384861;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
 .info-value {
-
-  font-size: 0.9rem;
+  font-size: 1.3rem;
+  margin-top: 8px;
   font-weight: 500;
-  color: #333;
-}
-
-
-
-.fuel-efficiency:hover::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: calc(100% - 4px);
-  transform: translateY(-50%);
-  border-width: 4px;
-  border-style: solid;
-  border-color: transparent rgba(0, 0, 0, 0.8) transparent transparent;
-  z-index: 1000;
-}
-
-.fuel-efficiency.excellent {
-  background-color: #f0fdf4;
-  color: #16a34a;
-}
-
-.fuel-efficiency.normal {
-  background-color: #fef3c7;
-  color: #d97706;
-}
-
-.fuel-efficiency.poor {
-  background-color: #fee2e2;
-  color: #dc2626;
-}
-
-.fuel-efficiency:hover::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  top: 50%;
-  left: 100%;
-  transform: translateY(-50%);
-  padding: 8px 12px;
-  background-color: rgba(0, 0, 0, 0.6);
-  color: white;
-  font-size: 0.8rem;
-  border-radius: 4px;
-  white-space: pre-line;
-  z-index: 1000;
-  margin-left: 12px;
-  width: max-content;
-  max-width: 200px;
-  text-align: left;
-  line-height: 1.4;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.fuel-efficiency {
-  margin: 5px 0 0 2px;
-  padding: 4px 12px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  text-align: center;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 6px;
-  white-space: nowrap;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  position: relative;
-  cursor: help;
-}
-
-  font-size: 1.1rem;
-  font-weight: 600;
   color: #1e293b;
   text-align: center;
-} 
+}
