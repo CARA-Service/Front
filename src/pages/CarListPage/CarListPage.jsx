@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState } from "react";
 import CarItemCard from '../../components/CarItemCard/CarItemCard';
+import Header from '../../components/Header/Header.jsx';
+import SignUp from '../../pages/SignUp/SignUp.jsx';
 import './CarListPage.css';
 
 const CarListPage = () => {
+  const [isSignUpOpen, setIsSignUpOpen] = useState(false);
   // 테스트용 데이터
   const testCars = [
     {
@@ -38,13 +41,19 @@ const CarListPage = () => {
   ];
 
   return (
-    <div className="car-list-page">
-      <div className="car-list">
-        {testCars.map(car => (
-          <CarItemCard key={car.id} car={car} />
-        ))}
+    <>
+      <Header onSignUpClick={() => setIsSignUpOpen(true)} />
+      <div className="car-list-container">
+        <div className="car-list">
+          {testCars.map(car => (
+            <CarItemCard key={car.id} car={car} />
+          ))}
+        </div>
       </div>
-    </div>
+      {isSignUpOpen && (
+        <SignUp isOpen={isSignUpOpen} onClose={() => setIsSignUpOpen(false)} />
+      )}
+    </>
   );
 };
 

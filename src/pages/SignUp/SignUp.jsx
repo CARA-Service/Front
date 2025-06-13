@@ -26,7 +26,7 @@ const SignUp = ({ isOpen, onClose }) => {
       // TODO: 실제 소셜 로그인 API 연동
       const response = await new Promise((resolve, reject) => {
         setTimeout(() => {
-          if (true) {
+          if (false) {
             reject(new Error('로그인에 실패했습니다. 다시 시도해주세요.'));
           } else {
             resolve({ success: true });
