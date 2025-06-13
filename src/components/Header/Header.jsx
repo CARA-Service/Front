@@ -1,19 +1,19 @@
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { FaUser } from "react-icons/fa";
-import Profile from "../Profile/Profile";
-import "./Header.css";
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { FaUser } from 'react-icons/fa';
+import Profile from '../Profile/Profile';
+import './Header.css';
 
 function Header({ onSignUpClick }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [profileImage, setProfileImage] = useState("/default-profile.png");
+  const [profileImage, setProfileImage] = useState('/default-profile.png');
 
   useEffect(() => {
     const checkLoginStatus = () => {
-      const token = localStorage.getItem("token");
-      const storedProfileImage = localStorage.getItem("profileImage");
+      const token = localStorage.getItem('token');
+      const storedProfileImage = localStorage.getItem('profileImage');
       setIsLoggedIn(!!token);
-      setProfileImage(storedProfileImage || "/default-profile.png");
+      setProfileImage(storedProfileImage || '/default-profile.png');
     };
 
     // 초기 로그인 상태 확인
@@ -29,20 +29,20 @@ function Header({ onSignUpClick }) {
       checkLoginStatus();
     };
 
-    window.addEventListener("storage", handleStorageChange);
-    window.addEventListener("storageChange", handleCustomStorageChange);
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('storageChange', handleCustomStorageChange);
 
     return () => {
-      window.removeEventListener("storage", handleStorageChange);
-      window.removeEventListener("storageChange", handleCustomStorageChange);
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('storageChange', handleCustomStorageChange);
     };
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("profileImage");
+    localStorage.removeItem('token');
+    localStorage.removeItem('profileImage');
     setIsLoggedIn(false);
-    setProfileImage("/default-profile.png");
+    setProfileImage('/default-profile.png');
   };
 
   return (
@@ -52,7 +52,6 @@ function Header({ onSignUpClick }) {
           CARA
         </Link>
         <nav className="nav-links">
-          <Link to="/reservations">예약하기</Link>
           <Link to="/faq">FAQ</Link>
           <Link to="/contact">문의하기</Link>
         </nav>
@@ -70,4 +69,4 @@ function Header({ onSignUpClick }) {
   );
 }
 
-export default Header;
+export default Header; 

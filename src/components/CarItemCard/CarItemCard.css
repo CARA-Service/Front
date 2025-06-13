@@ -3,18 +3,17 @@
   border-radius: 12px;
   padding: 16px;
   margin: 16px;
-  max-width: 400px;
-  min-width: 400px;
+  width: 400px;
+  min-width: 340;
   position: relative;
   min-height: 200px;
-  height: auto;
   display: flex;
   flex-direction: column;
   transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .car-item-card:hover {
-  transform: scale(1.02);
+    transform: scale(1.02);
 }
 
 .car-item-card.expanded {
@@ -65,7 +64,7 @@
 }
 
 .car-item-card.expanded .car-image {
-  transform: scale(1.2) translateX(-20px);
+  transform:scale(1.2) translateX(-20px);
 }
 
 .car-image img {

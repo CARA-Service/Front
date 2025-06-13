@@ -8,7 +8,6 @@ import {
   FaEnvelope,
   FaChevronDown,
   FaChevronUp,
-  FaPlus, // 새 채팅방 버튼 아이콘
 } from "react-icons/fa";
 import Profile from "../Profile/Profile";
 import "../Profile/Profile.css";
@@ -19,7 +18,6 @@ export default function PromptHeader({
   onSignUpClick,
   chatHistory = [],
   onSelectChat,
-  onCreateChat,
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
@@ -65,19 +63,9 @@ export default function PromptHeader({
   return (
     <>
       <header className="ph-header">
-        <div className="ph-header-left">
-          <button className="ph-hamburger" onClick={() => setSidebarOpen(true)}>
-            <FaBars />
-          </button>
-          <button
-            className="ph-new-chat-btn"
-            onClick={() => {
-              onCreateChat();
-              setSidebarOpen(false);
-            }}>
-            새 채팅방
-          </button>
-        </div>
+        <button className="ph-hamburger" onClick={() => setSidebarOpen(true)}>
+          <FaBars />
+        </button>
         <div className="auth-section">
           {isLoggedIn ? (
             <Profile onLogout={handleLogout} />
@@ -121,12 +109,13 @@ export default function PromptHeader({
               </div>
               {chatOpen && (
                 <ul className="ph-submenu">
+                  {/* 채팅방 목록 렌더링 */}
                   {chatHistory.map((chat) => (
                     <li
                       key={chat.id}
                       onClick={() => {
-                        onSelectChat(chat.id);
-                        setSidebarOpen(false);
+                        onSelectChat(chat.id); // 채팅방 선택 핸들러 호출
+                        setSidebarOpen(false); // 사이드바 닫기
                       }}>
                       Chat {chat.id}
                     </li>
