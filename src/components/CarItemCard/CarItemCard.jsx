@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './CarItemCard.css';
 
 const CarItemCard = ({ car }) => {
@@ -11,6 +11,21 @@ const CarItemCard = ({ car }) => {
     comment,
     features
   } = car;
+  const [isExpanded, setIsExpanded] = useState(false);
+  const cardRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (cardRef.current && !cardRef.current.contains(event.target)) {
+        setIsExpanded(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const calculateCostPerKm = (price) => {
     const baseCost = price / 1000; // 기본 주행거리 1,000km로 고정
@@ -23,15 +38,24 @@ const CarItemCard = ({ car }) => {
     return Math.floor(originalPrice * (1 - discountRate / 100));
   };
 
-  const handleReservation = () => {
+  const handleReservation = (e) => {
+    e.stopPropagation();
     // 예약 처리 로직
     console.log('예약하기 클릭:', brand, model);
+  };
+
+  const handleCardClick = () => {
+    setIsExpanded(true);
   };
 
   const costRange = calculateCostPerKm(originalPrice);
 
   return (
-    <div className="car-item-card">
+    <div 
+      ref={cardRef}
+      className={`car-item-card ${isExpanded ? 'expanded' : ''}`}
+      onClick={handleCardClick}
+    >
       <div className="car-header">
         <h3 className="car-title">{brand} {model}</h3>
         <span className="cost-per-km">
@@ -60,6 +84,24 @@ const CarItemCard = ({ car }) => {
           {features.map((feature, index) => (
             <span key={index} className="feature-tag">{feature}</span>
           ))}
+        </div>
+        <div className={`additional-info ${isExpanded ? 'show' : ''}`}>
+          <div className="info-item">
+            <span className="info-label">연식</span>
+            <span className="info-value">2023년</span>
+          </div>
+          <div className="info-item">
+            <span className="info-label">주행거리</span>
+            <span className="info-value">15,000km</span>
+          </div>
+          <div className="info-item">
+            <span className="info-label">연료</span>
+            <span className="info-value">가솔린</span>
+          </div>
+          <div className="info-item">
+            <span className="info-label">변속기</span>
+            <span className="info-value">자동</span>
+          </div>
         </div>
         <div className="price-section">
           <div className="price-container">

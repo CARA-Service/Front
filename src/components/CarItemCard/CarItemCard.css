@@ -8,11 +8,15 @@
   min-height: 200px;
   display: flex;
   flex-direction: column;
-  transition: transform 0.2s ease;
+  transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .car-item-card:hover {
-  transform: scale(1.02);
+    transform: scale(1.02);
+}
+
+.car-item-card.expanded {
+  width: 600px;
 }
 
 .car-header {
@@ -46,18 +50,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.2s ease;
+  transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
 }
 
-.car-image:hover {
-  transform: scale(1.1);
+.car-item-card.expanded .car-image {
+  transform:scale(1.2) translateX(-20px);
 }
 
 .car-image img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  transition: transform 0.2s ease;
+  transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .zoom-icon {
@@ -222,4 +227,41 @@
 
 .reservation-button:active {
   background-color: #2d6cd9;
+}
+
+.additional-info {
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 8px;
+  max-height: 0;
+  overflow: hidden;
+  transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 0 16px;
+}
+
+.additional-info.show {
+  max-height: 200px;
+  opacity: 1;
+  padding: 16px;
+}
+
+.info-item {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+}
+
+.info-label {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.info-value {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #333;
 } 
