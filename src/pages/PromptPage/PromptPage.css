@@ -16,15 +16,13 @@ body,
   width: 100vw;
   height: 100vh;
   background: #fafbfc;
-  min-height: 100vh;
-  min-width: 100vw;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .chat-sidebar {
   margin-top: 50px;
   width: var(--sidebar-width);
-  height: 100vh;
+  /* height: 100vh; */
   background: #fff;
   border-right: 1px solid #ececec;
   padding: 2rem 1rem 1rem 1rem;
@@ -50,6 +48,7 @@ body,
   flex: 1;
   overflow: auto;
   overflow-x: hidden;
+  margin-bottom: 50px;
 }
 
 .chat-sidebar li {
@@ -83,8 +82,8 @@ body,
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  margin: 60px 0 10px;
+  gap: 1.5rem;
+  margin: 60px 0 0;
 }
 
 .chat-message {
@@ -122,11 +121,11 @@ body,
   text-align: left;
 }
 
-/* .chat-input-bar-container {
+.car-cards {
+  display: flex;
   width: 100%;
-  height: 20px;
-  border-top: 1px solid #d0d0d0;
-} */
+  overflow-x: auto;
+}
 
 .chat-input-bar {
   position: static;
@@ -196,6 +195,28 @@ body,
   font-size: 1.2rem;
 }
 
+.chat-new-btn {
+  position: absolute;
+  background: none;
+  border: 1px solid #e2e2e2;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #666;
+  transition: background 0.13s;
+  top: 32px;
+  right: 15px;
+  z-index: 1000;
+}
+.chat-new-btn:hover {
+  background: #f3f4f6;
+}
+
 @media (max-width: 800px) {
   .chat-sidebar {
     width: 150px;
@@ -216,5 +237,21 @@ body,
   }
   .chat-input-bar {
     padding: 0.5rem 1rem;
+  }
+}
+
+.map-container {
+  width: 400px; /* 고정 너비 대신 100%로 변경 */
+  height: 400px;
+  margin: 20px 0 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0; /* 컨테이너가 줄어들지 않도록 설정 */
+}
+
+@media (max-width: 400px) {
+  .map-container {
+    width: 250px;
+    height: 250px;
   }
 }
