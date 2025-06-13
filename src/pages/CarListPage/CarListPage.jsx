@@ -9,34 +9,52 @@ const CarListPage = () => {
   // 테스트용 데이터
   const testCars = [
     {
-      id: 1,
-      brand: '현대',
-      model: '엘란트라',
-      originalPrice: 185000,
+      car_id: 1,
+      agency_id: 101,
+      model_name: '엘란트라',
+      manufacturer: '현대',
+      category: '세단',
+      capacity: 8,
+      luggage_size: '470L',
+      fuel_type: '가솔린',
+      fuel_efficiency: '40.2',
+      daily_price: 185000,
+      image_url: './현대엘란트라세단(측면).png',
+      additional_options: ['후방센서', '블루투스', '자동주차'],
       discountRate: 20,
-      imageUrl: './현대엘란트라세단(측면).png',
       comment: '1일 이상 운행하면 20% 페이백 !',
-      features: ['5인승', '후방센서', '블루투스', '자동주차']
     },
     {
-      id: 2,
-      brand: '도요타',
-      model: '코롤라',
-      originalPrice: 222000,
+      car_id: 2,
+      agency_id: 102,
+      model_name: '코롤라',
+      manufacturer: '도요타',
+      category: '세단',
+      capacity: 2,
+      luggage_size: '430L',
+      fuel_type: '하이브리드',
+      fuel_efficiency: '9.3',
+      daily_price: 222000,
+      image_url: './도요타COROLLA(측면).png',
+      additional_options: ['후방카메라', '스마트키', '블루투스'],
       discountRate: 15,
-      imageUrl: './도요타COROLLA(측면).png',
       comment: ' ⚠️ 사고 차량입니다 주의 요망 ',
-      features: ['5인승', '후방카메라', '스마트키', '블루투스']
     },
     {
-      id: 3,
-      brand: '벤츠',
-      model: 'C클래스',
-      originalPrice: 52800000,
+      car_id: 3,
+      agency_id: 103,
+      model_name: 'C클래스',
+      manufacturer: '벤츠',
+      category: '세단',
+      capacity: 5,
+      luggage_size: '455L',
+      fuel_type: '디젤',
+      fuel_efficiency: '1.2',
+      daily_price: 528000,
+      image_url: './벤츠메르세데스C(측면).png',
+      additional_options: ['파노라마루프', '헤드업디스플레이', '자율주행'],
       discountRate: -140,
-      imageUrl: './벤츠메르세데스C(측면).png',
       comment: '많은 사용자들이 이용한 차량입니다!',
-      features: ['5인승', '파노라마루프', '헤드업디스플레이', '자율주행']
     }
   ];
 
@@ -46,7 +64,7 @@ const CarListPage = () => {
       <div className="car-list-container">
         <div className="car-list">
           {testCars.map(car => (
-            <CarItemCard key={car.id} car={car} />
+            <CarItemCard key={car.car_id} car={car} />
           ))}
         </div>
       </div>
