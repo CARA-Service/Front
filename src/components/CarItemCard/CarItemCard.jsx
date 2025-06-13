@@ -60,7 +60,17 @@ const CarItemCard = ({ car }) => {
     return '낮은 등급 (5 km/L 미만)\n\n• 높은 연료 소비\n• 단거리 주행 권장\n• 연료비 고려 필요';
   };
 
+  
+  const costRange = calculateCostPerKm(daily_price); // ✅ JSX보다 위에서 미리 선언
+  // const features = typeof additional_options === 'string'
+  // ? additional_options.split(',').map(opt => opt.trim())
+  // : [];
+  //   const originalPrice = daily_price;
+
+
+
   return (
+
     <div 
       ref={cardRef}
       className={`car-item-card ${isExpanded ? 'expanded' : ''}`}
@@ -96,6 +106,43 @@ const CarItemCard = ({ car }) => {
           {additional_options.map((option, index) => (
             <span key={index} className="feature-tag">{option}</span>
           ))}
+=======
+    <div>
+      <div
+        ref={cardRef}
+        className={`car-item-card ${isExpanded ? "expanded" : ""}`}
+        onClick={handleCardClick}>
+        <div className="car-header">
+          <h3 className="car-title">
+            {manufacturer} {model_name}
+          </h3>
+          <span className="cost-per-km">
+            <span className="cost-icon">$</span>
+            {costRange} 원 / km
+          </span>
+        </div>
+        <div className="car-image">
+          <img
+            src={image_url}
+            alt={`${manufacturer} ${model_name}`}
+            onError={(e) => {
+              console.error("이미지 로드 실패:", image_url);
+              e.target.src = "./default-profile.png";
+            }}
+          />
+          <div className="zoom-icon">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M15.5 14H14.71L14.43 13.73C15.41 12.59 16 11.11 16 9.5C16 5.91 13.09 3 9.5 3C5.91 3 3 5.91 3 9.5C3 13.09 5.91 16 9.5 16C11.11 16 12.59 15.41 13.73 14.43L14 14.71V15.5L19 20.49L20.49 19L15.5 14ZM9.5 14C7.01 14 5 11.99 5 9.5C5 7.01 7.01 5 9.5 5C11.99 5 14 7.01 14 9.5C14 11.99 11.99 14 9.5 14Z"
+                fill="currentColor"
+              />
+            </svg>
+          </div>
         </div>
         <div className={`additional-info ${isExpanded ? 'show' : ''}`}>
           <div className="car-info-item">
