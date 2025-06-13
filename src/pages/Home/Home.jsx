@@ -103,9 +103,8 @@ const Home = () => {
   }, [isTransitioning]);
 
   return (
-    <>
-      <Header onSignUpClick={() => setIsSignUpOpen(true)} />
       <div className="home-container">
+        <Header onSignUpClick={() => setIsSignUpOpen(true)} />
         <h1>
           <span className="highlight">'카라'</span> 로 한번에{" "}
           <span className="highlight-rent"> 랜트 </span>해보세요!
@@ -186,11 +185,10 @@ const Home = () => {
           </div>
           <Footer />
         </div>
-      </div>
-      {isSignUpOpen && (
+        {isSignUpOpen && (
         <SignUp isOpen={isSignUpOpen} onClose={() => setIsSignUpOpen(false)} />
       )}
-    </>
+      </div>
   );
 };
 

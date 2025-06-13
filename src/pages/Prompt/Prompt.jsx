@@ -6,6 +6,8 @@ import "./Prompt.css";
 import use400px from "../../hooks/use400px";
 import { postRecommendation } from "../../api/llmAPI.js";
 import { parseRecommendationInput } from "../../utils/parseRecommendationInput.js";
+import Header from "../../components/Header/Header.jsx";
+import SignUp from "../SignUp/SignUp.jsx";
 
 function formatRange(start, end) {
   const format = (date) =>
@@ -25,6 +27,7 @@ const Prompt = () => {
   const [calendarMsgIdx, setCalendarMsgIdx] = useState(null);
   const is400px = use400px();
   const messagesEndRef = useRef(null);
+  const [isSignUpOpen, setIsSignUpOpen] = useState(false);
 
   const handleSelectChat = (chatId) => {
     setSelectedChat(chatId);
@@ -172,6 +175,7 @@ const Prompt = () => {
           onSelectChat={handleSelectChat}
         />
       )}
+      <Header onSignUpClick={() => setIsSignUpOpen(true)} />
       {!is400px && (
         <aside className="chat-sidebar">
           <h2>채팅 내역</h2>
@@ -241,6 +245,7 @@ const Prompt = () => {
           </button>
         </form>
       </div>
+      {isSignUpOpen && (<SignUp isOpen={isSignUpOpen} onClose={() => setIsSignUpOpen(false)} />)}
     </div>
   );
 };
