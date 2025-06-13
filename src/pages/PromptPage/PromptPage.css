@@ -121,11 +121,11 @@ body,
   text-align: left;
 }
 
-/* .chat-input-bar-container {
+.car-cards {
+  display: flex;
   width: 100%;
-  height: 20px;
-  border-top: 1px solid #d0d0d0;
-} */
+  overflow-x: auto;
+}
 
 .chat-input-bar {
   position: static;
@@ -209,7 +209,7 @@ body,
   cursor: pointer;
   color: #666;
   transition: background 0.13s;
-  top: 45px;
+  top: 32px;
   right: 15px;
   z-index: 1000;
 }

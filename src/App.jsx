@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import { ErrorBoundary } from "react-error-boundary";
 import Home from "./pages/Home/Home.jsx";
-import Prompt from "./pages/Prompt/Prompt.jsx";
+import PromptPage from "./pages/PromptPage/PromptPage.jsx";
 import SignUp from "./pages/SignUp/SignUp.jsx";
 import Header from "./components/Header/Header.jsx";
 import ProfilePage from "./pages/ProfilePage/ProfilePage.jsx";
@@ -47,7 +47,7 @@ function App() {
             path="/prompt"
             element={
               <ErrorBoundary FallbackComponent={ErrorFallback}>
-                <Prompt />
+                <PromptPage />
               </ErrorBoundary>
             }
           />

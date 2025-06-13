@@ -1,63 +1,15 @@
-.reservations-page {
-  padding: 2rem;
-  max-width: 800px;
-  margin: 0 auto;
+* {
+  margin: 0;
+  padding: 0;
 }
 
-.reservations-page h1 {
-  margin-bottom: 2rem;
-  color: #333;
+html,
+body {
+  height: 100%;
 }
 
-.reservations-list {
-  display: grid;
-  gap: 1rem;
+.Reservation-Container {
+  margin-top: 70px;
+  padding: 20px;
+  box-sizing: border-box;
 }
-
-.reservation-card {
-  background: #f8f9fa;
-  border-radius: 8px;
-  padding: 1.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.reservation-date {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.reservation-date .date {
-  font-size: 1.2rem;
-  font-weight: 500;
-  color: #333;
-}
-
-.reservation-date .time {
-  color: #666;
-}
-
-.reservation-details {
-  text-align: right;
-}
-
-.reservation-details h3 {
-  margin-bottom: 0.5rem;
-  color: #333;
-}
-
-.status {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  background: #e9ecef;
-  color: #666;
-}
-
-.status.confirmed {
-  background: #d4edda;
-  color: #155724;
-} 

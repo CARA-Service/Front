@@ -1,38 +1,92 @@
-import React from 'react';
-import './ReservationsPage.css';
+import React, { useState } from "react";
+import "./ReservationsPage.css";
 
 const ReservationsPage = () => {
+  const [formData, setFormData] = useState({
+    rental_date: "",
+    return_date: "",
+    total_price: "",
+    insurance_option_id: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("폼 제출:", formData);
+  };
+
   return (
-    <div className="reservations-page">
-      <div className="reservations-content">
-        <div className="reservations-section">
-          <h2>예약 내역</h2>
-          <div className="reservations-list">
-            <div className="reservation-card">
-              <div className="reservation-date">
-                <span className="date">2024-03-20</span>
-                <span className="time">14:00</span>
-              </div>
-              <div className="reservation-details">
-                <h3>기본 서비스</h3>
-                <span className="status confirmed">예약완료</span>
-              </div>
-            </div>
-            <div className="reservation-card">
-              <div className="reservation-date">
-                <span className="date">2024-03-25</span>
-                <span className="time">16:00</span>
-              </div>
-              <div className="reservation-details">
-                <h3>프리미엄 서비스</h3>
-                <span className="status confirmed">예약완료</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div className="Reservation-Container">
+      <h2>예약하기</h2>
+      <form onSubmit={handleSubmit}>
+        <label>
+          Recommendation ID:
+          <input
+            type="number"
+            name="recommendation_id"
+            value={formData.recommendation_id}
+            onChange={handleChange}
+            required
+          />
+        </label>
+        <br />
+        <br />
+        <label>
+          Rental Date:
+          <input
+            type="date"
+            name="rental_date"
+            value={formData.rental_date}
+            onChange={handleChange}
+            required
+          />
+        </label>
+        <br />
+        <label>
+          Return Date:
+          <input
+            type="date"
+            name="return_date"
+            value={formData.return_date}
+            onChange={handleChange}
+            required
+          />
+        </label>
+        <br />
+        <label>
+          Total Price:
+          <input
+            type="number"
+            step="0.01"
+            name="total_price"
+            value={formData.total_price}
+            onChange={handleChange}
+            required
+          />
+        </label>
+        <br />
+        <label>
+          Insurance Option ID:
+          <input
+            type="number"
+            name="insurance_option_id"
+            value={formData.insurance_option_id}
+            onChange={handleChange}
+            required
+          />
+        </label>
+        <br />
+        <button type="submit">예약하기</button>
+      </form>
     </div>
   );
 };
 
-export default ReservationsPage; 
+export default ReservationsPage;
