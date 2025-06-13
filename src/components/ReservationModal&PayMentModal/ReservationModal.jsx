@@ -15,15 +15,15 @@ const ReservationModal = ({ car, dateRange, onClose, onPayment }) => {
         <div className="modal-car-info">
           <div className="modal-car-header">
             <h3>
-              {car.brand} {car.model}
+              {car.manufacturer} {car.model_name}
             </h3>
           </div>
           <div className="modal-car-image">
             <img
-              src={car.imageUrl}
-              alt={`${car.brand} ${car.model}`}
+              src={car.image_url}
+              alt={`${car.manufacturer} ${car.model_name}`}
               onError={(e) => {
-                console.error("이미지 로드 실패:", car.imageUrl);
+                console.error("이미지 로드 실패:", car.image_url);
                 e.target.src = "./default-profile.png";
               }}
             />
