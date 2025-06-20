@@ -9,7 +9,12 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  transition: transform 0.3s ease;
+  transition: opacity 0.3s cubic-bezier(0.4,0,0.2,1);
+  opacity: 1;
+}
+.payment-modal.hide {
+  opacity: 0;
+  pointer-events: none;
 }
 .modal-content {
   background: #fff;
@@ -20,6 +25,13 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+  transform: translateY(0);
+  transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.3s cubic-bezier(0.4,0,0.2,1);
+  opacity: 1;
+}
+.payment-modal.hide .modal-content {
+  transform: translateY(40px);
+  opacity: 0;
 }
 /* .modal-car-info {
   margin-bottom: 24px;
@@ -205,4 +217,36 @@
 }
 .submit-btn:hover {
   background: #1e8fff;
+}
+.insurance-options {
+  margin: 18px 0 8px 0;
+  padding: 14px 12px 10px 12px;
+  background: #f8fafc;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.insurance-title {
+  font-weight: 700;
+  font-size: 1.08em;
+  margin-bottom: 8px;
+  color: #222;
+}
+.insurance-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 0;
+}
+.insurance-label {
+  flex: 1;
+  font-size: 1em;
+  color: #333;
+}
+.insurance-price {
+  font-size: 0.98em;
+  color: #1e8fff;
+  font-weight: 600;
 }
