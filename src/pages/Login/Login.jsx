@@ -34,7 +34,8 @@ const Login = ({ isOpen, onClose, onSwitchSignUp }) => {
   return (
     <div className="login-overlay" onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
       <div className="login-container" onClick={e => e.stopPropagation()}>
-        <h1>로그인</h1>
+        <h1 className="login-title">로그인</h1>
+        <div className="login-divider" />
         <form className="login-form" onSubmit={handleLogin} autoComplete="off">
           <div className="form-group">
             <label htmlFor="login-username">아이디</label>
@@ -58,6 +59,7 @@ const Login = ({ isOpen, onClose, onSwitchSignUp }) => {
           <button className="social-button google" type="button" onClick={() => handleSocialLogin('google')}>구글로 로그인</button>
           <button className="social-button naver" type="button" onClick={() => handleSocialLogin('naver')}>네이버로 로그인</button>
         </div>
+        <div className="login-divider" />
         <div className="signup-link-row">
           <span>처음오셨나요?</span>
           <button className="signup-link" type="button" onClick={onSwitchSignUp}>회원가입 하기</button>

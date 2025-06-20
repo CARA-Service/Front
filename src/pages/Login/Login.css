@@ -8,18 +8,18 @@
   align-items: center;
   z-index: 1000;
 }
-.login-overlay.hide {
-  /* 애니메이션 제거: 오버레이는 즉시 사라짐 */
-}
 
 .login-container {
   background: #fff;
-  padding: 2rem;
+  padding: 3rem;
   border-radius: 8px;
-  width: 100%;
-  max-width: 400px;
+  width: 60%;
+  max-width: 600px;
   position: relative;
   animation: slideIn 0.35s;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 .login-container.hide {
   animation: slideOut 0.35s forwards;
@@ -27,25 +27,37 @@
 
 .login-container h1 {
   text-align: center;
-  margin-bottom: 2rem;
+  font-size: 25px;
   color: #333;
+}
+
+.login-title {
+  text-align: left;
+  font-weight: 500;
+  font-size: 1.3rem;
+  color: #333;
+  align-self: flex-start;
 }
 
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
-  margin-top: 0.4rem;
+  justify-content: center;
   align-items: center;
-  margin-bottom: 0.5rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
   gap: 0.08rem;
-  width: 100%;
-  max-width: 300px;
+  width: 300px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .form-group label {
@@ -55,19 +67,25 @@
   margin-bottom: 0.05rem;
 }
 
-.form-group input {
+/* 입력란 밑줄 스타일 통합 */
+.form-group input,
+.form-group input[type="password"],
+.form-group input.form-underline {
   width: 100%;
-  padding: 0.45rem;
-  border: 1.5px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  transition: all 0.2s ease;
+  padding: 0.45rem 0.1rem;
+  border: none;
+  border-bottom: 2px solid #e0e0e0;
+  border-radius: 0;
+  background: transparent;
+  font-size: 0.98rem;
+  transition: border-bottom-color 0.2s;
 }
-
-.form-group input:focus {
+.form-group input[type="text"]:focus,
+.form-group input[type="password"]:focus,
+.form-group input.form-underline:focus {
   outline: none;
-  border-color: #ff8d13;
-  box-shadow: 0 0 0 2px rgba(255, 141, 19, 0.1);
+  border-bottom-color: #ff8d13;
+  box-shadow: none;
 }
 
 .form-group input::placeholder {
@@ -105,7 +123,8 @@
   color: #e67e00;
 }
 .login-button {
-  width: 100%;
+  width: 70%;
+  max-width: 370px;
   background-color: #ff8d13;
   color: white;
   border: none;
@@ -256,4 +275,10 @@
 @keyframes slideOut {
   from { transform: translateY(0); opacity: 1; }
   to { transform: translateY(-30px); opacity: 0; }
+}
+.login-divider{
+  background: #e0e0e0;
+  height: 1.5px;
+  margin-top: 2%;
+  margin-bottom: 1rem;
 } 
