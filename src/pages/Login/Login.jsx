@@ -51,18 +51,16 @@ const Login = ({ isOpen, onClose, onSwitchSignUp }) => {
         <form className="login-form" onSubmit={handleLogin} autoComplete="off">
           <div className="login-form-group">
             <label htmlFor="loginId">아이디</label>
-            <div className="password-input-wrapper">
-              <input
-                type="text"
-                name="loginId"
-                id="loginId"
-                value={form.loginId}
-                onChange={handleInputChange}
-                placeholder="아이디를 입력하세요"
-                required
-                className="login-form-underline"
-              />
-            </div>
+            <input
+              type="text"
+              name="loginId"
+              id="loginId"
+              value={form.loginId}
+              onChange={handleInputChange}
+              placeholder="아이디를 입력하세요"
+              required
+              className="login-form-underline"
+            />
           </div>
           <div className="login-form-group">
             <label htmlFor="login-password">비밀번호</label>

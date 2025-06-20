@@ -67,10 +67,7 @@
   margin-bottom: 0.2rem;
 }
 
-.login-form .login-form-group input[type="text"],
-.login-form .login-form-group input[type="password"],
-.login-form .password-input-wrapper input[type="text"],
-.login-form .password-input-wrapper input[type="password"] {
+.login-form .login-form-group input {
   width: 100%;
   min-width: 220px;
   max-width: 100%;
