@@ -8,6 +8,13 @@ const paymentMethods = [
   { id: "paypal", label: "PayPal", icon: "/paypal.png" },
 ];
 
+const insuranceOptions = [
+  { id: "basic", label: "기본 보험", price: 3000 },
+  { id: "standard", label: "표준 보험", price: 6000 },
+  { id: "premium", label: "프리미엄 보험", price: 12000 },
+  { id: "super", label: "슈퍼 보험", price: 20000 },
+];
+
 const PaymentModal = ({
   car,
   dateRange,
@@ -22,6 +29,23 @@ const PaymentModal = ({
 }) => {
   const [selected, setSelected] = useState("visa");
   const [startDate, endDate] = dateRange || [null, null];
+  const [selectedInsurances, setSelectedInsurances] = useState([]);
+  const [hide, setHide] = useState(false);
+
+  // 보험 총액 계산
+  const insuranceTotal = selectedInsurances.reduce(
+    (sum, id) => sum + (insuranceOptions.find((opt) => opt.id === id)?.price || 0),
+    0
+  );
+  const totalPrice = price + insuranceTotal;
+
+  const handleInsuranceChange = (id) => {
+    setSelectedInsurances((prev) =>
+      prev.includes(id)
+        ? prev.filter((item) => item !== id)
+        : [...prev, id]
+    );
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -29,8 +53,15 @@ const PaymentModal = ({
     // 예: onPayment(), onReserve() 등
   };
 
+  const handleBack = () => {
+    setHide(true);
+    setTimeout(() => {
+      onBack();
+    }, 350); // css 트랜지션 시간과 맞춤
+  };
+
   return (
-    <div className="payment-modal">
+    <div className={`payment-modal${hide ? " hide" : ""}`}>
       <div className="modal-content">
         {/* 차량 정보 */}
         <div className="modal-car-info">
@@ -48,24 +79,6 @@ const PaymentModal = ({
                 e.target.src = "./default-profile.png";
               }}
             />
-          </div>
-          <div className="modal-car-features">
-            <div className="info-item">
-              <span className="info-label">연식</span>
-              <span className="info-value">2023년</span>
-            </div>
-            <div className="info-item">
-              <span className="info-label">주행거리</span>
-              <span className="info-value">15,000km</span>
-            </div>
-            <div className="info-item">
-              <span className="info-label">연료</span>
-              <span className="info-value">가솔린</span>
-            </div>
-            <div className="info-item">
-              <span className="info-label">변속기</span>
-              <span className="info-value">자동</span>
-            </div>
           </div>
         </div>
         {/* 결제수단 선택 */}
@@ -88,6 +101,21 @@ const PaymentModal = ({
             </label>
           ))}
         </div>
+        {/* 보험 선택지 */}
+        <div className="insurance-options">
+          <div className="insurance-title">보험 선택</div>
+          {insuranceOptions.map((opt) => (
+            <label key={opt.id} className="insurance-row">
+              <input
+                type="checkbox"
+                checked={selectedInsurances.includes(opt.id)}
+                onChange={() => handleInsuranceChange(opt.id)}
+              />
+              <span className="insurance-label">{opt.label}</span>
+              <span className="insurance-price">+{opt.price.toLocaleString()}원</span>
+            </label>
+          ))}
+        </div>
         <div className="payment-help">
           결제가 어렵습니까 휴먼? 돈이 없는게 아니라? <a href="#">도움말.</a>
         </div>
@@ -104,7 +132,7 @@ const PaymentModal = ({
             </span>
           </div>
           <div className="summary-right">
-            {paymentCurrency} {paymentAmount}
+            {totalPrice.toLocaleString()} {currency}
           </div>
         </div>
         <div className="payment-bottom">
@@ -114,12 +142,12 @@ const PaymentModal = ({
             {currency}
           </span>
           <span className="final-price">
-            {price.toLocaleString()} {currency}
+            {totalPrice.toLocaleString()} {currency}
           </span>
         </div>
         {/* 버튼 */}
         <div className="modal-actions">
-          <button type="button" className="back-btn" onClick={onBack}>
+          <button type="button" className="back-btn" onClick={handleBack}>
             뒤로가기
           </button>
           <button type="button" className="close-btn" onClick={onClose}>

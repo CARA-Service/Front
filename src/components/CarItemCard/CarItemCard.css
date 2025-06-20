@@ -297,8 +297,6 @@
 .additional-info.show {
   display: flex;
   flex-wrap: wrap;
-  gap: 24px;
-  padding: 24px;
 }
 
 .additional-info {
@@ -313,6 +311,7 @@
   opacity: 1;
   overflow-y: auto;
   background-color: #ffffff;
+  justify-content: center;
 }
 
 .car-info-item {

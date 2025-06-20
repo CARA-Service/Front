@@ -1,0 +1,259 @@
+/* 로그인 모달 오버레이 */
+.login-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.login-overlay.hide {
+  /* 애니메이션 제거: 오버레이는 즉시 사라짐 */
+}
+
+.login-container {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+  animation: slideIn 0.35s;
+}
+.login-container.hide {
+  animation: slideOut 0.35s forwards;
+}
+
+.login-container h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin-top: 0.4rem;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.08rem;
+  width: 100%;
+  max-width: 300px;
+}
+
+.form-group label {
+  color: #333;
+  font-weight: 500;
+  font-size: 0.85rem;
+  margin-bottom: 0.05rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.45rem;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #ff8d13;
+  box-shadow: 0 0 0 2px rgba(255, 141, 19, 0.1);
+}
+
+.form-group input::placeholder {
+  color: #999;
+  font-size: 0.85rem;
+}
+
+.login-options-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 300px;
+  margin: 0.5rem 0 1rem 0;
+}
+.auto-login {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.93rem;
+  color: #666;
+}
+.find-password {
+  background: none;
+  border: none;
+  color: #ff8d13;
+  font-size: 0.93rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0.2rem 0.5rem;
+  transition: color 0.18s;
+}
+.find-password:hover {
+  color: #e67e00;
+}
+.login-button {
+  width: 100%;
+  background-color: #ff8d13;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7rem;
+  font-size: 0.98rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 0.7rem;
+  transition: background 0.2s;
+}
+.login-button:hover {
+  background-color: #e67e00;
+}
+.social-login.social-row {
+  flex-direction: row;
+  gap: 0.7rem;
+  justify-content: center;
+  margin: 1.2rem 0 0.7rem 0;
+}
+.social-button {
+  padding: 1rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.social-button.kakao {
+  background-color: #FEE500;
+  color: #000000;
+}
+.social-button.google {
+  background-color: #FFFFFF;
+  color: #000000;
+  border: 1px solid #DDDDDD;
+}
+.social-button.naver {
+  background-color: #03C75A;
+  color: #FFFFFF;
+}
+.social-button:hover {
+  opacity: 0.9;
+}
+.signup-link-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.7rem;
+}
+.signup-link {
+  background: none;
+  border: none;
+  color: #ff8d13;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0.3rem 0.7rem;
+  transition: color 0.18s;
+}
+.signup-link:hover {
+  color: #e67e00;
+}
+/* Error Popup Styles (SignUp과 동일) */
+.error-popup {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1100;
+  animation: fadeIn 0.3s ease-in-out;
+  backdrop-filter: blur(4px);
+}
+.error-content {
+  background-color: white;
+  padding: 2.5rem;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  animation: slideIn 0.3s ease-in-out;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+.error-icon {
+  width: 64px;
+  height: 64px;
+  background-color: #ff8d13;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin: 0 auto 1.5rem;
+  box-shadow: 0 4px 12px rgba(255, 141, 19, 0.2);
+}
+.error-content h3 {
+  color: #333;
+  margin-bottom: 1rem;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+.error-content p {
+  color: #666;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+  font-size: 1.1rem;
+}
+.error-close-button {
+  background-color: #ff8d13;
+  color: white;
+  border: none;
+  padding: 1rem 2.5rem;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(255, 141, 19, 0.2);
+}
+.error-close-button:hover {
+  background-color: #e67e00;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(255, 141, 19, 0.3);
+}
+.error-close-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(255, 141, 19, 0.2);
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+@keyframes slideIn {
+  from { transform: translateY(-30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+@keyframes slideOut {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(-30px); opacity: 0; }
+} 

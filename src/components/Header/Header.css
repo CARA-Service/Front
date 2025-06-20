@@ -58,19 +58,40 @@
   align-items: center;
 }
 
-.signup-button {
-  background-color: #ff8d13;
-  color: white;
-  padding: 0.5rem 1.2rem;
-  border-radius: 6px;
-  transition: all 0.2s ease-in-out;
+.cara-join-btn {
+  background: linear-gradient(90deg, #ffb86c 0%, #ff8d13 100%);
+  color: #fff;
   border: none;
+  border-radius: 22px;
+  padding: 0.7rem 2.2rem;
+  font-size: 1.08rem;
+  font-weight: 700;
   cursor: pointer;
-  font-size: 0.95rem;
+  box-shadow: 0 2px 8px rgba(255,141,19,0.08);
+  transition: background 0.18s, box-shadow 0.18s, color 0.18s;
+  position: relative;
+  z-index: 2;
+  min-width: 180px;
+  overflow: hidden;
 }
 
-.signup-button:hover {
-  background-color: #e67e00;
-  color: white;
-  transform: translateY(-1px);
+.cara-join-btn.login {
+  background: linear-gradient(90deg, #ff8d13 50%, #ffb86c 100%);
+  color: #fff;
+}
+
+.cara-join-btn.signup {
+  background: linear-gradient(90deg, #ffb86c 0%, #ff8d13 50%);
+  color: #fff;
+}
+
+.cara-join-btn.login:hover,
+.cara-join-btn.signup:hover {
+  filter: brightness(0.97);
+  box-shadow: 0 4px 16px rgba(255,141,19,0.13);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }

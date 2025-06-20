@@ -2,11 +2,16 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
 import Profile from "../Profile/Profile";
+import Login from '../../pages/Login/Login';
+import SignUp from '../../pages/SignUp/SignUp';
 import "./Header.css";
 
-function Header({ onSignUpClick }) {
+function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [profileImage, setProfileImage] = useState("/default-profile.png");
+  const [showLogin, setShowLogin] = useState(false);
+  const [showSignUp, setShowSignUp] = useState(false);
+  const [hoverSide, setHoverSide] = useState(null); // null | 'login' | 'signup'
 
   useEffect(() => {
     const checkLoginStatus = () => {
@@ -45,6 +50,27 @@ function Header({ onSignUpClick }) {
     setProfileImage("/default-profile.png");
   };
 
+  // 버튼 마우스 무브 핸들러
+  const handleJoinBtnMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    if (x < rect.width / 2) {
+      setHoverSide('login');
+    } else {
+      setHoverSide('signup');
+    }
+  };
+  const handleJoinBtnMouseLeave = () => {
+    setHoverSide(null);
+  };
+  const handleJoinBtnClick = () => {
+    if (hoverSide === 'login') {
+      setShowLogin(true);
+    } else if (hoverSide === 'signup') {
+      setShowSignUp(true);
+    }
+  };
+
   return (
     <header className="header">
       <div className="header-content">
@@ -60,12 +86,35 @@ function Header({ onSignUpClick }) {
           {isLoggedIn ? (
             <Profile onLogout={handleLogout} />
           ) : (
-            <button className="signup-button" onClick={onSignUpClick}>
-              간편 회원가입
+            <button
+              className={`cara-join-btn${hoverSide ? ' ' + hoverSide : ''}`}
+              onMouseMove={handleJoinBtnMouseMove}
+              onMouseLeave={handleJoinBtnMouseLeave}
+              onClick={handleJoinBtnClick}
+            >
+              {hoverSide === 'login' && '로그인'}
+              {hoverSide === 'signup' && '회원가입'}
+              {hoverSide === null && 'CARA와 함께하기'}
             </button>
           )}
         </div>
       </div>
+      <Login
+        isOpen={showLogin}
+        onClose={() => setShowLogin(false)}
+        onSwitchSignUp={() => {
+          setShowLogin(false);
+          setTimeout(() => setShowSignUp(true), 350);
+        }}
+      />
+      <SignUp
+        isOpen={showSignUp}
+        onClose={() => setShowSignUp(false)}
+        onSwitchLogin={() => {
+          setShowSignUp(false);
+          setTimeout(() => setShowLogin(true), 350);
+        }}
+      />
     </header>
   );
 }

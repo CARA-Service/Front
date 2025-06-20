@@ -67,11 +67,11 @@ const ReservationModal = ({ car, dateRange, onClose, onPayment }) => {
           <form onSubmit={handleSubmit}>
             <label>
               이름
-              <input type="text" name="name" required />
+              <input type="text" name="name"  />
             </label>
             <label>
               연락처
-              <input type="tel" name="phone" required />
+              <input type="tel" name="phone"  />
             </label>
             <label>
               대여기간
