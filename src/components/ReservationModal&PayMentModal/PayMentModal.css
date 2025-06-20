@@ -19,71 +19,107 @@
 .modal-content {
   background: #fff;
   border-radius: 14px;
-  width: 350px;
+  width: 700px;
+  max-width: 98vw;
   padding: 32px 24px 24px 24px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 18px;
   transform: translateY(0);
   transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.3s cubic-bezier(0.4,0,0.2,1);
   opacity: 1;
+  overflow-y: auto;
+  z-index: 1010;
 }
 .payment-modal.hide .modal-content {
   transform: translateY(40px);
   opacity: 0;
 }
-/* .modal-car-info {
-  margin-bottom: 24px;
+.payment-modal-car-info {
+  margin-bottom: 18px;
   border-bottom: 1px solid #eee;
-  padding-bottom: 16px;
+  padding-bottom: 12px;
   display: flex;
-  flex-wrap: wrap;
-}
-.modal-car-header h3 {
-  margin-top: 0;
-  margin-bottom: 12px;
-  font-size: 1.4em;
-}
-.modal-car-image img {
-  width: 100%;
-  max-height: 180px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-bottom: 16px;
-}
-.modal-car-features {
-  display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
   gap: 8px;
 }
-.info-item {
-  background: #f5f5f5;
-  padding: 8px 12px;
-  border-radius: 4px;
-  font-size: 0.9em;
+.payment-modal-car-header {
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-size: 1.2em;
+  text-align: center;
 }
-.info-label {
-  font-weight: bold;
-  margin-right: 4px;
-} */
+.payment-modal-car-image {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 160px;
+  margin-bottom: 18px;
+}
+.payment-modal-car-image img {
+  width: 220px;
+  height: 140px;
+  object-fit: contain;
+  border-radius: 10px;
+  display: block;
+  background: #f7f7f7;
+}
+.payment-default-car-label {
+  position: absolute;
+  left: 50%;
+  top: 92%;
+  transform: translateX(-50%);
+  background: rgba(34,34,34,0.82);
+  color: #fff;
+  font-size: 1.01rem;
+  font-weight: 600;
+  padding: 4px 14px;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.13);
+  pointer-events: none;
+  letter-spacing: 0.01em;
+  margin-top: 4px;
+}
+.payment-modal-title {
+  text-align: left;
+  font-size: 1.22rem;
+  font-weight: 500;
+  color: #222;
+  margin-bottom: 10px;
+}
 .payment-methods {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
+  margin-bottom: 8px;
 }
 .method-row {
   display: flex;
   align-items: center;
-  padding: 8px 0;
+  padding: 7px 0;
   border-radius: 8px;
   cursor: pointer;
   border: 2px solid transparent;
   transition: border 0.2s;
 }
 .method-row.selected {
-  border: 2px solid #2d3a60;
-  background: #f6f8fa;
+  border: 2.5px solid #1e8fff;
+  background: linear-gradient(90deg, #eaf6ff 0%, #f6f8fa 100%);
+  box-shadow: 0 2px 12px rgba(30,143,255,0.10);
+  position: relative;
+}
+.method-row.selected::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 3px;
+  background: #1e8fff;
+  border-radius: 0 0 8px 8px;
+  opacity: 0.7;
 }
 .method-row input[type="radio"] {
   margin-right: 12px;
@@ -108,12 +144,44 @@
 }
 .method-label {
   font-weight: 500;
-  font-size: 1.1em;
+  font-size: 1.08em;
+}
+.insurance-options {
+  margin: 12px 0 8px 0;
+  padding: 10px 10px 8px 10px;
+  background: #f8fafc;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.insurance-title {
+  font-weight: 700;
+  font-size: 1.05em;
+  margin-bottom: 6px;
+  color: #222;
+}
+.insurance-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 0;
+}
+.insurance-label {
+  flex: 1;
+  font-size: 0.98em;
+  color: #333;
+}
+.insurance-price {
+  font-size: 0.97em;
+  color: #1e8fff;
+  font-weight: 600;
 }
 .payment-help {
   font-size: 0.92em;
   color: #444;
-  margin: 10px 0 0 0;
+  margin: 8px 0 0 0;
 }
 .payment-help a {
   color: #2d3a60;
@@ -126,8 +194,8 @@
   justify-content: space-between;
   background: #f1f6fa;
   border-radius: 8px;
-  padding: 12px 16px;
-  margin: 16px 0 0 0;
+  padding: 10px 14px;
+  margin: 10px 0 0 0;
 }
 .summary-left {
   display: flex;
@@ -138,115 +206,188 @@
 .summary-right {
   font-weight: bold;
   color: #2d3a60;
-  font-size: 1.1em;
+  font-size: 1.08em;
 }
 .payment-bottom {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-top: 24px;
+  gap: 10px;
+  margin-top: 16px;
 }
 .discount {
   color: #1e8fff;
   font-weight: bold;
-  font-size: 1.1em;
+  font-size: 1.05em;
 }
 .origin-price {
   text-decoration: line-through;
   color: #bbb;
-  font-size: 1em;
+  font-size: 0.97em;
 }
 .final-price {
-  font-size: 1.6em;
+  font-size: 1.25em;
   font-weight: bold;
   color: #222;
   margin-right: auto;
 }
-.reserve-btn {
-  background: #222;
-  color: #fff;
-  border: none;
-  border-radius: 22px;
-  padding: 10px 22px;
-  font-size: 1.1em;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.reserve-btn:hover {
-  background: #1e8fff;
-}
 .modal-actions {
   display: flex;
-  gap: 12px;
-  margin-top: 20px;
+  gap: 10px;
+  margin-top: 16px;
   justify-content: flex-end;
+}
+.back-btn, .close-btn, .submit-btn {
+  border-radius: 22px;
+  padding: 10px 22px;
+  font-size: 1em;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  transition: background 0.2s;
 }
 .back-btn {
   background: #f5f5f5;
   color: #333;
-  border: none;
-  border-radius: 22px;
-  padding: 10px 22px;
-  font-size: 1em;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.2s;
 }
 .close-btn {
   background: #eaeaea;
   color: #333;
-  border: none;
-  border-radius: 22px;
-  padding: 10px 22px;
-  font-size: 1em;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.2s;
 }
 .submit-btn {
   background: #222;
   color: #fff;
-  border: none;
-  border-radius: 22px;
-  padding: 10px 22px;
-  font-size: 1em;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.2s;
 }
 .submit-btn:hover {
   background: #1e8fff;
 }
-.insurance-options {
-  margin: 18px 0 8px 0;
-  padding: 14px 12px 10px 12px;
-  background: #f8fafc;
-  border-radius: 10px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+@media (max-width: 600px) {
+  .modal-content {
+    width: 98vw;
+    padding: 16px 4px 16px 4px;
+    gap: 10px;
+  }
+  .payment-modal-car-image img {
+    width: 120px;
+    height: 80px;
+  }
+  .payment-modal-title {
+    font-size: 1.05rem;
+    margin-bottom: 7px;
+  }
 }
-.insurance-title {
-  font-weight: 700;
-  font-size: 1.08em;
-  margin-bottom: 8px;
-  color: #222;
-}
-.insurance-row {
+.payment-modal-header-row {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 10px;
-  padding: 4px 0;
+  border-bottom: 1.5px solid #f0f0f0;
+  position: relative;
 }
-.insurance-label {
-  flex: 1;
-  font-size: 1em;
-  color: #333;
+.payment-modal-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
-.insurance-price {
-  font-size: 0.98em;
+.payment-modal-main-icon {
+  font-size: 2.1rem;
   color: #1e8fff;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+.payment-modal-main-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #1e8fff;
+  text-align: left;
+  margin: 0;
+  line-height: 1.2;
+}
+.payment-modal-close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 4px;
+  margin-left: auto;
+  color: #888;
+  transition: color 0.18s;
+  z-index: 1020;
+  position: relative;
+}
+.payment-modal-close-btn:hover {
+  color: #ff8d13;
+}
+.payment-modal-section {
+  margin: 14px 0 0 0;
+}
+.payment-modal-section-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 1.08em;
   font-weight: 600;
+  color: #2d3a60;
+  margin-bottom: 7px;
+}
+.payment-modal-car-icon {
+  font-size: 1.2em;
+  color: #ff8d13;
+  margin-right: 7px;
+}
+
+body.modal-open {
+  overflow: hidden !important;
+}
+
+.payment-confirm-modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.35);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.payment-confirm-modal {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+  padding: 30px 20px;
+  min-width: 300px;
+  max-width: 90vw;
+  text-align: center;
+  z-index: 2010;
+  position: relative;
+}
+.payment-confirm-modal p {
+  font-size: 1.08rem;
+  color: #222;
+  margin-bottom: 18px;
+}
+.payment-confirm-warning {
+  color: #ff8d13;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.payment-confirm-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+.payment-confirm-actions button {
+  padding: 5px 28px;
+  border-radius: 8px;
+  border: none;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: #f5f5f5;
+  color: #333;
+  transition: background 0.18s;
+}
+.payment-confirm-actions button:first-child {
+  background: #ff8d13;
+  color: #fff;
+}
+.payment-confirm-actions button:hover {
+  filter: brightness(0.97);
 }

@@ -32,7 +32,9 @@ const Login = ({ isOpen, onClose, onSwitchSignUp }) => {
   };
 
   const handleSocialLogin = (provider) => {
-    // TODO: 소셜 로그인 처리
+    // TODO: 소셜로그인 
+    localStorage.setItem('token', 'social-login-token');
+    onClose();
   };
 
   const socialProviders = [

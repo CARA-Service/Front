@@ -54,8 +54,10 @@ const CarItemCard = ({car, dateRange}) => {
 
     const handlePayment = () => {
         setShowReservationModal(false);
-        setShowPaymentModal(true);
-        setTransition("payment");
+        setTimeout(() => {
+            setShowPaymentModal(true);
+            setTransition("payment");
+        }, 350);
     };
 
     const handleBackToReservation = () => {
@@ -198,6 +200,7 @@ const CarItemCard = ({car, dateRange}) => {
                     dateRange={dateRange}
                     onBack={handleBackToReservation}
                     onClose={handleClosePayment}
+                    appearDelay={0}
                 />
             )}
         </div>

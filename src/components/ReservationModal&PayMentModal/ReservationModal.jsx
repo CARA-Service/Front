@@ -1,19 +1,20 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./ReservationModal.css";
 
-const ReservationModal = ({ car, dateRange, onClose, onPayment }) => {
+const ReservationModal = ({ car, dateRange, onClose, onPayment, appearDelay = 0 }) => {
   const [startDate, endDate] = dateRange || [null, null];
   const [showConfirm, setShowConfirm] = useState(false);
   const contentRef = useRef(null);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    setVisible(true);
+    const timer = setTimeout(() => setVisible(true), appearDelay);
     document.body.classList.add('modal-open');
     return () => {
+      clearTimeout(timer);
       document.body.classList.remove('modal-open');
     };
-  }, []);
+  }, [appearDelay]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
