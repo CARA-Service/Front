@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   FaUser,
   FaCalendarAlt,
@@ -17,6 +17,7 @@ const Profile = ({ onLogout }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeModal, setActiveModal] = useState(null);
   const [profileImage, setProfileImage] = useState("/default-profile.png");
+  const profileRef = useRef(null);
 
   useEffect(() => {
     // 로컬 스토리지에서 프로필 이미지 가져오기
@@ -25,6 +26,23 @@ const Profile = ({ onLogout }) => {
       setProfileImage(storedImage);
     }
   }, []);
+
+  useEffect(() => {
+    // 메뉴가 열려있을 때만 이벤트 리스너 추가
+    if (isMenuOpen) {
+      const handleClickOutside = (event) => {
+        if (profileRef.current && !profileRef.current.contains(event.target)) {
+          setIsMenuOpen(false);
+        }
+      };
+
+      document.addEventListener('mousedown', handleClickOutside);
+      
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }
+  }, [isMenuOpen]);
 
   const handleLogout = () => {
     onLogout();
@@ -79,7 +97,7 @@ const Profile = ({ onLogout }) => {
   };
 
   return (
-    <div className="profile-container">
+    <div className="profile-container" ref={profileRef}>
       <div
         className="profile-image-container"
         onClick={() => setIsMenuOpen(!isMenuOpen)}>

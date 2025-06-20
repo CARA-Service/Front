@@ -5,15 +5,20 @@ import ko from "date-fns/locale/ko";
 import "react-datepicker/dist/react-datepicker.css";
 import CarItemCard from "../../components/CarItemCard/CarItemCard.jsx";
 import "../../components/CarItemCard/CarItemCard.css";
+import Header from "../../components/Header/Header.jsx";
 import "./PromptPage.css";
 import use400px from "../../hooks/use400px.jsx";
+import SignUp from "../SignUp/SignUp.jsx";
+import { HiArrowUp } from "react-icons/hi";
+import { AiOutlinePlus } from "react-icons/ai";
+
 
 registerLocale("ko", ko);
 
 const RENTAL_CAR_LOCATIONS = [
   { name: "제주공항 렌트카", address: "제주특별자치도 제주시 공항로 2" },
-  { name: "행복 렌트카", address: "제주특별자치도 제주시 연313-1" },
-  { name: "제주 로얄 렌트카", address: "제주특별자치도 제주시 용문로 11" },
+  { name: "행복 렌트카", address: "제주특별자치도 제주시 삼성로9길 27" },
+  { name: "제주 로얄 렌트카", address: "제주특별자치도 제주시 용담일동 2823-7" },
 ];
 const AVAILABLE_CARS = [
   {
@@ -76,12 +81,16 @@ const Prompt = () => {
   const [showCars, setShowCars] = useState(false);
   const is400px = use400px();
   const messagesEndRef = useRef(null);
+  const [isSignUpOpen, setIsSignUpOpen] = useState(false); // 해더 추가용
 
   const mapContainer = useRef(null);
   const map = useRef(null);
   const markers = useRef([]);
 
-  const currentMessages =
+  const carItemRefs = useRef([]);  // 차량 자세히 보기시 화면 가운데로 이동
+
+
+    const currentMessages =
     chatHistory.find((chat) => chat.id === selectedChat)?.messages || [];
 
   // 카카오맵 SDK 로드
@@ -123,8 +132,8 @@ const Prompt = () => {
     }
     // 지도 새로 생성
     const mapOption = {
-      center: new window.kakao.maps.LatLng(33.499621, 126.531188),
-      level: 8,
+      center: new window.kakao.maps.LatLng(33.5027469615008,126.508826280302),
+      level: 7,
     };
     map.current = new window.kakao.maps.Map(mapContainer.current, mapOption);
     console.log("지도 새로 생성됨:", map.current);
@@ -178,7 +187,7 @@ const Prompt = () => {
         )}-${String(date.getDate()).padStart(2, "0")}`;
       const responseText = `선택하신 기간: ${format(start)} ~ ${format(end)}`;
       addMessage({ text: responseText, mine: true });
-      setShowCalendar(false);
+      //setShowCalendar(false);  // 달력 유지함
       const guideMessageText = `제주도 근처 렌트카 예약을 도와드리겠습니다.\n대표 렌트카 지점 위치를 지도에 표시했습니다.\n\n**추천차량:**\n\n**예약 시 필요 서류:**\n- ${REQUIRED_DOCS.join(
         "\n- "
       )}\n\n추천차량을 확인해보세요.`;
@@ -271,6 +280,7 @@ const Prompt = () => {
 
   return (
     <div className="chat-root">
+      <Header onSignUpClick={() => setIsSignUpOpen(true)} />
       {is400px && (
         <PromptHeader
           chatHistory={chatHistory}
@@ -283,7 +293,7 @@ const Prompt = () => {
           <div className="chat-sidebar-header">
             <h2>채팅 내역</h2>
             <button className="chat-new-btn" onClick={() => handleCreateChat()}>
-              +
+              <AiOutlinePlus size={20} />
             </button>
           </div>
           <ul>
@@ -313,13 +323,17 @@ const Prompt = () => {
               {showCalendar && msg.showCalendarAfter && (
                 <div className="calendar-popup">
                   <DatePicker
-                    selectsRange
-                    startDate={dateRange[0]}
-                    endDate={dateRange[1]}
-                    onChange={(update) => setDateRange(update)}
-                    inline
-                    minDate={new Date()}
-                    locale="ko"
+                      selectsRange
+                      startDate={dateRange[0]}
+                      endDate={dateRange[1]}
+                      onChange={(update) => {
+                        // 날짜가 이미 선택 완료되었으면 무시
+                        if (dateRange[0] && dateRange[1]) return;
+                        setDateRange(update);
+                      }}
+                      inline
+                      minDate={new Date()}
+                      locale="ko"
                   />
                 </div>
               )}
@@ -328,12 +342,26 @@ const Prompt = () => {
               )}
               {showCars && msg.showCarsAfter && (
                 <div className="cars-list">
-                  <h3>추천차량</h3>
-                  <div className="car-cards">
-                    {AVAILABLE_CARS.map((car, idx) => (
-                      <CarItemCard key={idx} car={car} dateRange={dateRange} />
-                    ))}
-                  </div>
+                    <p>추천드릴&nbsp;<span style={{ fontSize: '20px'}}> 차량</span> 을 찾아왔습니다! &nbsp;🚗</p>
+                    <div className="car-cards">
+                        {AVAILABLE_CARS.map((car, idx) => (
+                            <div
+                                key={idx}
+                                ref={(el) => (carItemRefs.current[idx] = el)}
+                                onClick={() => {
+                                    carItemRefs.current[idx]?.scrollIntoView({
+                                        behavior: "smooth",
+                                        inline: "center", // 가로 중앙 정렬
+                                        block: "nearest", // 세로는 그대로
+                                    });
+                                }}
+                                style={{ display: "inline-block", cursor: "pointer" }}
+                            >
+                                <CarItemCard car={car} dateRange={dateRange} />
+                            </div>
+                        ))}
+
+                    </div>
                 </div>
               )}
             </React.Fragment>
@@ -341,7 +369,7 @@ const Prompt = () => {
         </div>
         <form className="chat-input-bar" onSubmit={handleSubmit}>
           <button type="button" className="chat-add-btn">
-            +
+            <AiOutlinePlus size={20} />
           </button>
           <input
             type="text"
@@ -351,13 +379,16 @@ const Prompt = () => {
             disabled={showCalendar}
           />
           <button
-            type="submit"
-            className="chat-send-btn"
-            disabled={showCalendar}>
-            <span className="arrow-up">&#8593;</span>
+              type="submit"
+              className="chat-send-btn"
+              disabled={showCalendar}>
+            <HiArrowUp className="arrow-up" />
           </button>
         </form>
       </div>
+      {isSignUpOpen && (
+          <SignUp isOpen={isSignUpOpen} onClose={() => setIsSignUpOpen(false)} />
+      )}
     </div>
   );
 };
