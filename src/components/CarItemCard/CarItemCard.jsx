@@ -106,14 +106,21 @@ const CarItemCard = ({car, dateRange}) => {
           </span>
                 </div>
                 <div className="car-image">
-                    <img
-                        src={image_url}
-                        alt={`${manufacturer} ${model_name}`}
-                        onError={(e) => {
-                            console.error("이미지 로드 실패:", image_url);
-                            e.target.src = "./default-profile.png";
-                        }}
-                    />
+                    {image_url ? (
+                        <img
+                            src={image_url}
+                            alt={`${manufacturer} ${model_name}`}
+                            onError={(e) => {
+                                console.error("이미지 로드 실패:", image_url);
+                                e.target.style.display = 'none';
+                            }}
+                        />
+                    ) : (
+                        <div className="no-image-placeholder">
+                            <div className="car-icon">🚗</div>
+                            <div className="car-name">{manufacturer} {model_name}</div>
+                        </div>
+                    )}
                     <div className="zoom-icon">
                         <svg
                             width="16"
