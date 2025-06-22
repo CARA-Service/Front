@@ -8,7 +8,7 @@ import {
   FaTimes,
 } from "react-icons/fa";
 import ProfilePage from "../../pages/ProfilePage/ProfilePage.jsx";
-import ReservationsPage from "../../pages/ReservationsPage/ReservationsPage.jsx";
+import ReservationHistoryPage from "../../pages/ReservationHistoryPage/ReservationHistoryPage.jsx";
 import HistoryPage from "../../pages/HistoryPage/HistoryPage.jsx";
 import AnalysisPage from "../../pages/AnalysisPage/AnalysisPage.jsx";
 import './Profile.css';
@@ -25,6 +25,12 @@ const Profile = ({ onLogout }) => {
     if (storedImage) {
       setProfileImage(storedImage);
     }
+    const handleProfileImageChange = () => {
+      const updatedImage = localStorage.getItem("profileImage");
+      if (updatedImage) setProfileImage(updatedImage);
+    };
+    window.addEventListener("profileImageChanged", handleProfileImageChange);
+    return () => window.removeEventListener("profileImageChanged", handleProfileImageChange);
   }, []);
 
   useEffect(() => {
@@ -81,7 +87,7 @@ const Profile = ({ onLogout }) => {
       },
       reservations: {
         title: "예약 내역",
-        content: <ReservationsPage />,
+        content: <ReservationHistoryPage />,
       },
       history: {
         title: "이용 기록",
@@ -97,7 +103,7 @@ const Profile = ({ onLogout }) => {
 
     return (
       <div className="modal-overlay" onClick={closeModal}>
-        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className={`modal-content modal-${activeModal}`} onClick={(e) => e.stopPropagation()}>
           <button className="modal-close" onClick={closeModal}>
             <FaTimes />
           </button>

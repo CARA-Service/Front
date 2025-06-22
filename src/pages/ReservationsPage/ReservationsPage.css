@@ -1,15 +1,12 @@
-* {
-  margin: 0;
-  padding: 0;
-}
-
-html,
-body {
-  height: 100%;
-}
-
 .Reservation-Container {
-  margin-top: 70px;
   padding: 20px;
   box-sizing: border-box;
+}
+
+.reservation-car-image {
+  width: 80px;
+  height: 54px;
+  object-fit: contain;
+  border-radius: 8px;
+  margin-right: 16px;
 }

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./PayMentModal.css";
 import { FaCreditCard, FaRegMoneyBillAlt, FaCheckCircle } from "react-icons/fa";
 import { MdClose, MdArrowBack, MdInfoOutline } from "react-icons/md";
@@ -20,6 +21,7 @@ const insuranceOptions = [
 const PaymentModal = ({
   car,
   dateRange,
+  userInfo = {},
   onBack,
   onClose,
   price = 14000000,
@@ -32,6 +34,8 @@ const PaymentModal = ({
   const [hide, setHide] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const navigate = useNavigate();
 
   const defaultImage = '/G70_Kia.png';
   const defaultBrand = '기아';
@@ -74,14 +78,14 @@ const PaymentModal = ({
       price: totalPrice,
       paymentMethod: paymentMethods.find((m) => m.id === selected)?.label,
       insurances: selectedInsurances.map(id => insuranceOptions.find(opt => opt.id === id)?.label).filter(Boolean),
-      userName: '', // 필요시 ReservationModal에서 prop으로 전달
+      userName: userInfo.name || '',
+      userPhone: userInfo.phone || '',
       status: '결제완료',
     };
     const prev = JSON.parse(localStorage.getItem('reservations') || '[]');
     localStorage.setItem('reservations', JSON.stringify([...prev, reservation]));
     window.dispatchEvent(new Event('storageChange'));
-    // 결제 완료 후 모달 닫기 등 추가 동작
-    if (onClose) onClose();
+    setShowSuccess(true);
   };
 
   const handleBack = () => {
@@ -217,6 +221,19 @@ const PaymentModal = ({
             <div className="pay-confirm-actions">
               <button onClick={handleConfirm}>예</button>
               <button onClick={handleCancel}>아니오</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showSuccess && (
+        <div className="pay-success-modal-backdrop">
+          <div className="pay-success-modal">
+            <div className="pay-success-title">예약이 성공적으로 완료되었습니다!</div>
+            <div className="pay-success-message">차량 예약이 정상적으로 처리되었습니다.<br/>차량 인수 및 이용 전, 예약 내역과 주의사항을 꼭 확인해 주세요.</div>
+            <div className="pay-success-warning">※ 예약 취소 시 위약금이 발생할 수 있습니다. 자세한 내용은 약관을 확인하세요.</div>
+            <div className="pay-success-actions">
+              <button className="pay-success-btn" onClick={() => navigate("/reservation-history")}>예약기록으로 이동</button>
+              <button className="pay-success-btn close" onClick={() => { setShowSuccess(false); if (onClose) onClose(); }}>닫기</button>
             </div>
           </div>
         </div>

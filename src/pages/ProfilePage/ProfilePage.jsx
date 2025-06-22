@@ -53,7 +53,7 @@ const ProfilePage = () => {
     if (tempProfileImage) {
       setProfileImage(tempProfileImage);
       localStorage.setItem('profileImage', tempProfileImage);
-      window.dispatchEvent(new Event('storageChange'));
+      window.dispatchEvent(new Event('profileImageChanged'));
       setTempProfileImage(null);
     }
     setIsEditing(false);

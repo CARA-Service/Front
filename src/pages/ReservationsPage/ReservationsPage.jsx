@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import "./ReservationsPage.css";
 
 const ReservationsPage = () => {
@@ -8,6 +8,17 @@ const ReservationsPage = () => {
         total_price: "",
         insurance_option_id: "",
     });
+    const [reservations, setReservations] = useState([]);
+
+    useEffect(() => {
+        const load = () => {
+            const data = JSON.parse(localStorage.getItem('reservations') || '[]');
+            setReservations(data);
+        };
+        load();
+        window.addEventListener('storageChange', load);
+        return () => window.removeEventListener('storageChange', load);
+    }, []);
 
     const handleChange = (e) => {
         const {name, value} = e.target;

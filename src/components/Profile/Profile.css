@@ -216,23 +216,38 @@
 }
 
 .modal-content {
-  background: rgba(255, 255, 255, 0.95);
+  background-color: #ffffff;
   backdrop-filter: blur(20px);
   border-radius: 20px;
-  padding: 2.5rem !important;
-  min-width: 400px;
-  max-width: 400px !important;
-  width: 400px;
-  min-height: 500px;
-  max-height: 500px !important;
-  height: 500px;
+  padding: 2rem !important;
+  min-width: 320px;
+  max-width: 95vw !important;
+  width: auto;
+  max-height: 90vh;
+  height: auto;
   overflow-y: auto;
   position: relative;
   z-index: 10000;
-  animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+}
+
+.modal-profile {
+  max-width: 400px;
+  height: auto;
+  min-width: 0;
+  min-height: 0;
+  max-height: 90vh;
+}
+
+.modal-reservations {
+  max-width: 700px;
+}
+
+.modal-history {
+  max-width: 600px;
+}
+
+.modal-analysis {
+  max-width: 700px;
 }
 
 @keyframes modalSlideIn {
