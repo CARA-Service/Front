@@ -261,7 +261,7 @@
   z-index: 2;
 }
 .reservation-cancel-btn:hover {
-  background: linear-gradient(90deg, #ff3b3b 0%, #ff8d13 100%);
+  background: linear-gradient(90deg, #ff3b3b 0%, #ff8e15 100%);
   box-shadow: 0 4px 16px rgba(255,107,107,0.16);
   transform: translateY(-2px) scale(1.03);
 }
