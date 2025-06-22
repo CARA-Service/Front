@@ -24,7 +24,6 @@ const CarItemCard = ({car, dateRange}) => {
     const [showReservationModal, setShowReservationModal] = useState(false);
     const [showPaymentModal, setShowPaymentModal] = useState(false);
     const [transition, setTransition] = useState("reservation");
-    const [userInfo, setUserInfo] = useState(null);
 
     const cardRef = useRef(null);
 
@@ -54,9 +53,7 @@ const CarItemCard = ({car, dateRange}) => {
         setShowReservationModal(false);
     };
 
-    const handlePayment = (info) => {
-        setUserInfo(info);
-        setShowReservationModal(false);
+    const handlePayment = () => {
         setShowPaymentModal(true);
         setTransition("payment");
     };
@@ -199,7 +196,6 @@ const CarItemCard = ({car, dateRange}) => {
                 <PaymentModal
                     car={car}
                     dateRange={dateRange}
-                    userInfo={userInfo}
                     onBack={handleBackToReservation}
                     onClose={handleClosePayment}
                     appearDelay={0}
