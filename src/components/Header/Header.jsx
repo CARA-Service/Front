@@ -64,6 +64,9 @@ function Header() {
     localStorage.removeItem("profileImage");
     setIsLoggedIn(false);
     setProfileImage("/default-profile.png");
+    
+    // 커스텀 이벤트 발생시켜 다른 컴포넌트들에 로그아웃 상태 변경 알림
+    window.dispatchEvent(new Event('storageChange'));
   };
 
   // 드래그 이벤트 핸들러
