@@ -41,6 +41,7 @@ const Prompt = () => {
   const [isLoadingRecommendations, setIsLoadingRecommendations] = useState(false); // 로딩 상태
   const [currentAgencies, setCurrentAgencies] = useState([]); // 현재 표시할 지점들
   const [currentLocation, setCurrentLocation] = useState("제주도"); // 현재 지역
+  const [gptRecommendationMessage, setGptRecommendationMessage] = useState(""); // GPT 추천 메시지
   const is400px = use400px();
   const messagesEndRef = useRef(null);
   const [isSignUpOpen, setIsSignUpOpen] = useState(false); // 해더 추가용
@@ -166,13 +167,15 @@ const Prompt = () => {
     setIsLoadingRecommendations(true);
     try {
       const apiResponse = await getRecommendations(userInput);
-      const transformedCars = transformRecommendationData(apiResponse);
-      setRecommendedCars(transformedCars);
-      return transformedCars;
+      const { cars, gptMessage } = transformRecommendationData(apiResponse);
+      setRecommendedCars(cars);
+      setGptRecommendationMessage(gptMessage);
+      return cars;
     } catch (error) {
       console.error('추천 API 호출 실패:', error);
       // 에러 시 빈 배열 반환
       setRecommendedCars([]);
+      setGptRecommendationMessage("");
       return [];
     } finally {
       setIsLoadingRecommendations(false);
@@ -563,6 +566,8 @@ const Prompt = () => {
         setRecommendedCars([]);
         setCurrentAgencies([]);
         setDateRange([null, null]);
+        setGptRecommendationMessage("");
+        // 이전 메시지들의 지도/차량 플래그 제거
         setChatHistory((prev) =>
           prev.map((chat) =>
             chat.id === selectedChat
@@ -734,6 +739,77 @@ const Prompt = () => {
               }}>삭제</button>
             </div>
           </div>
+      <div className="chat-main">
+        <div className="chat-messages" ref={messagesEndRef}>
+          {currentMessages.map((msg, idx) => (
+            <React.Fragment key={idx}>
+              <div className={`chat-message${msg.mine ? " mine" : ""}`}>
+                {msg.text.split("\n").map((line, i) => (
+                  <span key={i}>
+                    {line}
+                    <br />
+                  </span>
+                ))}
+              </div>
+              {showCalendar && msg.showCalendarAfter && (
+                <div className="calendar-popup">
+                  <DatePicker
+                      selectsRange
+                      startDate={dateRange[0]}
+                      endDate={dateRange[1]}
+                      onChange={(update) => {
+                        // 날짜가 이미 선택 완료되었으면 무시
+                        if (dateRange[0] && dateRange[1]) return;
+                        setDateRange(update);
+                      }}
+                      inline
+                      minDate={new Date()}
+                      locale="ko"
+                  />
+                </div>
+              )}
+              {showMap && msg.showMapAfter && (
+                <div className="map-container" ref={mapContainer} />
+              )}
+              {showCars && msg.showCarsAfter && (
+                <div className="cars-list">
+                    {isLoadingRecommendations ? (
+                        <p>추천 차량을 불러오는 중... ⏳</p>
+                    ) : recommendedCars.length > 0 ? (
+                        <>
+                            {/* GPT 추천 메시지 표시 */}
+                            {gptRecommendationMessage && (
+                                <div className="gpt-recommendation-message">
+                                    <p>{gptRecommendationMessage}</p>
+                                </div>
+                            )}
+                            <p>추천드릴&nbsp;<span style={{ fontSize: '20px'}}> 차량</span> 을 찾아왔습니다! &nbsp;🚗</p>
+                            <div className="car-cards">
+                                {recommendedCars.map((car, idx) => (
+                                    <div
+                                        key={car.car_id || idx}
+                                        ref={(el) => (carItemRefs.current[idx] = el)}
+                                        onClick={() => {
+                                            carItemRefs.current[idx]?.scrollIntoView({
+                                                behavior: "smooth",
+                                                inline: "center", // 가로 중앙 정렬
+                                                block: "nearest", // 세로는 그대로
+                                            });
+                                        }}
+                                        style={{ display: "inline-block", cursor: "pointer" }}
+                                    >
+                                        <CarItemCard car={car} dateRange={dateRange} />
+                                    </div>
+                                ))}
+                            </div>
+                        </>
+                    ) : (
+                        <p>추천 가능한 차량이 없습니다. 다른 조건으로 다시 시도해보세요. 😅</p>
+                    )}
+                </div>
+              )}
+            </React.Fragment>
+          ))}
         </div>
       )}
       <div className="chat-main">
