@@ -94,13 +94,13 @@ const IdVerificationModal = ({
 
   return (
     <>
-      <div className="modal-overlay" onClick={onClose}>
-        <div className="modal-content" onClick={e => e.stopPropagation()}>
+      <div className="idv-modal-overlay" onClick={onClose}>
+        <div className="idv-modal-content" onClick={e => e.stopPropagation()}>
           <h2>운전면허증 인증</h2>
           <p>운전면허증 번호와 사진을 모두 입력해주세요.</p>
-          <form onSubmit={handleSubmit} className="verification-form">
-            <div className="form-group">
-              <label htmlFor="licenseNumber">운전면허증 번호 <span className="required">*</span></label>
+          <form onSubmit={handleSubmit} className="idv-verification-form">
+            <div className="idv-form-group">
+              <label htmlFor="licenseNumber">운전면허증 번호 <span className="idv-required">*</span></label>
               <input
                 type="text"
                 id="licenseNumber"
@@ -111,19 +111,19 @@ const IdVerificationModal = ({
               />
             </div>
 
-            <div className="form-group">
-              <label htmlFor="licenseImage">운전면허증 사진 <span className="required">*</span></label>
-              <div className="image-upload-container">
+            <div className="idv-form-group">
+              <label htmlFor="licenseImage">운전면허증 사진 <span className="idv-required">*</span></label>
+              <div className="idv-image-upload-container">
                 <input
                   type="file"
                   id="licenseImage"
                   accept="image/*"
                   onChange={handleFileChange}
-                  className="image-upload-input"
+                  className="idv-image-upload-input"
                 />
                 <label 
                   htmlFor="licenseImage" 
-                  className={`image-upload-label ${previewUrl ? 'has-image' : ''}`}
+                  className={`idv-image-upload-label${previewUrl ? ' has-image' : ''}`}
                   style={previewUrl ? { backgroundImage: `url(${previewUrl})` } : undefined}
                 >
                   {!previewUrl && '사진 업로드하기'}
@@ -132,15 +132,15 @@ const IdVerificationModal = ({
             </div>
 
             {errorMessage && (
-              <div className="error-message">
+              <div className="idv-error-message">
                 {errorMessage}
               </div>
             )}
 
-            <div className="modal-buttons">
+            <div className="idv-modal-buttons">
               <button
                 type="button"
-                className="cancel-button"
+                className="idv-cancel-button"
                 onClick={onClose}
                 disabled={isVerifying}
               >
@@ -148,7 +148,7 @@ const IdVerificationModal = ({
               </button>
               <button
                 type="submit"
-                className="verify-button"
+                className="idv-verify-button"
                 disabled={isVerifying}
               >
                 인증하기
@@ -158,9 +158,9 @@ const IdVerificationModal = ({
         </div>
       </div>
       {isVerifying && (
-        <div className="loading-overlay">
-          <div className="loading-spinner"></div>
-          <div className="loading-text">운전면허 인증 중...</div>
+        <div className="idv-loading-overlay">
+          <div className="idv-loading-spinner"></div>
+          <div className="idv-loading-text">운전면허 인증 중...</div>
         </div>
       )}
     </>

@@ -1,10 +1,20 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./ReservationModal.css";
 
-const ReservationModal = ({ car, dateRange, onClose, onPayment }) => {
+const ReservationModal = ({ car, dateRange, onClose, onPayment, appearDelay = 0 }) => {
   const [startDate, endDate] = dateRange || [null, null];
   const [showConfirm, setShowConfirm] = useState(false);
   const contentRef = useRef(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setVisible(true), appearDelay);
+    document.body.classList.add('modal-open');
+    return () => {
+      clearTimeout(timer);
+      document.body.classList.remove('modal-open');
+    };
+  }, [appearDelay]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -27,9 +37,18 @@ const ReservationModal = ({ car, dateRange, onClose, onPayment }) => {
     setShowConfirm(false);
   };
 
+  const handleClose = () => {
+    setVisible(false);
+    setTimeout(onClose, 280);
+  };
+
   return (
     <div className="reservation-modal" onMouseDown={handleModalMouseDown}>
-      <div className="reservation-modal-content" ref={contentRef} onMouseDown={e => e.stopPropagation()}>
+      <div
+        className={`reservation-modal-content${visible ? " show" : " hide"}`}
+        ref={contentRef}
+        onMouseDown={e => e.stopPropagation()}
+      >
         <div className="reservation-modal-header-row">
           <div className="reservation-modal-car-image">
             <img
@@ -66,15 +85,15 @@ const ReservationModal = ({ car, dateRange, onClose, onPayment }) => {
         <div className="reservation-modal-info-form">
           <form onSubmit={handleSubmit}>
             <label>
-              이름
-              <input type="text" name="name"  />
+              <span>이름</span>
+              <input type="text" name="name" />
             </label>
             <label>
-              연락처
-              <input type="tel" name="phone"  />
+              <span>연락처</span>
+              <input type="tel" name="phone" />
             </label>
             <label>
-              대여기간
+              <span>대여기간</span>
               <input
                 type="text"
                 name="period"
@@ -87,13 +106,11 @@ const ReservationModal = ({ car, dateRange, onClose, onPayment }) => {
               />
             </label>
             <label>
-              총 금액
+              <span>총 금액</span>
               <input type="text" name="totalPrice" value="계산중" readOnly />
             </label>
             <div className="reservation-modal-actions">
-              <button type="button" onClick={() => setShowConfirm(true)}>
-                닫기
-              </button>
+              <button type="button" onClick={handleClose}>닫기</button>
               <button type="submit">예약 하기</button>
             </div>
           </form>
