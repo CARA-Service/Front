@@ -34,6 +34,10 @@ const Login = ({ isOpen, onClose, onSwitchSignUp }) => {
   const handleSocialLogin = (provider) => {
     // TODO: 소셜로그인 
     localStorage.setItem('token', 'social-login-token');
+    
+    // 커스텀 이벤트 발생시켜 Header 컴포넌트에 로그인 상태 변경 알림
+    window.dispatchEvent(new Event('storageChange'));
+    
     onClose();
   };
 
