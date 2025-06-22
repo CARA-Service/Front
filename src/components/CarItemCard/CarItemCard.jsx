@@ -1,6 +1,7 @@
 import React, {useState, useRef, useEffect} from "react";
 import ReservationModal from "../ReservationModal&PayMentModal/ReservationModal.jsx";
 import PaymentModal from "../ReservationModal&PayMentModal/PayMentModal.jsx";
+import { getCarImagePath } from "../../utils/carImageMapping.js";
 import "./CarItemCard.css";
 
 const CarItemCard = ({car, dateRange}) => {
@@ -106,21 +107,20 @@ const CarItemCard = ({car, dateRange}) => {
           </span>
                 </div>
                 <div className="car-image">
-                    {image_url ? (
-                        <img
-                            src={image_url}
-                            alt={`${manufacturer} ${model_name}`}
-                            onError={(e) => {
-                                console.error("이미지 로드 실패:", image_url);
-                                e.target.style.display = 'none';
-                            }}
-                        />
-                    ) : (
-                        <div className="no-image-placeholder">
-                            <div className="car-icon">🚗</div>
-                            <div className="car-name">{manufacturer} {model_name}</div>
-                        </div>
-                    )}
+                    <img
+                        src={getCarImagePath(model_name, manufacturer)}
+                        alt={`${manufacturer} ${model_name}`}
+                        onError={(e) => {
+                            console.error("이미지 로드 실패:", getCarImagePath(model_name, manufacturer));
+                            // 이미지 로드 실패 시 플레이스홀더 표시
+                            e.target.style.display = 'none';
+                            e.target.nextElementSibling.style.display = 'flex';
+                        }}
+                    />
+                    <div className="no-image-placeholder" style={{ display: 'none' }}>
+                        <div className="car-icon">🚗</div>
+                        <div className="car-name">{manufacturer} {model_name}</div>
+                    </div>
                     <div className="zoom-icon">
                         <svg
                             width="16"

@@ -119,6 +119,25 @@ body,
 }
 
 .cars-list {
+  margin: 20px 0;
+  padding: 0 20px;
+}
+
+.gpt-recommendation-message {
+  background-color: #f8f9fa;
+  border-left: 4px solid #007bff;
+  padding: 16px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.gpt-recommendation-message p {
+  margin: 0;
+  color: #495057;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap; /* 줄바꿈 유지 */
 }
 
 
