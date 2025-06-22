@@ -44,6 +44,18 @@ const Profile = ({ onLogout }) => {
     }
   }, [isMenuOpen]);
 
+  useEffect(() => {
+    if (activeModal) {
+      document.body.classList.add('modal-open');
+    } else {
+      document.body.classList.remove('modal-open');
+    }
+    // 컴포넌트 언마운트 시 클래스 제거
+    return () => {
+      document.body.classList.remove('modal-open');
+    };
+  }, [activeModal]);
+
   const handleLogout = () => {
     onLogout();
     setIsMenuOpen(false);
