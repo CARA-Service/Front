@@ -30,6 +30,11 @@
   padding: 30px;
   overflow-y: auto;
   z-index: 1010;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+.pay-modal-content::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 .pay-modal.hide .pay-modal-content {
   transform: translateY(40px);
@@ -102,9 +107,7 @@
   justify-content: space-between;
   border-bottom: 1.5px solid #f0f0f0;
   position: relative;
-  padding-bottom: 20px;
   gap: 0;
-  margin-bottom: 20px;
 }
 .pay-modal-title-row {
   display: flex;
@@ -114,7 +117,6 @@
   margin: 0;
 }
 .pay-modal-main-title {
-  margin-bottom: 0;
   font-size: 1.35rem;
   font-weight: 700;
   text-align: left;
@@ -406,4 +408,65 @@ body.modal-open {
   .pay-modal-car-details {
     align-items: center;
   }
+}
+.pay-success-modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.35);
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pay-success-modal {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+  padding: 36px 40px 28px 40px;
+  min-width: 320px;
+  max-width: 90vw;
+  text-align: center;
+  z-index: 3010;
+}
+.pay-success-title {
+  font-size: 1.22em;
+  font-weight: 700;
+  color: #1e8fff;
+  margin-bottom: 12px;
+}
+.pay-success-message {
+  color: #222;
+  font-size: 1.05em;
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+.pay-success-warning {
+  color: #ff3b3b;
+  font-size: 0.98em;
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+.pay-success-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 10px;
+}
+.pay-success-btn {
+  padding: 10px 32px;
+  border-radius: 8px;
+  border: none;
+  font-size: 1.05em;
+  font-weight: 600;
+  cursor: pointer;
+  background: #1e8fff;
+  color: #fff;
+  transition: background 0.18s;
+}
+.pay-success-btn.close {
+  background: #f5f5f5;
+  color: #333;
+}
+.pay-success-btn:hover {
+  filter: brightness(0.97);
 }
