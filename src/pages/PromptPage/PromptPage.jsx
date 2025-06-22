@@ -56,7 +56,7 @@ const Prompt = () => {
   const [editingTitle, setEditingTitle] = useState("");
   const [deletingChatId, setDeletingChatId] = useState(null);
 
-  const currentMessages =
+    const currentMessages =
     chatHistory.find((chat) => chat.id === selectedChat)?.messages || [];
 
   // 카카오맵 SDK 로드
@@ -643,16 +643,16 @@ const Prompt = () => {
           </div>
           <ul>
             {chatHistory.map((chat) => (
-              <li
-                key={chat.id}
+                <li
+                  key={chat.id}
                 className={
                   (selectedChat === chat.id ? "active " : "") +
                   (editingChatId === chat.id ? "editing" : "")
                 }
-                onClick={() => setSelectedChat(chat.id)}
-              >
-                {chat.isDraft ? (
-                  <span className="chat-dots">{'.'.repeat(dotAnim + 1)}</span>
+                  onClick={() => setSelectedChat(chat.id)}
+                >
+                  {chat.isDraft ? (
+                    <span className="chat-dots">{'.'.repeat(dotAnim + 1)}</span>
                 ) : (
                   <div>
                     {editingChatId === chat.id ? (
@@ -683,8 +683,8 @@ const Prompt = () => {
                         }}
                         style={{ fontSize: '1em', width: '90px', padding: '2px 6px', borderRadius: '4px', border: '1px solid #ddd' }}
                       />
-                    ) : (
-                      <>
+                  ) : (
+                    <>
                         <span className="chat-title-text-sidebar">{chat.title || `Chat ${chat.id}`}</span>
                         <div className="chat-actions">
                           <button
@@ -710,12 +710,12 @@ const Prompt = () => {
                           >
                             <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M7 8v6m3-6v6m3-10V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2M4 6h12m-1 0v10a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h10z" stroke="#888" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
                           </button>
-                        </div>
-                      </>
+                      </div>
+                    </>
                     )}
                   </div>
-                )}
-              </li>
+                  )}
+                </li>
             ))}
           </ul>
         </aside>
