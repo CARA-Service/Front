@@ -107,7 +107,7 @@ const Home = () => {
             <Header onSignUpClick={() => setIsSignUpOpen(true)}/>
             <h1>
                 <span className="highlight">'카라'</span> 로 한번에{" "}
-                <span className="highlight-rent"> 랜트 </span>해보세요!
+                <span className="highlight-rent"> 렌트 </span>해보세요!
             </h1>
             <div className="content">
                 <p>편리하게 상담하며 궁금한 모든 것을 해결하세요.</p>

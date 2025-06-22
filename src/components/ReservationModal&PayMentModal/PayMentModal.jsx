@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./PayMentModal.css";
-import { FaCreditCard, FaCar, FaRegMoneyBillAlt, FaCheckCircle } from "react-icons/fa";
+import { FaCreditCard, FaRegMoneyBillAlt, FaCheckCircle } from "react-icons/fa";
 import { MdClose, MdArrowBack, MdInfoOutline } from "react-icons/md";
 
 const paymentMethods = [
@@ -94,7 +94,6 @@ const PaymentModal = ({
         {/* 차량 정보 */}
         <div className="payment-modal-car-info">
           <div className="payment-modal-car-header">
-            <FaCar className="payment-modal-car-icon" />
             <h3>{brand} {model}</h3>
           </div>
           <div className="payment-modal-car-image">
@@ -189,7 +188,7 @@ const PaymentModal = ({
             <MdArrowBack style={{marginRight:4}} /> 뒤로가기
           </button>
           <button type="submit" className="submit-btn" onClick={handleSubmit}>
-            <FaCreditCard style={{marginRight:4}} /> 결제 하기
+            <FaCreditCard style={{marginRight:4}} /> 결제하기
           </button>
         </div>
       </div>
