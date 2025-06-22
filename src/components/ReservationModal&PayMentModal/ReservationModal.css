@@ -95,16 +95,14 @@
 .reservation-modal-car-features-row {
   display: flex;
   flex-direction: row;
+  gap: 10px;
   flex-wrap: wrap;
-  gap: 10px 14px;
 }
 
 .reservation-info-item {
-  flex: 1 1 120px;
-  min-width: 110px;
-  max-width: 170px;
-  height: auto;
-  margin-bottom: 8px;
+  width: 100px;
+  height: 30px;
+  padding: 7px 14px;
   font-size: 0.98rem;
   color: #333;
   display: flex;

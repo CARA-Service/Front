@@ -8,7 +8,7 @@ import {
   FaTimes,
 } from "react-icons/fa";
 import ProfilePage from "../../pages/ProfilePage/ProfilePage.jsx";
-import ReservationHistoryPage from "../../pages/ReservationHistoryPage/ReservationHistoryPage.jsx";
+import ReservationsPage from "../../pages/ReservationsPage/ReservationsPage.jsx";
 import HistoryPage from "../../pages/HistoryPage/HistoryPage.jsx";
 import AnalysisPage from "../../pages/AnalysisPage/AnalysisPage.jsx";
 import './Profile.css';
@@ -25,12 +25,6 @@ const Profile = ({ onLogout }) => {
     if (storedImage) {
       setProfileImage(storedImage);
     }
-    const handleProfileImageChange = () => {
-      const updatedImage = localStorage.getItem("profileImage");
-      if (updatedImage) setProfileImage(updatedImage);
-    };
-    window.addEventListener("profileImageChanged", handleProfileImageChange);
-    return () => window.removeEventListener("profileImageChanged", handleProfileImageChange);
   }, []);
 
   useEffect(() => {
@@ -49,18 +43,6 @@ const Profile = ({ onLogout }) => {
       };
     }
   }, [isMenuOpen]);
-
-  useEffect(() => {
-    if (activeModal) {
-      document.body.classList.add('modal-open');
-    } else {
-      document.body.classList.remove('modal-open');
-    }
-    // 컴포넌트 언마운트 시 클래스 제거
-    return () => {
-      document.body.classList.remove('modal-open');
-    };
-  }, [activeModal]);
 
   const handleLogout = () => {
     onLogout();
@@ -87,7 +69,7 @@ const Profile = ({ onLogout }) => {
       },
       reservations: {
         title: "예약 내역",
-        content: <ReservationHistoryPage />,
+        content: <ReservationsPage />,
       },
       history: {
         title: "이용 기록",
@@ -103,7 +85,7 @@ const Profile = ({ onLogout }) => {
 
     return (
       <div className="modal-overlay" onClick={closeModal}>
-        <div className={`modal-content modal-${activeModal}`} onClick={(e) => e.stopPropagation()}>
+        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
           <button className="modal-close" onClick={closeModal}>
             <FaTimes />
           </button>

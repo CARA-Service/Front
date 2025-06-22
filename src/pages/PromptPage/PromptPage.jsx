@@ -45,7 +45,6 @@ const Prompt = () => {
   const is400px = use400px();
   const messagesEndRef = useRef(null);
   const [isSignUpOpen, setIsSignUpOpen] = useState(false); // 해더 추가용
-  const [dotAnim, setDotAnim] = useState(0);
 
   const mapContainer = useRef(null);
   const map = useRef(null);
@@ -53,11 +52,8 @@ const Prompt = () => {
 
   const carItemRefs = useRef([]);  // 차량 자세히 보기시 화면 가운데로 이동
 
-  const [editingChatId, setEditingChatId] = useState(null);
-  const [editingTitle, setEditingTitle] = useState("");
-  const [deletingChatId, setDeletingChatId] = useState(null);
 
-  const currentMessages =
+    const currentMessages =
     chatHistory.find((chat) => chat.id === selectedChat)?.messages || [];
 
   // 카카오맵 SDK 로드
@@ -400,173 +396,38 @@ const Prompt = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!input.trim()) return;
-    const now = new Date().toISOString();
-    setChatHistory((prev) => prev.map(chat =>
-      chat.id === selectedChat
-        ? {
-            ...chat,
-            messages: [...chat.messages, { text: input, mine: true }],
-            lastMessageAt: now
-          }
-        : chat
-    ));
-    const isCarRelated = isCarRentalRelated(input);
 
-    if (isCarRelated) {
-      // 새로운 추천 시작 시 모든 이전 상태 초기화
-      setShowMap(false);
-      setShowCars(false);
-      setRecommendedCars([]);
-      setCurrentAgencies([]);
-      setDateRange([null, null]);
-
-      // 이전 메시지들의 지도/차량 플래그 제거
-      setChatHistory((prev) =>
-        prev.map((chat) =>
-          chat.id === selectedChat
-            ? {
-                ...chat,
-                messages: chat.messages.map((msg) => ({
-                  ...msg,
-                  showMapAfter: false,
-                  showCarsAfter: false,
-                }))
-              }
-            : chat
-        )
-      );
-
-      addMessage({
-        text: "언제부터 언제까지 이용하시겠어요?",
-        mine: false,
-        showCalendarAfter: true,
-      });
-      setShowCalendar(true);
-    } else {
-      // 렌터카 관련이 아닌 질문이지만 API 호출 시도
-      addMessage({
-        text: "질문을 확인하고 있습니다...",
-        mine: false,
-      });
-
-      // API 호출
-      fetchRecommendations(input).then((cars) => {
-        if (cars.length === 0) {
-          // 시스템 메시지가 있는 경우 해당 메시지 표시
-          addMessage({
-            text: "죄송합니다. 해당 조건에 맞는 차량을 찾을 수 없습니다. 다른 조건으로 다시 시도해보세요.",
-            mine: false,
-          });
-        } else {
-          // 차량이 있으면 지도와 차량 목록 표시
-          const location = extractLocationFromInput(input);
-          addMessage({
-            text: `${location} 지역 차량 추천 결과입니다.`,
-            mine: false,
-            showMapAfter: true,
-            showCarsAfter: true,
-          });
-          setShowMap(true);
-          setShowCars(true);
-
-          // 지점 조회 후 실제 지역으로 차량 재추천
-          fetchAgenciesByLocation(location).then((result) => {
-            const actualLocation = result.actualLocation;
-            if (actualLocation !== location) {
-              console.log(`🔄 지역 변경: ${location} → ${actualLocation}, 차량 재추천 필요`);
-              // 실제 지역으로 차량 재추천
-              const newInput = input.replace(location, actualLocation);
-              return fetchRecommendations(newInput);
-            }
-          });
-        }
-      }).catch((error) => {
-        console.error('API 호출 에러:', error);
-        addMessage({
-          text: "죄송합니다. 일시적인 오류가 발생했습니다. 다시 시도해주세요.",
-          mine: false,
-        });
-      });
-    }
-    setInput("");
-    setTimeout(() => { messagesEndRef.current?.focus(); }, 0);
-  };
-
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
-    }
-  }, [chatHistory, showMap, showCalendar, showCars]);
-
-  useEffect(() => {
-    const interval = setInterval(() => setDotAnim((d) => (d + 1) % 4), 500);
-    return () => clearInterval(interval);
-  }, []);
-
-  const handleCreateChatDraft = () => {
-    const newId = Date.now();
-    const now = new Date();
-    const newChat = {
-      id: newId,
-      messages: [],
-      title: `Chat ${String(newId).slice(-6)}`,
-      createdAt: now.toISOString(),
-      isDraft: true,
-    };
-    setChatHistory((prev) => [...prev, newChat]);
-    setSelectedChat(newId);
-    setShowCalendar(false);
-    setShowMap(false);
-    setShowCars(false);
-    setRecommendedCars([]);
-    setCurrentAgencies([]);
-    setCurrentLocation("제주도");
-    setDateRange([null, null]);
-  };
-
-  const handleFirstMessage = (text) => {
-    const now = new Date().toISOString();
-    setChatHistory((prev) => prev.map(chat =>
-      chat.id === selectedChat
-        ? { ...chat, title: text, isDraft: false, lastMessageAt: now }
-        : chat
-    ));
-    processPrompt(text);
-    setTimeout(() => { messagesEndRef.current?.focus(); }, 0);
-  };
-
-  // 프롬프트 처리 로직을 함수로 분리
-  const processPrompt = (promptText) => {
-    if (!promptText.trim()) return;
-    const isCarRelated = isCarRentalRelated(promptText);
     if (chatHistory.length === 0) {
-      // 첫 채팅방 생성 시 (이 케이스는 거의 없음)
+      const isCarRelated = isCarRentalRelated(input);
       const botResponse = isCarRelated
-        ? {
-            text: "언제부터 언제까지 이용하시겠어요?",
-            mine: false,
-            showCalendarAfter: true,
-          }
-        : {
-            text: "죄송합니다. 차량 예약 관련 질문만 도와드릴 수 있어요.",
-            mine: false,
-          };
-      handleCreateChat({ text: promptText, mine: true }, botResponse);
+          ? {
+              text: "언제부터 언제까지 이용하시겠어요?",
+              mine: false,
+              showCalendarAfter: true,
+            }
+          : {
+              text: "죄송합니다. 차량 예약 관련 질문만 도와드릴 수 있어요.",
+              mine: false,
+            };
+      handleCreateChat({ text: input, mine: true }, botResponse);
       if (isCarRelated) {
         setShowCalendar(true);
         setShowMap(false);
         setShowCars(false);
       }
     } else {
-      // 메시지로는 추가하지 않음
-      // addMessage({ text: promptText, mine: true });
+      addMessage({ text: input, mine: true });
+      const isCarRelated = isCarRentalRelated(input);
+
       if (isCarRelated) {
+        // 새로운 추천 시작 시 모든 이전 상태 초기화
         setShowMap(false);
         setShowCars(false);
         setRecommendedCars([]);
         setCurrentAgencies([]);
         setDateRange([null, null]);
         setGptRecommendationMessage("");
+
         // 이전 메시지들의 지도/차량 플래그 제거
         setChatHistory((prev) =>
           prev.map((chat) =>
@@ -577,11 +438,12 @@ const Prompt = () => {
                     ...msg,
                     showMapAfter: false,
                     showCarsAfter: false,
-                  })),
+                  }))
                 }
               : chat
           )
         );
+
         addMessage({
           text: "언제부터 언제까지 이용하시겠어요?",
           mine: false,
@@ -589,18 +451,23 @@ const Prompt = () => {
         });
         setShowCalendar(true);
       } else {
+        // 렌터카 관련이 아닌 질문이지만 API 호출 시도
         addMessage({
           text: "질문을 확인하고 있습니다...",
           mine: false,
         });
-        fetchRecommendations(promptText).then((cars) => {
+
+        // API 호출
+        fetchRecommendations(input).then((cars) => {
           if (cars.length === 0) {
+            // 시스템 메시지가 있는 경우 해당 메시지 표시
             addMessage({
               text: "죄송합니다. 해당 조건에 맞는 차량을 찾을 수 없습니다. 다른 조건으로 다시 시도해보세요.",
               mine: false,
             });
           } else {
-            const location = extractLocationFromInput(promptText);
+            // 차량이 있으면 지도와 차량 목록 표시
+            const location = extractLocationFromInput(input);
             addMessage({
               text: `${location} 지역 차량 추천 결과입니다.`,
               mine: false,
@@ -609,10 +476,14 @@ const Prompt = () => {
             });
             setShowMap(true);
             setShowCars(true);
+
+            // 지점 조회 후 실제 지역으로 차량 재추천
             fetchAgenciesByLocation(location).then((result) => {
               const actualLocation = result.actualLocation;
               if (actualLocation !== location) {
-                const newInput = promptText.replace(location, actualLocation);
+                console.log(`🔄 지역 변경: ${location} → ${actualLocation}, 차량 재추천 필요`);
+                // 실제 지역으로 차량 재추천
+                const newInput = input.replace(location, actualLocation);
                 return fetchRecommendations(newInput);
               }
             });
@@ -626,7 +497,14 @@ const Prompt = () => {
         });
       }
     }
+    setInput("");
   };
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
+    }
+  }, [chatHistory, showMap, showCalendar, showCars]);
 
   return (
     <div className="chat-root">
@@ -642,7 +520,7 @@ const Prompt = () => {
         <aside className="chat-sidebar">
           <div className="chat-sidebar-header">
             <h2>채팅 내역</h2>
-            <button className="chat-new-btn" onClick={handleCreateChatDraft}>
+            <button className="chat-new-btn" onClick={() => handleCreateChat()}>
               <AiOutlinePlus size={20} />
             </button>
           </div>
@@ -650,95 +528,14 @@ const Prompt = () => {
             {chatHistory.map((chat) => (
               <li
                 key={chat.id}
-                className={
-                  (selectedChat === chat.id ? "active " : "") +
-                  (editingChatId === chat.id ? "editing" : "")
-                }
-                onClick={() => setSelectedChat(chat.id)}
-              >
-                {chat.isDraft ? (
-                  <span className="chat-dots">{'.'.repeat(dotAnim + 1)}</span>
-                ) : (
-                  <div>
-                    {editingChatId === chat.id ? (
-                      <input
-                        className="chat-title-edit-input"
-                        value={editingTitle}
-                        autoFocus
-                        onChange={e => setEditingTitle(e.target.value)}
-                        onBlur={() => {
-                          if (editingTitle.trim() === "") {
-                            setEditingChatId(null);
-                          } else {
-                            setChatHistory(prev => prev.map(c => c.id === chat.id ? { ...c, title: editingTitle } : c));
-                            setEditingChatId(null);
-                          }
-                        }}
-                        onKeyDown={e => {
-                          if (e.key === 'Enter') {
-                            if (editingTitle.trim() === "") {
-                              setEditingChatId(null);
-                            } else {
-                              setChatHistory(prev => prev.map(c => c.id === chat.id ? { ...c, title: editingTitle } : c));
-                              setEditingChatId(null);
-                            }
-                          } else if (e.key === 'Escape') {
-                            setEditingChatId(null);
-                          }
-                        }}
-                        style={{ fontSize: '1em', width: '90px', padding: '2px 6px', borderRadius: '4px', border: '1px solid #ddd' }}
-                      />
-                    ) : (
-                      <>
-                        <span className="chat-title-text-sidebar">{chat.title || `Chat ${chat.id}`}</span>
-                        <div className="chat-actions">
-                          <button
-                            className="chat-edit-btn"
-                            onClick={e => {
-                              e.stopPropagation();
-                              setEditingChatId(chat.id);
-                              setEditingTitle(chat.title || "");
-                            }}
-                            tabIndex={-1}
-                            title="제목 수정"
-                          >
-                            <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M14.7 2.29a1 1 0 0 1 1.42 1.42l-1.09 1.09-1.42-1.42 1.09-1.09zm-2.12 2.12l1.42 1.42-8.3 8.3a1 1 0 0 0-.26.45l-1 3a1 1 0 0 0 1.26 1.26l3-1a1 1 0 0 0 .45-.26l8.3-8.3-1.42-1.42-8.3 8.3-1.09-1.09 8.3-8.3z" fill="#888"/></svg>
-                          </button>
-                          <button
-                            className="chat-delete-btn"
-                            onClick={e => {
-                              e.stopPropagation();
-                              setDeletingChatId(chat.id);
-                            }}
-                            tabIndex={-1}
-                            title="채팅 삭제"
-                          >
-                            <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M7 8v6m3-6v6m3-10V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2M4 6h12m-1 0v10a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h10z" stroke="#888" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                          </button>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                )}
+                className={selectedChat === chat.id ? "active" : ""}
+                onClick={() => setSelectedChat(chat.id)}>
+                Chat {chat.id}
               </li>
             ))}
           </ul>
         </aside>
       )}
-      {deletingChatId && (
-        <div className={"chat-delete-modal-overlay show"}>
-          <div className="chat-delete-modal">
-            <div className="chat-delete-modal-title">채팅을 삭제하시겠습니까?</div>
-            <div className="chat-delete-modal-desc">이 작업은 되돌릴 수 없습니다.</div>
-            <div className="chat-delete-modal-actions">
-              <button className="chat-delete-modal-cancel" onClick={() => setDeletingChatId(null)}>취소</button>
-              <button className="chat-delete-modal-confirm" onClick={() => {
-                setChatHistory(prev => prev.filter(c => c.id !== deletingChatId));
-                if (selectedChat === deletingChatId) setSelectedChat(null);
-                setDeletingChatId(null);
-              }}>삭제</button>
-            </div>
-          </div>
       <div className="chat-main">
         <div className="chat-messages" ref={messagesEndRef}>
           {currentMessages.map((msg, idx) => (
@@ -811,150 +608,68 @@ const Prompt = () => {
             </React.Fragment>
           ))}
         </div>
-      )}
-      <div className="chat-main">
-        {selectedChat === null ? (
-          <div className="chat-empty-guide">
-            <div className="chat-empty-title">채팅방을 클릭하여 렌트하기</div>
-            <div className="chat-empty-desc">왼쪽 채팅방 목록에서 채팅을 선택하거나 새 채팅을 시작해보세요.<br/>렌트카 상담이 이곳에 표시됩니다.</div>
-          </div>
-        ) : (
-          <>
-            <div className="chat-messages" ref={messagesEndRef} onClick={() => inputRef.current?.focus()}>
-            {selectedChat !== null && !chatHistory.find(c => c.id === selectedChat)?.isDraft && (
-          <div className="chat-title-bar">
-            <div className="chat-title-text">{chatHistory.find(c => c.id === selectedChat)?.title || ''}</div>
-            <div className="chat-title-date">
-              {(() => {
-                const chat = chatHistory.find(c => c.id === selectedChat);
-                if (!chat) return null;
-                const format = (dateStr) => {
-                  if (!dateStr) return '';
-                  const d = new Date(dateStr);
-                  return d.toLocaleString('ko-KR', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit',
-                    hour12: false
-                  }).replace(/\. /g, '.').replace(/\.$/, '');
-                };
-                return (
-                  <>
-                    <span className="chat-date-created">{format(chat.createdAt)} 생성됨</span><br />
-                    <span className="chat-date-updated">{format(chat.lastMessageAt)} 업데이트</span>
-                  </>
-                );
-              })()}
-            </div>
-          </div>
-        )}    
-              {currentMessages.map((msg, idx) => (
-                <React.Fragment key={idx}>
-                  <div className={`chat-message${msg.mine ? " mine" : ""}`}>
-                    {msg.text.split("\n").map((line, i) => (
-                      <span key={i}>
-                        {line}
-                        <br />
-                      </span>
-                    ))}
-                  </div>
-                  {showCalendar && msg.showCalendarAfter && (
-                    <div className="calendar-popup">
-                      <DatePicker
-                          selectsRange
-                          startDate={dateRange[0]}
-                          endDate={dateRange[1]}
-                          onChange={(update) => {
-                            // 날짜가 이미 선택 완료되었으면 무시
-                            if (dateRange[0] && dateRange[1]) return;
-                            setDateRange(update);
-                          }}
-                          inline
-                          minDate={new Date()}
-                          locale="ko"
-                      />
-                    </div>
-                  )}
-                  {showMap && msg.showMapAfter && (
-                    <div className="map-container" ref={mapContainer} />
-                  )}
-                  {showCars && msg.showCarsAfter && (
-                    <div className="cars-list">
-                        {isLoadingRecommendations ? (
-                            <p>추천 차량을 불러오는 중... ⏳</p>
-                        ) : recommendedCars.length > 0 ? (
-                            <>
-                                <p>추천드릴&nbsp;<span style={{ fontSize: '20px'}}> 차량</span> 을 찾아왔습니다! &nbsp;🚗</p>
-                                <div className="car-cards">
-                                    {recommendedCars.map((car, idx) => (
-                                        <div
-                                            key={car.car_id || idx}
-                                            ref={(el) => (carItemRefs.current[idx] = el)}
-                                            onClick={() => {
-                                                carItemRefs.current[idx]?.scrollIntoView({
-                                                    behavior: "smooth",
-                                                    inline: "center", // 가로 중앙 정렬
-                                                    block: "nearest", // 세로는 그대로
-                                                });
-                                            }}
-                                            style={{ display: "inline-block", cursor: "pointer" }}
-                                        >
-                                            <CarItemCard car={car} dateRange={dateRange} />
-                                        </div>
-                                    ))}
-                                </div>
-                            </>
-                        ) : (
-                            <p>추천 가능한 차량이 없습니다. 다른 조건으로 다시 시도해보세요. 😅</p>
-                        )}
-                    </div>
-                  )}
-                </React.Fragment>
-              ))}
-            </div>
-            {selectedChat !== null && chatHistory.find(c => c.id === selectedChat)?.isDraft ? (
-              <form className="chat-input-bar" onSubmit={e => {
-                e.preventDefault();
-                if (!input.trim()) return;
-                handleFirstMessage(input.trim());
-                setInput("");
-              }}>
-                <input
-                  type="text"
-                  placeholder="무엇을 물어보고 싶으신가요?"
-                  value={input}
-                  onChange={e => setInput(e.target.value)}
-                  autoFocus
-                />
-                <button type="submit" className="chat-send-btn" disabled={!input.trim()}>
-                  <HiArrowUp className="arrow-up" />
-                </button>
-              </form>
-            ) : (
-              <form className="chat-input-bar" onSubmit={handleSubmit}>
-                <button type="button" className="chat-add-btn">
-                  <AiOutlinePlus size={20} />
-                </button>
-                <input
-                  type="text"
-                  placeholder={showCalendar ? "날짜를 선택해주세요" : isLoadingRecommendations ? "추천 중..." : "채팅을 입력하세요"}
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  disabled={showCalendar || isLoadingRecommendations}
-                />
-                <button
-                    type="submit"
-                    className="chat-send-btn"
-                    disabled={showCalendar || isLoadingRecommendations}>
-                  <HiArrowUp className="arrow-up" />
-                </button>
-              </form>
-            )}
-          </>
-        )}
+        {/*/!* 🧪 API 테스트 버튼들 (개발용) *!/*/}
+        {/*<div style={{ padding: '10px', backgroundColor: '#f8f9fa', borderTop: '1px solid #dee2e6' }}>*/}
+        {/*  <div style={{ fontSize: '12px', marginBottom: '8px', color: '#6c757d' }}>🧪 데이터 확인 (개발용)</div>*/}
+        {/*  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>*/}
+        {/*    <button*/}
+        {/*      type="button"*/}
+        {/*      onClick={async () => {*/}
+        {/*        try {*/}
+        {/*          const response = await fetch('http://localhost:8080/api/debug/data-summary');*/}
+        {/*          const data = await response.json();*/}
+        {/*          console.log('📊 데이터 요약:', data);*/}
+        {/*          alert(`데이터 요약:\n전체 차량: ${data.totalCars}개\n전체 지점: ${data.totalAgencies}개\n\n지역별 차량 수:\n${Object.entries(data.carsByLocation).map(([location, count]) => `${location}: ${count}개`).join('\n')}`);*/}
+        {/*        } catch (error) {*/}
+        {/*          console.error('데이터 확인 실패:', error);*/}
+        {/*        }*/}
+        {/*      }}*/}
+        {/*      style={{ padding: '4px 8px', fontSize: '11px', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '4px' }}*/}
+        {/*    >*/}
+        {/*      📊 데이터 요약*/}
+        {/*    </button>*/}
+        {/*    <button*/}
+        {/*      type="button"*/}
+        {/*      onClick={() => testLocationAgencies('서울')}*/}
+        {/*      style={{ padding: '4px 8px', fontSize: '11px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '4px' }}*/}
+        {/*    >*/}
+        {/*      서울 지점*/}
+        {/*    </button>*/}
+        {/*    <button*/}
+        {/*      type="button"*/}
+        {/*      onClick={() => testLocationAgencies('부산')}*/}
+        {/*      style={{ padding: '4px 8px', fontSize: '11px', backgroundColor: '#17a2b8', color: 'white', border: 'none', borderRadius: '4px' }}*/}
+        {/*    >*/}
+        {/*      부산 지점*/}
+        {/*    </button>*/}
+        {/*    <button*/}
+        {/*      type="button"*/}
+        {/*      onClick={() => testLocationAgencies('제주')}*/}
+        {/*      style={{ padding: '4px 8px', fontSize: '11px', backgroundColor: '#ffc107', color: 'black', border: 'none', borderRadius: '4px' }}*/}
+        {/*    >*/}
+        {/*      제주 지점*/}
+        {/*    </button>*/}
+        {/*  </div>*/}
+        {/*</div>*/}
+
+        <form className="chat-input-bar" onSubmit={handleSubmit}>
+          <button type="button" className="chat-add-btn">
+            <AiOutlinePlus size={20} />
+          </button>
+          <input
+            type="text"
+            placeholder={showCalendar ? "날짜를 선택해주세요" : isLoadingRecommendations ? "추천 중..." : "채팅을 입력하세요"}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            disabled={showCalendar || isLoadingRecommendations}
+          />
+          <button
+              type="submit"
+              className="chat-send-btn"
+              disabled={showCalendar || isLoadingRecommendations}>
+            <HiArrowUp className="arrow-up" />
+          </button>
+        </form>
       </div>
       {isSignUpOpen && (
           <SignUp isOpen={isSignUpOpen} onClose={() => setIsSignUpOpen(false)} />

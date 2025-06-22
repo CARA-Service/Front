@@ -6,8 +6,6 @@ const ReservationModal = ({ car, dateRange, onClose, onPayment, appearDelay = 0 
   const [showConfirm, setShowConfirm] = useState(false);
   const contentRef = useRef(null);
   const [visible, setVisible] = useState(false);
-  const [userInfo, setUserInfo] = useState({ name: '', phone: '' });
-  const [previewImage, setPreviewImage] = useState(car.image_url);
 
   useEffect(() => {
     const timer = setTimeout(() => setVisible(true), appearDelay);
@@ -18,13 +16,9 @@ const ReservationModal = ({ car, dateRange, onClose, onPayment, appearDelay = 0 
     };
   }, [appearDelay]);
 
-  const handleInputChange = (e) => {
-    setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    onPayment(userInfo); // 입력값 전달
+    onPayment(); // 결제모달로 전환
   };
 
   // 바깥 클릭 시 안내 모달
@@ -58,10 +52,10 @@ const ReservationModal = ({ car, dateRange, onClose, onPayment, appearDelay = 0 
         <div className="reservation-modal-header-row">
           <div className="reservation-modal-car-image">
             <img
-              src={previewImage}
+              src={car.image_url}
               alt={`${car.manufacturer} ${car.model_name}`}
               onError={(e) => {
-                console.error("이미지 로드 실패:", previewImage);
+                console.error("이미지 로드 실패:", car.image_url);
                 e.target.src = "./default-profile.png";
               }}
             />
@@ -92,11 +86,11 @@ const ReservationModal = ({ car, dateRange, onClose, onPayment, appearDelay = 0 
           <form onSubmit={handleSubmit}>
             <label>
               <span>이름</span>
-              <input type="text" name="name" value={userInfo.name} onChange={handleInputChange} />
+              <input type="text" name="name" />
             </label>
             <label>
               <span>연락처</span>
-              <input type="tel" name="phone" value={userInfo.phone} onChange={handleInputChange} />
+              <input type="tel" name="phone" />
             </label>
             <label>
               <span>대여기간</span>
