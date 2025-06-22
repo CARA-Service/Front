@@ -41,7 +41,6 @@ const Prompt = () => {
   const [isLoadingRecommendations, setIsLoadingRecommendations] = useState(false); // 로딩 상태
   const [currentAgencies, setCurrentAgencies] = useState([]); // 현재 표시할 지점들
   const [currentLocation, setCurrentLocation] = useState("제주도"); // 현재 지역
-  const [gptRecommendationMessage, setGptRecommendationMessage] = useState(""); // GPT 추천 메시지
   const is400px = use400px();
   const messagesEndRef = useRef(null);
   const [isSignUpOpen, setIsSignUpOpen] = useState(false); // 해더 추가용
@@ -163,15 +162,13 @@ const Prompt = () => {
     setIsLoadingRecommendations(true);
     try {
       const apiResponse = await getRecommendations(userInput);
-      const { cars, gptMessage } = transformRecommendationData(apiResponse);
-      setRecommendedCars(cars);
-      setGptRecommendationMessage(gptMessage);
-      return cars;
+      const transformedCars = transformRecommendationData(apiResponse);
+      setRecommendedCars(transformedCars);
+      return transformedCars;
     } catch (error) {
       console.error('추천 API 호출 실패:', error);
       // 에러 시 빈 배열 반환
       setRecommendedCars([]);
-      setGptRecommendationMessage("");
       return [];
     } finally {
       setIsLoadingRecommendations(false);
@@ -426,7 +423,6 @@ const Prompt = () => {
         setRecommendedCars([]);
         setCurrentAgencies([]);
         setDateRange([null, null]);
-        setGptRecommendationMessage("");
 
         // 이전 메시지들의 지도/차량 플래그 제거
         setChatHistory((prev) =>
@@ -574,12 +570,6 @@ const Prompt = () => {
                         <p>추천 차량을 불러오는 중... ⏳</p>
                     ) : recommendedCars.length > 0 ? (
                         <>
-                            {/* GPT 추천 메시지 표시 */}
-                            {gptRecommendationMessage && (
-                                <div className="gpt-recommendation-message">
-                                    <p>{gptRecommendationMessage}</p>
-                                </div>
-                            )}
                             <p>추천드릴&nbsp;<span style={{ fontSize: '20px'}}> 차량</span> 을 찾아왔습니다! &nbsp;🚗</p>
                             <div className="car-cards">
                                 {recommendedCars.map((car, idx) => (

@@ -35,6 +35,7 @@ const PaymentModal = ({
   const [showConfirm, setShowConfirm] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const defaultImage = '/G70_Kia.png';
@@ -68,24 +69,28 @@ const PaymentModal = ({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // 예약 정보 생성
-    const reservation = {
-      id: Date.now(),
-      carName: brand + ' ' + model,
-      carImage: imageUrl,
-      date: dateRange && dateRange[0] ? dateRange[0].toLocaleDateString() : '',
-      time: dateRange && dateRange[0] ? dateRange[0].toLocaleTimeString() : '',
-      price: totalPrice,
-      paymentMethod: paymentMethods.find((m) => m.id === selected)?.label,
-      insurances: selectedInsurances.map(id => insuranceOptions.find(opt => opt.id === id)?.label).filter(Boolean),
-      userName: userInfo.name || '',
-      userPhone: userInfo.phone || '',
-      status: '결제완료',
-    };
-    const prev = JSON.parse(localStorage.getItem('reservations') || '[]');
-    localStorage.setItem('reservations', JSON.stringify([...prev, reservation]));
-    window.dispatchEvent(new Event('storageChange'));
-    setShowSuccess(true);
+    setLoading(true);
+    setTimeout(() => {
+      // 예약 정보 생성
+      const reservation = {
+        id: Date.now(),
+        carName: brand + ' ' + model,
+        carImage: imageUrl,
+        date: dateRange && dateRange[0] ? dateRange[0].toLocaleDateString() : '',
+        time: dateRange && dateRange[0] ? dateRange[0].toLocaleTimeString() : '',
+        price: totalPrice,
+        paymentMethod: paymentMethods.find((m) => m.id === selected)?.label,
+        insurances: selectedInsurances.map(id => insuranceOptions.find(opt => opt.id === id)?.label).filter(Boolean),
+        userName: userInfo.name || '',
+        userPhone: userInfo.phone || '',
+        status: '결제완료',
+      };
+      const prev = JSON.parse(localStorage.getItem('reservations') || '[]');
+      localStorage.setItem('reservations', JSON.stringify([...prev, reservation]));
+      window.dispatchEvent(new Event('storageChange'));
+      setLoading(false);
+      setShowSuccess(true);
+    }, 1200);
   };
 
   const handleBack = () => {
@@ -235,6 +240,14 @@ const PaymentModal = ({
               <button className="pay-success-btn" onClick={() => navigate("/reservation-history")}>예약기록으로 이동</button>
               <button className="pay-success-btn close" onClick={() => { setShowSuccess(false); if (onClose) onClose(); }}>닫기</button>
             </div>
+          </div>
+        </div>
+      )}
+      {loading && (
+        <div className="pay-loading-backdrop">
+          <div className="pay-loading-modal">
+            <div className="pay-loading-spinner"></div>
+            <div className="pay-loading-text">결제중..</div>
           </div>
         </div>
       )}
