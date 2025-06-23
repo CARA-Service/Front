@@ -7,20 +7,29 @@ import CarItemCard from "../../components/CarItemCard/CarItemCard.jsx";
 import "../../components/CarItemCard/CarItemCard.css";
 import Header from "../../components/Header/Header.jsx";
 import "./PromptPage.css";
-import use400px from "../../hooks/use400px.jsx";
+import use500px from "../../hooks/use500px.jsx";
 import SignUp from "../SignUp/SignUp.jsx";
 import { HiArrowUp } from "react-icons/hi";
 import { AiOutlinePlus } from "react-icons/ai";
-import { getRecommendations, transformRecommendationData } from "../../api/recommendationAPI.js";
-import { getAgenciesByLocation, getAllAgencies, transformAgencyData } from "../../api/agencyAPI.js";
-
+import {
+  getRecommendations,
+  transformRecommendationData,
+} from "../../api/recommendationAPI.js";
+import {
+  getAgenciesByLocation,
+  getAllAgencies,
+  transformAgencyData,
+} from "../../api/agencyAPI.js";
 
 registerLocale("ko", ko);
 
 const RENTAL_CAR_LOCATIONS = [
   { name: "제주공항 렌트카", address: "제주특별자치도 제주시 공항로 2" },
   { name: "행복 렌트카", address: "제주특별자치도 제주시 삼성로9길 27" },
-  { name: "제주 로얄 렌트카", address: "제주특별자치도 제주시 용담일동 2823-7" },
+  {
+    name: "제주 로얄 렌트카",
+    address: "제주특별자치도 제주시 용담일동 2823-7",
+  },
 ];
 
 const REQUIRED_DOCS = [
@@ -38,11 +47,12 @@ const Prompt = () => {
   const [showMap, setShowMap] = useState(false);
   const [showCars, setShowCars] = useState(false);
   const [recommendedCars, setRecommendedCars] = useState([]); // API에서 받은 추천 차량
-  const [isLoadingRecommendations, setIsLoadingRecommendations] = useState(false); // 로딩 상태
+  const [isLoadingRecommendations, setIsLoadingRecommendations] =
+    useState(false); // 로딩 상태
   const [currentAgencies, setCurrentAgencies] = useState([]); // 현재 표시할 지점들
   const [currentLocation, setCurrentLocation] = useState("제주도"); // 현재 지역
   const [gptRecommendationMessage, setGptRecommendationMessage] = useState(""); // GPT 추천 메시지
-  const is400px = use400px();
+  const is500px = use500px();
   const messagesEndRef = useRef(null);
   const [isSignUpOpen, setIsSignUpOpen] = useState(false); // 해더 추가용
 
@@ -50,10 +60,9 @@ const Prompt = () => {
   const map = useRef(null);
   const markers = useRef([]);
 
-  const carItemRefs = useRef([]);  // 차량 자세히 보기시 화면 가운데로 이동
+  const carItemRefs = useRef([]); // 차량 자세히 보기시 화면 가운데로 이동
 
-
-    const currentMessages =
+  const currentMessages =
     chatHistory.find((chat) => chat.id === selectedChat)?.messages || [];
 
   // 카카오맵 SDK 로드
@@ -95,7 +104,7 @@ const Prompt = () => {
     }
     // 지도 새로 생성
     const mapOption = {
-      center: new window.kakao.maps.LatLng(33.5027469615008,126.508826280302),
+      center: new window.kakao.maps.LatLng(33.5027469615008, 126.508826280302),
       level: 7,
     };
     map.current = new window.kakao.maps.Map(mapContainer.current, mapOption);
@@ -103,13 +112,17 @@ const Prompt = () => {
 
     // 마커 생성 (동적 지점 사용)
     const geocoder = new window.kakao.maps.services.Geocoder();
-    const locationsToUse = currentAgencies.length > 0 ? currentAgencies : RENTAL_CAR_LOCATIONS;
+    const locationsToUse =
+      currentAgencies.length > 0 ? currentAgencies : RENTAL_CAR_LOCATIONS;
 
     locationsToUse.forEach((location) => {
       // API에서 받은 데이터는 latitude/longitude가 있고, 기본 데이터는 address 검색 필요
       if (location.latitude && location.longitude) {
         // API 데이터: 직접 좌표 사용
-        const coords = new window.kakao.maps.LatLng(location.latitude, location.longitude);
+        const coords = new window.kakao.maps.LatLng(
+          location.latitude,
+          location.longitude
+        );
         const marker = new window.kakao.maps.Marker({
           map: map.current,
           position: coords,
@@ -124,7 +137,10 @@ const Prompt = () => {
         // 기본 데이터: 주소 검색
         geocoder.addressSearch(location.address, (result, status) => {
           if (status === window.kakao.maps.services.Status.OK) {
-            const coords = new window.kakao.maps.LatLng(result[0].y, result[0].x);
+            const coords = new window.kakao.maps.LatLng(
+              result[0].y,
+              result[0].x
+            );
             const marker = new window.kakao.maps.Marker({
               map: map.current,
               position: coords,
@@ -168,7 +184,7 @@ const Prompt = () => {
       setGptRecommendationMessage(gptMessage);
       return cars;
     } catch (error) {
-      console.error('추천 API 호출 실패:', error);
+      console.error("추천 API 호출 실패:", error);
       // 에러 시 빈 배열 반환
       setRecommendedCars([]);
       setGptRecommendationMessage("");
@@ -183,7 +199,71 @@ const Prompt = () => {
     try {
       console.log(`🏢 ${location} 지역 지점 조회 중...`);
       const agencies = await getAgenciesByLocation(location);
+      console.log(`📊 ${location} 지역 조회 결과: ${agencies.length}개 지점`);
       const transformedAgencies = transformAgencyData(agencies);
+
+      // 지점이 없는 경우 폴백 로직
+      if (agencies.length === 0) {
+        console.log(`❌ ${location} 지역에 지점이 없음, 폴백 시도...`);
+
+        // 폴백 매핑 테이블
+        const fallbackMap = {
+          홍대: "서울",
+          강남: "서울",
+          마포: "서울",
+          수원: "경기",
+          인천: "서울",
+        };
+
+        const fallbackLocation = fallbackMap[location] || "서울"; // 기본 서울 폴백
+        console.log(`🗺️ 폴백 매핑: ${location} → ${fallbackLocation}`);
+
+        if (fallbackLocation !== location) {
+          console.log(`🔄 폴백 실행: ${location} → ${fallbackLocation}`);
+          try {
+            const fallbackAgencies = await getAgenciesByLocation(
+              fallbackLocation
+            );
+            console.log(`📊 폴백 조회 결과: ${fallbackAgencies.length}개 지점`);
+
+            if (fallbackAgencies.length > 0) {
+              console.log(
+                `✅ 폴백 성공: ${fallbackLocation}에서 ${fallbackAgencies.length}개 지점 발견`
+              );
+              const transformedFallbackAgencies =
+                transformAgencyData(fallbackAgencies);
+              setCurrentAgencies(transformedFallbackAgencies);
+              setCurrentLocation(fallbackLocation);
+
+              // 폴백 안내 메시지
+              setTimeout(() => {
+                addMessage({
+                  text: `💡 ${location} 지역에는 직접적인 렌터카 지점이 없어서, 인근 ${fallbackLocation} 지역의 지점들을 안내해드립니다.`,
+                  mine: false,
+                });
+              }, 1000);
+
+              return {
+                agencies: transformedFallbackAgencies,
+                actualLocation: fallbackLocation,
+              };
+            } else {
+              console.log(
+                `❌ 폴백도 실패: ${fallbackLocation}에도 지점이 없음`
+              );
+            }
+          } catch (fallbackError) {
+            console.error(`❌ 폴백 API 호출 실패:`, fallbackError);
+          }
+        } else {
+          console.log(`⚠️ 폴백 불가: ${location}은 이미 기본 지역`);
+        }
+      } else {
+        console.log(
+          `✅ ${location} 지역에서 ${agencies.length}개 지점 발견, 폴백 불필요`
+        );
+      }
+
       setCurrentAgencies(transformedAgencies);
 
       // 실제 조회된 지점들의 지역 확인
@@ -191,22 +271,27 @@ const Prompt = () => {
       if (agencies.length > 0) {
         // 첫 번째 지점의 이름에서 실제 지역 추출
         const firstAgencyName = agencies[0].agencyName;
-        if (firstAgencyName.includes('서울')) actualLocation = '서울';
-        else if (firstAgencyName.includes('부산')) actualLocation = '부산';
-        else if (firstAgencyName.includes('제주')) actualLocation = '제주';
+        if (firstAgencyName.includes("서울")) actualLocation = "서울";
+        else if (firstAgencyName.includes("부산")) actualLocation = "부산";
+        else if (firstAgencyName.includes("제주")) actualLocation = "제주";
         // 필요시 다른 지역들도 추가
       }
 
       setCurrentLocation(actualLocation);
-      console.log(`🏢 ${location} → ${actualLocation} 지점 ${transformedAgencies.length}개 로딩 완료`);
+      console.log(
+        `🏢 ${location} → ${actualLocation} 지점 ${transformedAgencies.length}개 로딩 완료`
+      );
       return { agencies: transformedAgencies, actualLocation };
     } catch (error) {
-      console.error('지점 조회 실패:', error);
+      console.error("지점 조회 실패:", error);
       // 에러 시 기본 제주도 지점 사용
       setCurrentAgencies([
         { name: "제주공항 렌트카", address: "제주특별자치도 제주시 공항로 2" },
         { name: "행복 렌트카", address: "제주특별자치도 제주시 삼성로9길 27" },
-        { name: "제주 로얄 렌트카", address: "제주특별자치도 제주시 용담일동 2823-7" },
+        {
+          name: "제주 로얄 렌트카",
+          address: "제주특별자치도 제주시 용담일동 2823-7",
+        },
       ]);
       setCurrentLocation("제주도");
 
@@ -227,9 +312,34 @@ const Prompt = () => {
   // 사용자 입력에서 지역 추출
   const extractLocationFromInput = (userInput) => {
     // 서울 구 단위 지역들 (서울로 매핑)
-    const seoulDistricts = ["강남", "강북", "강서", "강동", "관악", "광진", "구로", "금천", "노원",
-                           "도봉", "동대문", "동작", "마포", "서대문", "서초", "성동", "성북",
-                           "송파", "양천", "영등포", "용산", "은평", "종로", "중구", "중랑"];
+    const seoulDistricts = [
+      "강남",
+      "강북",
+      "강서",
+      "강동",
+      "관악",
+      "광진",
+      "구로",
+      "금천",
+      "노원",
+      "도봉",
+      "동대문",
+      "동작",
+      "마포",
+      "서대문",
+      "서초",
+      "성동",
+      "성북",
+      "송파",
+      "양천",
+      "영등포",
+      "용산",
+      "은평",
+      "종로",
+      "중구",
+      "중랑",
+      "홍대",
+    ];
 
     // 서울 구 단위 체크
     for (const district of seoulDistricts) {
@@ -240,8 +350,26 @@ const Prompt = () => {
     }
 
     // 광역시/도 단위 체크
-    const locations = ["서울", "부산", "대구", "인천", "광주", "대전", "울산", "세종", "제주",
-                      "경기", "강원", "충북", "충남", "전북", "전남", "경북", "경남", "제주도"];
+    const locations = [
+      "서울",
+      "부산",
+      "대구",
+      "인천",
+      "광주",
+      "대전",
+      "울산",
+      "세종",
+      "제주",
+      "경기",
+      "강원",
+      "충북",
+      "충남",
+      "전북",
+      "전남",
+      "경북",
+      "경남",
+      "제주도",
+    ];
 
     for (const location of locations) {
       if (userInput.includes(location)) {
@@ -255,13 +383,37 @@ const Prompt = () => {
   // 렌터카 관련 키워드 체크
   const isCarRentalRelated = (userInput) => {
     const keywords = [
-      "여행", "렌트카", "렌터카", "차량", "추천", "예약",
-      "서울", "부산", "대구", "인천", "광주", "대전", "울산", "세종", "제주",
-      "경기", "강원", "충북", "충남", "전북", "전남", "경북", "경남",
-      "자동차", "승용차", "SUV", "세단", "해치백"
+      "여행",
+      "렌트카",
+      "렌터카",
+      "차량",
+      "추천",
+      "예약",
+      "서울",
+      "부산",
+      "대구",
+      "인천",
+      "광주",
+      "대전",
+      "울산",
+      "세종",
+      "제주",
+      "경기",
+      "강원",
+      "충북",
+      "충남",
+      "전북",
+      "전남",
+      "경북",
+      "경남",
+      "자동차",
+      "승용차",
+      "SUV",
+      "세단",
+      "해치백",
     ];
 
-    return keywords.some(keyword => userInput.includes(keyword));
+    return keywords.some((keyword) => userInput.includes(keyword));
   };
 
   // 🧪 API 테스트 함수들
@@ -274,7 +426,7 @@ const Prompt = () => {
 
       // 지역별 분류
       const locationGroups = {};
-      agencies.forEach(agency => {
+      agencies.forEach((agency) => {
         const location = agency.location || "기타";
         if (!locationGroups[location]) locationGroups[location] = [];
         locationGroups[location].push(agency.agencyName);
@@ -309,8 +461,9 @@ const Prompt = () => {
       addMessage({ text: responseText, mine: false });
 
       // 현재 채팅의 가장 최근 사용자 메시지를 가져와서 API 호출
-      const currentChat = chatHistory.find(chat => chat.id === selectedChat);
-      const userMessages = currentChat?.messages.filter(msg => msg.mine) || [];
+      const currentChat = chatHistory.find((chat) => chat.id === selectedChat);
+      const userMessages =
+        currentChat?.messages.filter((msg) => msg.mine) || [];
       const latestUserInput = userMessages[userMessages.length - 1]?.text || "";
 
       console.log("🔍 최신 사용자 입력:", latestUserInput);
@@ -334,28 +487,32 @@ const Prompt = () => {
       setShowCars(true);
 
       // 지역별 지점 로딩 후 실제 지역으로 차량 추천
-      fetchAgenciesByLocation(location).then((result) => {
-        const actualLocation = result.actualLocation;
-        console.log(`🔄 지점 조회 완료: ${location} → ${actualLocation}`);
+      fetchAgenciesByLocation(location)
+        .then((result) => {
+          const actualLocation = result.actualLocation;
+          console.log(`🔄 지점 조회 완료: ${location} → ${actualLocation}`);
 
-        // 실제 지역으로 차량 추천 API 호출
-        const fullUserInput = `${actualLocation}에서 차량 추천해줘 ${format(start)}부터 ${format(end)}까지`;
-        console.log("🚗 API 호출 입력 (실제 지역):", fullUserInput);
+          // 실제 지역으로 차량 추천 API 호출
+          const fullUserInput = `${actualLocation}에서 차량 추천해줘 ${format(
+            start
+          )}부터 ${format(end)}까지`;
+          console.log("🚗 API 호출 입력 (실제 지역):", fullUserInput);
 
-        return fetchRecommendations(fullUserInput);
-      }).then((cars) => {
-        // 차량 추천 완료 후 달력 숨기고 입력창 활성화
-        setTimeout(() => {
-          setShowCalendar(false);
-          // 추가 질문 유도 메시지
-          if (cars.length > 0) {
-            addMessage({
-              text: "다른 지역의 차량도 궁금하시거나, 추가 질문이 있으시면 언제든 말씀해주세요! 😊",
-              mine: false,
-            });
-          }
-        }, 2000); // 2초 후 달력 숨김 및 안내 메시지
-      });
+          return fetchRecommendations(fullUserInput);
+        })
+        .then((cars) => {
+          // 차량 추천 완료 후 달력 숨기고 입력창 활성화
+          setTimeout(() => {
+            setShowCalendar(false);
+            // 추가 질문 유도 메시지
+            if (cars.length > 0) {
+              addMessage({
+                text: "다른 지역의 차량도 궁금하시거나, 추가 질문이 있으시면 언제든 말씀해주세요! 😊",
+                mine: false,
+              });
+            }
+          }, 2000); // 2초 후 달력 숨김 및 안내 메시지
+        });
     }
   }, [dateRange, selectedChat]); // chatHistory 제거
 
@@ -369,6 +526,7 @@ const Prompt = () => {
     setCurrentAgencies([]);
     setCurrentLocation("제주도");
     setDateRange([null, null]);
+    setGptRecommendationMessage("");
   };
 
   const handleCreateChat = (initialMessage, botResponse) => {
@@ -391,6 +549,7 @@ const Prompt = () => {
     setCurrentAgencies([]);
     setCurrentLocation("제주도");
     setDateRange([null, null]);
+    setGptRecommendationMessage("");
   };
 
   const handleSubmit = (e) => {
@@ -400,15 +559,15 @@ const Prompt = () => {
     if (chatHistory.length === 0) {
       const isCarRelated = isCarRentalRelated(input);
       const botResponse = isCarRelated
-          ? {
-              text: "언제부터 언제까지 이용하시겠어요?",
-              mine: false,
-              showCalendarAfter: true,
-            }
-          : {
-              text: "죄송합니다. 차량 예약 관련 질문만 도와드릴 수 있어요.",
-              mine: false,
-            };
+        ? {
+            text: "언제부터 언제까지 이용하시겠어요?",
+            mine: false,
+            showCalendarAfter: true,
+          }
+        : {
+            text: "죄송합니다. 차량 예약 관련 질문만 도와드릴 수 있어요.",
+            mine: false,
+          };
       handleCreateChat({ text: input, mine: true }, botResponse);
       if (isCarRelated) {
         setShowCalendar(true);
@@ -438,7 +597,7 @@ const Prompt = () => {
                     ...msg,
                     showMapAfter: false,
                     showCarsAfter: false,
-                  }))
+                  })),
                 }
               : chat
           )
@@ -458,43 +617,47 @@ const Prompt = () => {
         });
 
         // API 호출
-        fetchRecommendations(input).then((cars) => {
-          if (cars.length === 0) {
-            // 시스템 메시지가 있는 경우 해당 메시지 표시
-            addMessage({
-              text: "죄송합니다. 해당 조건에 맞는 차량을 찾을 수 없습니다. 다른 조건으로 다시 시도해보세요.",
-              mine: false,
-            });
-          } else {
-            // 차량이 있으면 지도와 차량 목록 표시
-            const location = extractLocationFromInput(input);
-            addMessage({
-              text: `${location} 지역 차량 추천 결과입니다.`,
-              mine: false,
-              showMapAfter: true,
-              showCarsAfter: true,
-            });
-            setShowMap(true);
-            setShowCars(true);
+        fetchRecommendations(input)
+          .then((cars) => {
+            if (cars.length === 0) {
+              // 시스템 메시지가 있는 경우 해당 메시지 표시
+              addMessage({
+                text: "죄송합니다. 해당 조건에 맞는 차량을 찾을 수 없습니다. 다른 조건으로 다시 시도해보세요.",
+                mine: false,
+              });
+            } else {
+              // 차량이 있으면 지도와 차량 목록 표시
+              const location = extractLocationFromInput(input);
+              addMessage({
+                text: `${location} 지역 차량 추천 결과입니다.`,
+                mine: false,
+                showMapAfter: true,
+                showCarsAfter: true,
+              });
+              setShowMap(true);
+              setShowCars(true);
 
-            // 지점 조회 후 실제 지역으로 차량 재추천
-            fetchAgenciesByLocation(location).then((result) => {
-              const actualLocation = result.actualLocation;
-              if (actualLocation !== location) {
-                console.log(`🔄 지역 변경: ${location} → ${actualLocation}, 차량 재추천 필요`);
-                // 실제 지역으로 차량 재추천
-                const newInput = input.replace(location, actualLocation);
-                return fetchRecommendations(newInput);
-              }
+              // 지점 조회 후 실제 지역으로 차량 재추천
+              fetchAgenciesByLocation(location).then((result) => {
+                const actualLocation = result.actualLocation;
+                if (actualLocation !== location) {
+                  console.log(
+                    `🔄 지역 변경: ${location} → ${actualLocation}, 차량 재추천 필요`
+                  );
+                  // 실제 지역으로 차량 재추천
+                  const newInput = input.replace(location, actualLocation);
+                  return fetchRecommendations(newInput);
+                }
+              });
+            }
+          })
+          .catch((error) => {
+            console.error("API 호출 에러:", error);
+            addMessage({
+              text: "죄송합니다. 일시적인 오류가 발생했습니다. 다시 시도해주세요.",
+              mine: false,
             });
-          }
-        }).catch((error) => {
-          console.error('API 호출 에러:', error);
-          addMessage({
-            text: "죄송합니다. 일시적인 오류가 발생했습니다. 다시 시도해주세요.",
-            mine: false,
           });
-        });
       }
     }
     setInput("");
@@ -508,16 +671,16 @@ const Prompt = () => {
 
   return (
     <div className="chat-root">
-      <Header onSignUpClick={() => setIsSignUpOpen(true)} />
-      {is400px && (
+      {is500px && (
         <PromptHeader
           chatHistory={chatHistory}
           onSelectChat={handleSelectChat}
           onCreateChat={handleCreateChat}
         />
       )}
-      {!is400px && (
+      {!is500px && (
         <aside className="chat-sidebar">
+          <Header onSignUpClick={() => setIsSignUpOpen(true)} />
           <div className="chat-sidebar-header">
             <h2>채팅 내역</h2>
             <button className="chat-new-btn" onClick={() => handleCreateChat()}>
@@ -537,142 +700,126 @@ const Prompt = () => {
         </aside>
       )}
       <div className="chat-main">
-        <div className="chat-messages" ref={messagesEndRef}>
-          {currentMessages.map((msg, idx) => (
-            <React.Fragment key={idx}>
-              <div className={`chat-message${msg.mine ? " mine" : ""}`}>
-                {msg.text.split("\n").map((line, i) => (
-                  <span key={i}>
-                    {line}
-                    <br />
-                  </span>
-                ))}
-              </div>
-              {showCalendar && msg.showCalendarAfter && (
-                <div className="calendar-popup">
-                  <DatePicker
-                      selectsRange
-                      startDate={dateRange[0]}
-                      endDate={dateRange[1]}
-                      onChange={(update) => {
-                        // 날짜가 이미 선택 완료되었으면 무시
-                        if (dateRange[0] && dateRange[1]) return;
-                        setDateRange(update);
-                      }}
-                      inline
-                      minDate={new Date()}
-                      locale="ko"
-                  />
-                </div>
-              )}
-              {showMap && msg.showMapAfter && (
-                <div className="map-container" ref={mapContainer} />
-              )}
-              {showCars && msg.showCarsAfter && (
-                <div className="cars-list">
-                    {isLoadingRecommendations ? (
+        {selectedChat === null ? (
+          <div className="chat-empty-guide">
+            <div className="chat-empty-title">채팅방을 클릭하여 렌트하기</div>
+            <div className="chat-empty-desc">
+              왼쪽 채팅방 목록에서 채팅을 선택하거나 새 채팅을 시작해보세요.
+              <br />
+              렌트카 상담이 이곳에 표시됩니다.
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="chat-messages" ref={messagesEndRef}>
+              {currentMessages.map((msg, idx) => (
+                <React.Fragment key={idx}>
+                  <div className={`chat-message${msg.mine ? " mine" : ""}`}>
+                    {msg.text.split("\n").map((line, i) => (
+                      <span key={i}>
+                        {line}
+                        <br />
+                      </span>
+                    ))}
+                  </div>
+                  {showCalendar && msg.showCalendarAfter && (
+                    <div className="calendar-popup">
+                      <DatePicker
+                        selectsRange
+                        startDate={dateRange[0]}
+                        endDate={dateRange[1]}
+                        onChange={(update) => {
+                          // 날짜가 이미 선택 완료되었으면 무시
+                          if (dateRange[0] && dateRange[1]) return;
+                          setDateRange(update);
+                        }}
+                        inline
+                        minDate={new Date()}
+                        locale="ko"
+                      />
+                    </div>
+                  )}
+                  {showMap && msg.showMapAfter && (
+                    <div className="map-container" ref={mapContainer} />
+                  )}
+                  {showCars && msg.showCarsAfter && (
+                    <div className="cars-list">
+                      {isLoadingRecommendations ? (
                         <p>추천 차량을 불러오는 중... ⏳</p>
-                    ) : recommendedCars.length > 0 ? (
+                      ) : recommendedCars.length > 0 ? (
                         <>
-                            {/* GPT 추천 메시지 표시 */}
-                            {gptRecommendationMessage && (
-                                <div className="gpt-recommendation-message">
-                                    <p>{gptRecommendationMessage}</p>
-                                </div>
-                            )}
-                            <p>추천드릴&nbsp;<span style={{ fontSize: '20px'}}> 차량</span> 을 찾아왔습니다! &nbsp;🚗</p>
-                            <div className="car-cards">
-                                {recommendedCars.map((car, idx) => (
-                                    <div
-                                        key={car.car_id || idx}
-                                        ref={(el) => (carItemRefs.current[idx] = el)}
-                                        onClick={() => {
-                                            carItemRefs.current[idx]?.scrollIntoView({
-                                                behavior: "smooth",
-                                                inline: "center", // 가로 중앙 정렬
-                                                block: "nearest", // 세로는 그대로
-                                            });
-                                        }}
-                                        style={{ display: "inline-block", cursor: "pointer" }}
-                                    >
-                                        <CarItemCard car={car} dateRange={dateRange} />
-                                    </div>
-                                ))}
+                          {/* GPT 추천 메시지 표시 */}
+                          {gptRecommendationMessage && (
+                            <div className="gpt-recommendation-message">
+                              <p>{gptRecommendationMessage}</p>
                             </div>
+                          )}
+                          <p>
+                            추천드릴&nbsp;
+                            <span style={{ fontSize: "20px" }}> 차량</span> 을
+                            찾아왔습니다! &nbsp;🚗
+                          </p>
+                          <div className="car-cards">
+                            {recommendedCars.map((car, idx) => (
+                              <div
+                                key={car.car_id || idx}
+                                ref={(el) => (carItemRefs.current[idx] = el)}
+                                onClick={() => {
+                                  carItemRefs.current[idx]?.scrollIntoView({
+                                    behavior: "smooth",
+                                    inline: "center", // 가로 중앙 정렬
+                                    block: "nearest", // 세로는 그대로
+                                  });
+                                }}
+                                style={{
+                                  display: "inline-block",
+                                  cursor: "pointer",
+                                }}>
+                                <CarItemCard car={car} dateRange={dateRange} />
+                              </div>
+                            ))}
+                          </div>
                         </>
-                    ) : (
-                        <p>추천 가능한 차량이 없습니다. 다른 조건으로 다시 시도해보세요. 😅</p>
-                    )}
-                </div>
-              )}
-            </React.Fragment>
-          ))}
-        </div>
-        {/*/!* 🧪 API 테스트 버튼들 (개발용) *!/*/}
-        {/*<div style={{ padding: '10px', backgroundColor: '#f8f9fa', borderTop: '1px solid #dee2e6' }}>*/}
-        {/*  <div style={{ fontSize: '12px', marginBottom: '8px', color: '#6c757d' }}>🧪 데이터 확인 (개발용)</div>*/}
-        {/*  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>*/}
-        {/*    <button*/}
-        {/*      type="button"*/}
-        {/*      onClick={async () => {*/}
-        {/*        try {*/}
-        {/*          const response = await fetch('http://localhost:8080/api/debug/data-summary');*/}
-        {/*          const data = await response.json();*/}
-        {/*          console.log('📊 데이터 요약:', data);*/}
-        {/*          alert(`데이터 요약:\n전체 차량: ${data.totalCars}개\n전체 지점: ${data.totalAgencies}개\n\n지역별 차량 수:\n${Object.entries(data.carsByLocation).map(([location, count]) => `${location}: ${count}개`).join('\n')}`);*/}
-        {/*        } catch (error) {*/}
-        {/*          console.error('데이터 확인 실패:', error);*/}
-        {/*        }*/}
-        {/*      }}*/}
-        {/*      style={{ padding: '4px 8px', fontSize: '11px', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '4px' }}*/}
-        {/*    >*/}
-        {/*      📊 데이터 요약*/}
-        {/*    </button>*/}
-        {/*    <button*/}
-        {/*      type="button"*/}
-        {/*      onClick={() => testLocationAgencies('서울')}*/}
-        {/*      style={{ padding: '4px 8px', fontSize: '11px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '4px' }}*/}
-        {/*    >*/}
-        {/*      서울 지점*/}
-        {/*    </button>*/}
-        {/*    <button*/}
-        {/*      type="button"*/}
-        {/*      onClick={() => testLocationAgencies('부산')}*/}
-        {/*      style={{ padding: '4px 8px', fontSize: '11px', backgroundColor: '#17a2b8', color: 'white', border: 'none', borderRadius: '4px' }}*/}
-        {/*    >*/}
-        {/*      부산 지점*/}
-        {/*    </button>*/}
-        {/*    <button*/}
-        {/*      type="button"*/}
-        {/*      onClick={() => testLocationAgencies('제주')}*/}
-        {/*      style={{ padding: '4px 8px', fontSize: '11px', backgroundColor: '#ffc107', color: 'black', border: 'none', borderRadius: '4px' }}*/}
-        {/*    >*/}
-        {/*      제주 지점*/}
-        {/*    </button>*/}
-        {/*  </div>*/}
-        {/*</div>*/}
-
-        <form className="chat-input-bar" onSubmit={handleSubmit}>
-          <button type="button" className="chat-add-btn">
-            <AiOutlinePlus size={20} />
-          </button>
-          <input
-            type="text"
-            placeholder={showCalendar ? "날짜를 선택해주세요" : isLoadingRecommendations ? "추천 중..." : "채팅을 입력하세요"}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            disabled={showCalendar || isLoadingRecommendations}
-          />
-          <button
-              type="submit"
-              className="chat-send-btn"
-              disabled={showCalendar || isLoadingRecommendations}>
-            <HiArrowUp className="arrow-up" />
-          </button>
-        </form>
+                      ) : (
+                        <p>
+                          추천 가능한 차량이 없습니다. 다른 조건으로 다시
+                          시도해보세요. 😅
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
+            <form className="chat-input-bar" onSubmit={handleSubmit}>
+              <button type="button" className="chat-add-btn">
+                <AiOutlinePlus size={20} />
+              </button>
+              <input
+                type="text"
+                placeholder={
+                  showCalendar
+                    ? "날짜를 선택해주세요"
+                    : isLoadingRecommendations
+                    ? "추천 중..."
+                    : "채팅을 입력하세요"
+                }
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                disabled={showCalendar || isLoadingRecommendations}
+              />
+              <button
+                type="submit"
+                className="chat-send-btn"
+                disabled={showCalendar || isLoadingRecommendations}>
+                <HiArrowUp className="arrow-up" />
+              </button>
+            </form>
+          </>
+        )}
       </div>
       {isSignUpOpen && (
-          <SignUp isOpen={isSignUpOpen} onClose={() => setIsSignUpOpen(false)} />
+        <SignUp isOpen={isSignUpOpen} onClose={() => setIsSignUpOpen(false)} />
       )}
     </div>
   );

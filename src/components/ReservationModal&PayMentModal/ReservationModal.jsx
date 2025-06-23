@@ -1,9 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
-// api/Reservations&PaymentAPI에서 getUserProfile을 가져오고 있으므로
-// 별도의 axios import나 함수 중복 정의 없이 사용해야 합니다.
-// axios를 직접 사용할 필요가 없다면 import하지 않아도 됩니다.
+import { getCarImagePath } from "../../utils/carImageMapping.js";
 import { getUserProfile } from "../../api/Reservations&PaymentAPI";
-import "./ReservationModal.css"; // CSS 파일 경로 확인 필요
+import "./ReservationModal.css";
 
 const ReservationModal = ({
   car,
@@ -12,10 +10,27 @@ const ReservationModal = ({
   onPayment,
   appearDelay = 0,
 }) => {
+  console.log("🔥 ReservationModal 렌더링됨!");
+  console.log("🚗 전달받은 차량 데이터:", car);
+
   const [startDate, endDate] = dateRange || [null, null];
   const [showConfirm, setShowConfirm] = useState(false);
   const contentRef = useRef(null);
   const [visible, setVisible] = useState(false);
+  const [userInfo, setUserInfo] = useState({ name: "", phone: "" });
+  const [previewImage, setPreviewImage] = useState(() => {
+    if (!car || !car.model_name || !car.manufacturer) {
+      console.error("❌ 차량 데이터가 없습니다:", car);
+      return "/default-profile.png";
+    }
+    const imagePath = getCarImagePath(car.model_name, car.manufacturer);
+    console.log("🖼️ 차량 이미지 경로:", imagePath);
+    console.log("🚗 차량 정보:", {
+      model_name: car.model_name,
+      manufacturer: car.manufacturer,
+    });
+    return imagePath;
+  });
   const [userProfile, setUserProfile] = useState(null);
 
   // userProfile 상태가 바뀔 때마다 콘솔로 확인
@@ -44,10 +59,13 @@ const ReservationModal = ({
     };
   }, [appearDelay]);
 
-  // onSubmit 핸들러
+  const handleInputChange = (e) => {
+    setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    onPayment(); // 결제모달로 전환
+    onPayment(userInfo); // 입력값 전달
   };
 
   // 바깥 클릭 시 안내 모달
@@ -57,18 +75,15 @@ const ReservationModal = ({
     }
   };
 
-  // 예약 취소 확인 모달 핸들러
   const handleConfirm = () => {
     setShowConfirm(false);
     onClose();
   };
 
-  // 예약 취소 모달에서 '아니오' 클릭
   const handleCancel = () => {
     setShowConfirm(false);
   };
 
-  // 모달 닫기
   const handleClose = () => {
     setVisible(false);
     setTimeout(onClose, 280);
@@ -83,10 +98,10 @@ const ReservationModal = ({
         <div className="reservation-modal-header-row">
           <div className="reservation-modal-car-image">
             <img
-              src={car.image_url}
+              src={previewImage}
               alt={`${car.manufacturer} ${car.model_name}`}
               onError={(e) => {
-                console.error("이미지 로드 실패:", car.image_url);
+                console.error("이미지 로드 실패:", previewImage);
                 e.target.src = "./default-profile.png";
               }}
             />
@@ -124,6 +139,7 @@ const ReservationModal = ({
                 name="name"
                 value={userProfile?.fullName || ""}
                 readOnly
+                onChange={handleInputChange}
               />
             </label>
             <label>
@@ -133,6 +149,7 @@ const ReservationModal = ({
                 name="phone"
                 value={userProfile?.phoneNumber || ""}
                 readOnly
+                onChange={handleInputChange}
               />
             </label>
             <label>

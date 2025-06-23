@@ -14,12 +14,12 @@ import ProfilePage from "./pages/ProfilePage/ProfilePage.jsx";
 import ReservationsPage from "./pages/ReservationsPage/ReservationsPage.jsx";
 import HistoryPage from "./pages/HistoryPage/HistoryPage.jsx";
 import AnalysisPage from "./pages/AnalysisPage/AnalysisPage.jsx";
-import KakaoCallback from "./pages/Auth/KakaoCallback.jsx";
+import KakaoCallback from "./pages/Auth/KakaoCallBack.jsx";
 // 차후 삭제 필요
 import CarListPage from "./pages/CarListPage/CarListPage";
 // 차후 삭제 필요
 import "./App.css";
-import use400px from "./hooks/use400px";
+// import use400px from "./hooks/use500px";
 
 function ErrorFallback({ error, resetErrorBoundary }) {
   return (
@@ -33,10 +33,10 @@ function ErrorFallback({ error, resetErrorBoundary }) {
 
 function App() {
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
-  const is400px = use400px();
+  // const is500px = use500px();
   const location = useLocation();
 
-  const hideHeader = location.pathname === "/prompt" && is400px;
+  // const hideHeader = location.pathname === "/prompt" && is500px;
 
   return (
     <AuthProvider>
