@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./PayMentModal.css";
 import { FaCreditCard, FaRegMoneyBillAlt, FaCheckCircle } from "react-icons/fa";
 import { MdClose, MdArrowBack, MdInfoOutline } from "react-icons/md";
+import { getCarImagePath } from "../../utils/carImageMapping.js";
 
 const paymentMethods = [
   { id: "visa", label: "Visa", icon: "/visa.png" },
@@ -38,12 +39,21 @@ const PaymentModal = ({
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const defaultImage = '/G70_Kia.png';
-  const defaultBrand = '기아';
-  const defaultModel = 'G70';
-  const imageUrl = imageError ? defaultImage : (car.imageUrl || defaultImage);
-  const brand = car.brand || defaultBrand;
-  const model = car.model || defaultModel;
+  // 실제 차량 데이터만 사용, 기본값 제거
+  const brand = car?.manufacturer || car?.brand || '차량정보없음';
+  const model = car?.model_name || car?.model || '모델정보없음';
+
+  // 이미지 경로 생성
+  let imageUrl;
+  if (imageError) {
+    imageUrl = '/default-profile.png';
+  } else if (car?.model_name && car?.manufacturer) {
+    imageUrl = getCarImagePath(car.model_name, car.manufacturer);
+  } else if (car?.model && car?.brand) {
+    imageUrl = getCarImagePath(car.model, car.brand);
+  } else {
+    imageUrl = '/default-profile.png';
+  }
 
   useEffect(() => {
     document.body.classList.add('modal-open');

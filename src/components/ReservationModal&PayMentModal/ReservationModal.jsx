@@ -1,13 +1,26 @@
 import React, { useState, useRef, useEffect } from "react";
+import { getCarImagePath } from "../../utils/carImageMapping.js";
 import "./ReservationModal.css";
 
 const ReservationModal = ({ car, dateRange, onClose, onPayment, appearDelay = 0 }) => {
+  console.log("🔥 ReservationModal 렌더링됨!");
+  console.log("🚗 전달받은 차량 데이터:", car);
+
   const [startDate, endDate] = dateRange || [null, null];
   const [showConfirm, setShowConfirm] = useState(false);
   const contentRef = useRef(null);
   const [visible, setVisible] = useState(false);
   const [userInfo, setUserInfo] = useState({ name: '', phone: '' });
-  const [previewImage, setPreviewImage] = useState(car.image_url);
+  const [previewImage, setPreviewImage] = useState(() => {
+    if (!car || !car.model_name || !car.manufacturer) {
+      console.error("❌ 차량 데이터가 없습니다:", car);
+      return "/default-profile.png";
+    }
+    const imagePath = getCarImagePath(car.model_name, car.manufacturer);
+    console.log("🖼️ 차량 이미지 경로:", imagePath);
+    console.log("🚗 차량 정보:", { model_name: car.model_name, manufacturer: car.manufacturer });
+    return imagePath;
+  });
 
   useEffect(() => {
     const timer = setTimeout(() => setVisible(true), appearDelay);
