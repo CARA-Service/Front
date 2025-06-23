@@ -1,12 +1,16 @@
 /* 회원가입 모달 오버레이 */
 .signup-overlay {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: rgba(0,0,0,0.5);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  overflow: auto;
 }
 
 .signup-container {
@@ -165,14 +169,14 @@
 }
 
 .social-button.google {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   font-size: 3rem;
 }
 
 .social-button.naver {
-  background-color: #03C75A;
+  background-color: #03c75a;
   font-size: 1.1rem;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .social-button:hover {
@@ -205,12 +209,24 @@
 /* ErrorPopup 컴포넌트 스타일은 ErrorPopup.css에서 관리 */
 
 @keyframes slideIn {
-  from { transform: translateY(-30px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 @keyframes slideOut {
-  from { transform: translateY(0); opacity: 1; }
-  to { transform: translateY(-30px); opacity: 0; }
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
 }
 
 .signup-step-fields {
@@ -218,14 +234,14 @@
   width: 100%;
   /* top: 0; */
   /* left: 0; */
-  transition: transform 0.38s cubic-bezier(0.4,0,0.2,1), opacity 0.38s;
+  transition: transform 0.38s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.38s;
   opacity: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
   z-index: 1;
   animation-duration: 0.38s;
-  animation-timing-function: cubic-bezier(0.4,0,0.2,1);
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 .signup-step-fields.slide-in-right {
   animation-name: signup-slidein-right;
@@ -246,10 +262,22 @@
 }
 
 @keyframes signup-slidein-right {
-  from { transform: translateX(40px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+  from {
+    transform: translateX(40px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 @keyframes signup-slidein-left {
-  from { transform: translateX(-40px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+  from {
+    transform: translateX(-40px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }

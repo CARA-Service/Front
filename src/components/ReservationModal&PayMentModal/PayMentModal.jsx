@@ -31,7 +31,7 @@ const PaymentModal = ({
   currency = "원",
 }) => {
   const [selected, setSelected] = useState("visa");
-  const [selectedInsurances, setSelectedInsurances] = useState([]);
+  const [selectedInsurance, setSelectedInsurance] = useState(null);
   const [hide, setHide] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -40,41 +40,36 @@ const PaymentModal = ({
   const navigate = useNavigate();
 
   // 실제 차량 데이터만 사용, 기본값 제거
-  const brand = car?.manufacturer || car?.brand || '차량정보없음';
-  const model = car?.model_name || car?.model || '모델정보없음';
+  const brand = car?.manufacturer || car?.brand || "차량정보없음";
+  const model = car?.model_name || car?.model || "모델정보없음";
 
   // 이미지 경로 생성
   let imageUrl;
   if (imageError) {
-    imageUrl = '/default-profile.png';
+    imageUrl = "/default-profile.png";
   } else if (car?.model_name && car?.manufacturer) {
     imageUrl = getCarImagePath(car.model_name, car.manufacturer);
   } else if (car?.model && car?.brand) {
     imageUrl = getCarImagePath(car.model, car.brand);
   } else {
-    imageUrl = '/default-profile.png';
+    imageUrl = "/default-profile.png";
   }
 
   useEffect(() => {
-    document.body.classList.add('modal-open');
+    document.body.classList.add("modal-open");
     return () => {
-      document.body.classList.remove('modal-open');
+      document.body.classList.remove("modal-open");
     };
   }, []);
 
   // 보험 총액 계산
-  const insuranceTotal = selectedInsurances.reduce(
-    (sum, id) => sum + (insuranceOptions.find((opt) => opt.id === id)?.price || 0),
-    0
-  );
+  const insuranceTotal = selectedInsurance
+    ? insuranceOptions.find((opt) => opt.id === selectedInsurance)?.price || 0
+    : 0;
   const totalPrice = price + insuranceTotal;
 
   const handleInsuranceChange = (id) => {
-    setSelectedInsurances((prev) =>
-      prev.includes(id)
-        ? prev.filter((item) => item !== id)
-        : [...prev, id]
-    );
+    setSelectedInsurance(id);
   };
 
   const handleSubmit = (e) => {
@@ -84,20 +79,30 @@ const PaymentModal = ({
       // 예약 정보 생성
       const reservation = {
         id: Date.now(),
-        carName: brand + ' ' + model,
+        carName: brand + " " + model,
         carImage: imageUrl,
-        date: dateRange && dateRange[0] ? dateRange[0].toLocaleDateString() : '',
-        time: dateRange && dateRange[0] ? dateRange[0].toLocaleTimeString() : '',
+        date:
+          dateRange && dateRange[0] ? dateRange[0].toLocaleDateString() : "",
+        time:
+          dateRange && dateRange[0] ? dateRange[0].toLocaleTimeString() : "",
         price: totalPrice,
         paymentMethod: paymentMethods.find((m) => m.id === selected)?.label,
-        insurances: selectedInsurances.map(id => insuranceOptions.find(opt => opt.id === id)?.label).filter(Boolean),
-        userName: userInfo.name || '',
-        userPhone: userInfo.phone || '',
-        status: '결제완료',
+        insurances: selectedInsurance
+          ? [
+              insuranceOptions.find((opt) => opt.id === selectedInsurance)
+                ?.label,
+            ].filter(Boolean)
+          : [],
+        userName: userInfo.name || "",
+        userPhone: userInfo.phone || "",
+        status: "결제완료",
       };
-      const prev = JSON.parse(localStorage.getItem('reservations') || '[]');
-      localStorage.setItem('reservations', JSON.stringify([...prev, reservation]));
-      window.dispatchEvent(new Event('storageChange'));
+      const prev = JSON.parse(localStorage.getItem("reservations") || "[]");
+      localStorage.setItem(
+        "reservations",
+        JSON.stringify([...prev, reservation])
+      );
+      window.dispatchEvent(new Event("storageChange"));
       setLoading(false);
       setShowSuccess(true);
     }, 1200);
@@ -111,7 +116,10 @@ const PaymentModal = ({
   };
 
   const handleClose = () => setShowConfirm(true);
-  const handleConfirm = () => { setShowConfirm(false); onClose(); };
+  const handleConfirm = () => {
+    setShowConfirm(false);
+    onClose();
+  };
   const handleCancel = () => setShowConfirm(false);
 
   return (
@@ -130,10 +138,16 @@ const PaymentModal = ({
         {/* 차량 정보 */}
         <div className="pay-modal-car-info">
           <div className="pay-modal-car-image">
-            <img src={imageUrl} alt={`${brand} ${model}`} onError={() => setImageError(true)} />
+            <img
+              src={imageUrl}
+              alt={`${brand} ${model}`}
+              onError={() => setImageError(true)}
+            />
           </div>
           <div className="pay-modal-car-details">
-            <div className="pay-modal-car-model">{brand} {model}</div>
+            <div className="pay-modal-car-model">
+              {brand} {model}
+            </div>
             <div className="pay-modal-car-meta">
               <span>연식: 2023년</span>
               <span>연료: 가솔린</span>
@@ -150,7 +164,9 @@ const PaymentModal = ({
             {paymentMethods.map((m) => (
               <label
                 key={m.id}
-                className={`pay-method-row ${selected === m.id ? "selected" : ""}`}>
+                className={`pay-method-row ${
+                  selected === m.id ? "selected" : ""
+                }`}>
                 <input
                   type="radio"
                   name="payment"
@@ -175,25 +191,28 @@ const PaymentModal = ({
             {insuranceOptions.map((opt) => (
               <label key={opt.id} className="pay-insurance-row">
                 <input
-                  type="checkbox"
-                  checked={selectedInsurances.includes(opt.id)}
+                  type="radio"
+                  name="insurance" // 같은 name을 지정해야 그룹으로 동작[2][4][5]
+                  checked={selectedInsurance === opt.id}
                   onChange={() => handleInsuranceChange(opt.id)}
                 />
                 <span className="pay-insurance-label">{opt.label}</span>
-                <span className="pay-insurance-price">+{opt.price.toLocaleString()}원</span>
+                <span className="pay-insurance-price">
+                  +{opt.price.toLocaleString()}원
+                </span>
               </label>
             ))}
           </div>
         </div>
         {/* 안내문구 */}
         <div className="pay-modal-help">
-          <MdInfoOutline style={{marginRight:4,verticalAlign:'middle'}} />
+          <MdInfoOutline style={{ marginRight: 4, verticalAlign: "middle" }} />
           결제가 어렵습니까 휴먼? 돈이 없는게 아니라? <a href="#">도움말.</a>
         </div>
         {/* 결제 요약 */}
         <div className="pay-modal-summary">
           <div className="pay-summary-left">
-            <FaCheckCircle style={{color:'#1e8fff',marginRight:4}} />
+            <FaCheckCircle style={{ color: "#1e8fff", marginRight: 4 }} />
             <span className={`pay-method-icon small`}>
               <img
                 src={paymentMethods.find((m) => m.id === selected).icon}
@@ -222,10 +241,13 @@ const PaymentModal = ({
         {/* 버튼 */}
         <div className="pay-modal-actions">
           <button type="button" className="pay-back-btn" onClick={handleBack}>
-            <MdArrowBack style={{marginRight:4}} /> 뒤로가기
+            <MdArrowBack style={{ marginRight: 4 }} /> 뒤로가기
           </button>
-          <button type="submit" className="pay-submit-btn" onClick={handleSubmit}>
-            <FaCreditCard style={{marginRight:4}} /> 결제하기
+          <button
+            type="submit"
+            className="pay-submit-btn"
+            onClick={handleSubmit}>
+            <FaCreditCard style={{ marginRight: 4 }} /> 결제하기
           </button>
         </div>
       </div>
@@ -243,12 +265,32 @@ const PaymentModal = ({
       {showSuccess && (
         <div className="pay-success-modal-backdrop">
           <div className="pay-success-modal">
-            <div className="pay-success-title">예약이 성공적으로 완료되었습니다!</div>
-            <div className="pay-success-message">차량 예약이 정상적으로 처리되었습니다.<br/>차량 인수 및 이용 전, 예약 내역과 주의사항을 꼭 확인해 주세요.</div>
-            <div className="pay-success-warning">※ 예약 취소 시 위약금이 발생할 수 있습니다. 자세한 내용은 약관을 확인하세요.</div>
+            <div className="pay-success-title">
+              예약이 성공적으로 완료되었습니다!
+            </div>
+            <div className="pay-success-message">
+              차량 예약이 정상적으로 처리되었습니다.
+              <br />
+              차량 인수 및 이용 전, 예약 내역과 주의사항을 꼭 확인해 주세요.
+            </div>
+            <div className="pay-success-warning">
+              ※ 예약 취소 시 위약금이 발생할 수 있습니다. 자세한 내용은 약관을
+              확인하세요.
+            </div>
             <div className="pay-success-actions">
-              <button className="pay-success-btn" onClick={() => navigate("/reservation-history")}>예약기록으로 이동</button>
-              <button className="pay-success-btn close" onClick={() => { setShowSuccess(false); if (onClose) onClose(); }}>닫기</button>
+              <button
+                className="pay-success-btn"
+                onClick={() => navigate("/reservation-history")}>
+                예약기록으로 이동
+              </button>
+              <button
+                className="pay-success-btn close"
+                onClick={() => {
+                  setShowSuccess(false);
+                  if (onClose) onClose();
+                }}>
+                닫기
+              </button>
             </div>
           </div>
         </div>

@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './Login.css';
-import { SiNaver } from 'react-icons/si';
-import { FcGoogle } from 'react-icons/fc';
-import { RiKakaoTalkFill } from 'react-icons/ri';
-import { MdVisibility, MdVisibilityOff } from 'react-icons/md';
-import ErrorPopup from '../../components/ErrorPopup/ErrorPopup';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../../api/api"; // api.js 경로에 맞게 수정
+import "./Login.css";
+import { SiNaver } from "react-icons/si";
+import { FcGoogle } from "react-icons/fc";
+import { RiKakaoTalkFill } from "react-icons/ri";
+import { MdVisibility, MdVisibilityOff } from "react-icons/md";
+import ErrorPopup from "../../components/ErrorPopup/ErrorPopup";
 
 const Login = ({ isOpen, onClose, onSwitchSignUp }) => {
   const navigate = useNavigate();
   const [form, setForm] = useState({
-    loginId: '',
-    password: '',
+    loginId: "",
+    password: "",
     autoLogin: false,
   });
   const [error, setError] = useState(null);
@@ -21,37 +22,53 @@ const Login = ({ isOpen, onClose, onSwitchSignUp }) => {
     const { name, value, type, checked } = e.target;
     setForm((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // TODO: 로그인 처리 로직
-    setError('로그인 실패!');  // 무조건 오류 발생 차후 수정하셈
+    try {
+      const response = await api.post("/api/v1/auth/login", {
+        loginId: form.loginId,
+        password: form.password,
+      });
+      localStorage.setItem("token", response.data.token);
+      window.dispatchEvent(new Event("storageChange"));
+      onClose();
+      navigate("/");
+    } catch (error) {
+      console.error("로그인 실패:", error);
+      setError("로그인 실패!");
+    }
   };
 
   const handleSocialLogin = (provider) => {
-    // TODO: 소셜로그인 
-    localStorage.setItem('token', 'social-login-token');
-    
-    // 커스텀 이벤트 발생시켜 Header 컴포넌트에 로그인 상태 변경 알림
-    window.dispatchEvent(new Event('storageChange'));
-    
+    // TODO: 소셜로그인
+    localStorage.setItem("token", "social-login-token");
+    window.dispatchEvent(new Event("storageChange"));
     onClose();
   };
 
   const socialProviders = [
-    { key: 'kakao', icon: <RiKakaoTalkFill className="kakao-icon" />, className: 'kakao' },
-    { key: 'google', icon: <FcGoogle />, className: 'google' },
-    { key: 'naver', icon: <SiNaver />, className: 'naver' },
+    {
+      key: "kakao",
+      icon: <RiKakaoTalkFill className="kakao-icon" />,
+      className: "kakao",
+    },
+    { key: "google", icon: <FcGoogle />, className: "google" },
+    { key: "naver", icon: <SiNaver />, className: "naver" },
   ];
 
   if (!isOpen) return null;
 
   return (
-    <div className="login-overlay" onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
-      <div className="login-container" onClick={e => e.stopPropagation()}>
+    <div
+      className="login-overlay"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}>
+      <div className="login-container" onClick={(e) => e.stopPropagation()}>
         <h1 className="login-title">로그인</h1>
         <div className="login-divider" />
         <form className="login-form" onSubmit={handleLogin} autoComplete="off">
@@ -72,7 +89,7 @@ const Login = ({ isOpen, onClose, onSwitchSignUp }) => {
             <label htmlFor="login-password">비밀번호</label>
             <div className="password-input-wrapper">
               <input
-                type={passwordVisible ? 'text' : 'password'}
+                type={passwordVisible ? "text" : "password"}
                 name="password"
                 id="login-password"
                 value={form.password}
@@ -84,22 +101,35 @@ const Login = ({ isOpen, onClose, onSwitchSignUp }) => {
               <button
                 type="button"
                 className="password-toggle"
-                onClick={() => setPasswordVisible(v => !v)}
+                onClick={() => setPasswordVisible((v) => !v)}
                 tabIndex={-1}
-                aria-label={passwordVisible ? '비밀번호 숨기기' : '비밀번호 보기'}
-              >
+                aria-label={
+                  passwordVisible ? "비밀번호 숨기기" : "비밀번호 보기"
+                }>
                 {passwordVisible ? <MdVisibilityOff /> : <MdVisibility />}
               </button>
             </div>
           </div>
           <div className="login-options-row">
             <label className="auto-login">
-              <input type="checkbox" name="autoLogin" checked={form.autoLogin} onChange={handleInputChange} />
+              <input
+                type="checkbox"
+                name="autoLogin"
+                checked={form.autoLogin}
+                onChange={handleInputChange}
+              />
               자동로그인
             </label>
-            <button type="button" className="find-password" onClick={() => navigate('/find-password')}>비밀번호를 잊으셨나요?</button>
+            <button
+              type="button"
+              className="find-password"
+              onClick={() => navigate("/find-password")}>
+              비밀번호를 잊으셨나요?
+            </button>
           </div>
-          <button className="login-button" type="submit">로그인하기</button>
+          <button className="login-button" type="submit">
+            로그인하기
+          </button>
         </form>
         <div className="social-login-title">소셜로그인으로 함께하기</div>
         <div className="social-login social-row">
@@ -108,16 +138,20 @@ const Login = ({ isOpen, onClose, onSwitchSignUp }) => {
               key={key}
               className={`social-button ${className}`}
               type="button"
-              onClick={() => handleSocialLogin(key)}
-            >
+              onClick={() => handleSocialLogin(key)}>
               {icon}
             </button>
           ))}
         </div>
         <div className="login-divider" />
         <div className="signup-link-row">
-          <span>CARA 가 처음이신가요?</span>
-          <button className="signup-link" type="button" onClick={onSwitchSignUp}>회원가입 하기</button>
+          <span>CARA가 처음이신가요?</span>
+          <button
+            className="signup-link"
+            type="button"
+            onClick={onSwitchSignUp}>
+            회원가입 하기
+          </button>
         </div>
         <ErrorPopup error={error} onClose={() => setError(null)} />
       </div>
@@ -125,4 +159,4 @@ const Login = ({ isOpen, onClose, onSwitchSignUp }) => {
   );
 };
 
-export default Login; 
+export default Login;

@@ -35,7 +35,7 @@ body,
 
 .chat-sidebar h2 {
   font-size: 1.1rem;
-  margin: 1rem  ;
+  margin: 1rem;
   color: #333;
   font-weight: 600;
 }
@@ -87,7 +87,8 @@ body,
 .chat-sidebar li:hover .chat-actions {
   display: flex;
 }
-.chat-edit-btn, .chat-delete-btn {
+.chat-edit-btn,
+.chat-delete-btn {
   background: none;
   border: none;
   padding: 2px 4px;
@@ -102,12 +103,14 @@ body,
   border-radius: 4px;
   transition: background 0.15s;
 }
-.chat-edit-btn svg, .chat-delete-btn svg {
+.chat-edit-btn svg,
+.chat-delete-btn svg {
   width: 15px;
   height: 15px;
   display: block;
 }
-.chat-edit-btn:hover, .chat-delete-btn:hover {
+.chat-edit-btn:hover,
+.chat-delete-btn:hover {
   background: #f2f2f2;
 }
 
@@ -117,7 +120,7 @@ body,
   flex-direction: column;
   background: #fafbfc;
   min-width: 0;
-  height: 90vh;
+  /* height: 90vh; */
   position: relative;
   padding-top: 70px;
 }
@@ -194,11 +197,10 @@ body,
   white-space: pre-wrap; /* 줄바꿈 유지 */
 }
 
-
 .car-cards {
   display: flex;
   width: 100%;
-  overflow-x: auto;       /* 가로 스크롤 가능 */
+  overflow-x: auto; /* 가로 스크롤 가능 */
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
@@ -348,7 +350,7 @@ body,
   color: #888;
   background: #f8fafc;
   border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(30,64,175,0.04);
+  box-shadow: 0 2px 8px rgba(30, 64, 175, 0.04);
   margin: 32px 0;
   padding-top: 180px;
 }
@@ -374,8 +376,13 @@ body,
   animation: chat-dots-blink 1.2s infinite steps(1);
 }
 @keyframes chat-dots-blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
 }
 
 .chat-title-bar {
@@ -452,8 +459,11 @@ body,
 
 .chat-delete-modal-overlay {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.18);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.18);
   z-index: 2000;
   display: flex;
   align-items: center;
@@ -462,7 +472,7 @@ body,
 .chat-delete-modal {
   background: #fff;
   border-radius: 14px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.13);
   padding: 2rem 2.2rem 1.5rem 2.2rem;
   min-width: 270px;
   max-width: 90vw;

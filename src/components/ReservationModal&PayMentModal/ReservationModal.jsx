@@ -1,8 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
 import { getCarImagePath } from "../../utils/carImageMapping.js";
+import { getUserProfile } from "../../api/Reservations&PaymentAPI";
 import "./ReservationModal.css";
 
-const ReservationModal = ({ car, dateRange, onClose, onPayment, appearDelay = 0 }) => {
+const ReservationModal = ({
+  car,
+  dateRange,
+  onClose,
+  onPayment,
+  appearDelay = 0,
+}) => {
   console.log("🔥 ReservationModal 렌더링됨!");
   console.log("🚗 전달받은 차량 데이터:", car);
 
@@ -10,7 +17,7 @@ const ReservationModal = ({ car, dateRange, onClose, onPayment, appearDelay = 0 
   const [showConfirm, setShowConfirm] = useState(false);
   const contentRef = useRef(null);
   const [visible, setVisible] = useState(false);
-  const [userInfo, setUserInfo] = useState({ name: '', phone: '' });
+  const [userInfo, setUserInfo] = useState({ name: "", phone: "" });
   const [previewImage, setPreviewImage] = useState(() => {
     if (!car || !car.model_name || !car.manufacturer) {
       console.error("❌ 차량 데이터가 없습니다:", car);
@@ -18,16 +25,37 @@ const ReservationModal = ({ car, dateRange, onClose, onPayment, appearDelay = 0 
     }
     const imagePath = getCarImagePath(car.model_name, car.manufacturer);
     console.log("🖼️ 차량 이미지 경로:", imagePath);
-    console.log("🚗 차량 정보:", { model_name: car.model_name, manufacturer: car.manufacturer });
+    console.log("🚗 차량 정보:", {
+      model_name: car.model_name,
+      manufacturer: car.manufacturer,
+    });
     return imagePath;
   });
+  const [userProfile, setUserProfile] = useState(null);
 
+  // userProfile 상태가 바뀔 때마다 콘솔로 확인
+  useEffect(() => {
+    console.log("userProfile 상태:", userProfile);
+  }, [userProfile]);
+
+  // 모달 등장 및 데이터 호출
   useEffect(() => {
     const timer = setTimeout(() => setVisible(true), appearDelay);
-    document.body.classList.add('modal-open');
+    document.body.classList.add("modal-open");
+
+    // api/Reservations&PaymentAPI의 getUserProfile 사용
+    getUserProfile()
+      .then((profile) => {
+        setUserProfile(profile);
+        console.log("프로필 데이터:", profile);
+      })
+      .catch((error) => {
+        console.error("프로필 조회 실패:", error);
+      });
+
     return () => {
       clearTimeout(timer);
-      document.body.classList.remove('modal-open');
+      document.body.classList.remove("modal-open");
     };
   }, [appearDelay]);
 
@@ -66,8 +94,7 @@ const ReservationModal = ({ car, dateRange, onClose, onPayment, appearDelay = 0 
       <div
         className={`reservation-modal-content${visible ? " show" : " hide"}`}
         ref={contentRef}
-        onMouseDown={e => e.stopPropagation()}
-      >
+        onMouseDown={(e) => e.stopPropagation()}>
         <div className="reservation-modal-header-row">
           <div className="reservation-modal-car-image">
             <img
@@ -80,7 +107,9 @@ const ReservationModal = ({ car, dateRange, onClose, onPayment, appearDelay = 0 
             />
           </div>
           <div className="reservation-modal-car-header">
-            <h3>{car.manufacturer} {car.model_name}</h3>
+            <h3>
+              {car.manufacturer} {car.model_name}
+            </h3>
             <div className="reservation-modal-car-features-row">
               <div className="reservation-info-item">
                 <span className="reservation-info-label">연식</span>
@@ -105,11 +134,23 @@ const ReservationModal = ({ car, dateRange, onClose, onPayment, appearDelay = 0 
           <form onSubmit={handleSubmit}>
             <label>
               <span>이름</span>
-              <input type="text" name="name" value={userInfo.name} onChange={handleInputChange} />
+              <input
+                type="text"
+                name="name"
+                value={userProfile?.fullName || ""}
+                readOnly
+                onChange={handleInputChange}
+              />
             </label>
             <label>
               <span>연락처</span>
-              <input type="tel" name="phone" value={userInfo.phone} onChange={handleInputChange} />
+              <input
+                type="tel"
+                name="phone"
+                value={userProfile?.phoneNumber || ""}
+                readOnly
+                onChange={handleInputChange}
+              />
             </label>
             <label>
               <span>대여기간</span>
@@ -124,12 +165,10 @@ const ReservationModal = ({ car, dateRange, onClose, onPayment, appearDelay = 0 
                 readOnly
               />
             </label>
-            <label>
-              <span>총 금액</span>
-              <input type="text" name="totalPrice" value="계산중" readOnly />
-            </label>
             <div className="reservation-modal-actions">
-              <button type="button" onClick={handleClose}>닫기</button>
+              <button type="button" onClick={handleClose}>
+                닫기
+              </button>
               <button type="submit">예약 하기</button>
             </div>
           </form>
@@ -138,7 +177,9 @@ const ReservationModal = ({ car, dateRange, onClose, onPayment, appearDelay = 0 
       {showConfirm && (
         <div className="reservation-confirm-modal-backdrop">
           <div className="reservation-confirm-modal">
-            <p className="reservation-confirm-warning">입력하신 정보가 전부 삭제 됩니다</p>
+            <p className="reservation-confirm-warning">
+              입력하신 정보가 전부 삭제 됩니다
+            </p>
             <p>예약을 취소하시겠습니까?</p>
             <div className="reservation-confirm-actions">
               <button onClick={handleConfirm}>예</button>
