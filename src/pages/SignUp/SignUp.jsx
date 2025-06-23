@@ -5,6 +5,7 @@ import ErrorPopup from '../../components/ErrorPopup/ErrorPopup';
 import { SiNaver } from 'react-icons/si';
 import { FcGoogle } from 'react-icons/fc';
 import { RiKakaoTalkFill } from 'react-icons/ri';
+import api from '../../utils/api';
 import './SignUp.css';
 
 const SignUp = ({ isOpen, onClose, onSwitchLogin }) => {
@@ -13,6 +14,7 @@ const SignUp = ({ isOpen, onClose, onSwitchLogin }) => {
   const [error, setError] = useState(null);
   const [step, setStep] = useState(1);
   const [stepDirection, setStepDirection] = useState('right');
+  const [isLoading, setIsLoading] = useState(false);
   const [form, setForm] = useState({
     loginId: '',
     password: '',
@@ -33,8 +35,12 @@ const SignUp = ({ isOpen, onClose, onSwitchLogin }) => {
   ];
 
   const handleSocialLogin = (provider) => {
-    // TODO: 소셜 로그인 처리
-    setIsVerificationModalOpen(true);
+    if (provider === 'kakao') {
+      // 카카오 로그인 URL로 리다이렉트
+      const KAKAO_CLIENT_ID = import.meta.env.VITE_KAKAO_CLIENT_ID || '7c13edee67bab4b026ddc1256ec88eeb';
+      const REDIRECT_URI = encodeURIComponent('http://localhost:8080/api/v1/auth/kakao/callback');
+      window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+    }
   };
 
   const handleVerificationComplete = () => {
@@ -147,10 +153,58 @@ const SignUp = ({ isOpen, onClose, onSwitchLogin }) => {
     }
   };
 
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
-    // TODO: 회원가입 처리 로직
-    setIsVerificationModalOpen(true);
+    
+    // 폼 유효성 검사
+    if (!form.loginId || !form.password || !form.name || !form.email || 
+        !form.phoneNumber || !form.birthDate || !form.address) {
+      setError('모든 필드를 입력해주세요.');
+      return;
+    }
+    
+    if (form.password !== form.passwordConfirm) {
+      setPasswordError('비밀번호가 일치하지 않습니다.');
+      return;
+    }
+    
+    setIsLoading(true);
+    
+    try {
+      // 백엔드 회원가입 API 호출
+      await api.post('/api/v1/auth/signup', {
+        loginId: form.loginId,
+        password: form.password,
+        fullName: form.name,
+        email: form.email,
+        phoneNumber: form.phoneNumber,
+        birthDate: form.birthDate,
+        address: form.address
+      });
+      
+      // 회원가입 성공 시 본인인증 모달 표시
+      setIsVerificationModalOpen(true);
+      
+    } catch (err) {
+      console.error('회원가입 오류:', err);
+      
+      if (err.response) {
+        // 서버에서 응답이 왔지만 오류 상태 코드인 경우
+        if (err.response.status === 409) {
+          setError('이미 사용 중인 아이디입니다.');
+        } else {
+          setError(err.response.data?.message || '회원가입 처리 중 오류가 발생했습니다.');
+        }
+      } else if (err.request) {
+        // 요청이 전송되었지만 응답이 없는 경우
+        setError('서버와 통신할 수 없습니다. 네트워크 연결을 확인해주세요.');
+      } else {
+        // 요청 설정 중 오류가 발생한 경우
+        setError('회원가입 요청 중 오류가 발생했습니다.');
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   function renderStepFields() {
@@ -230,7 +284,9 @@ const SignUp = ({ isOpen, onClose, onSwitchLogin }) => {
             {step < 3 ? (
               <button type="button" className="signup-button" style={{ width: step > 1 ? '48%' : '100%' }} onClick={handleNext}>다음</button>
             ) : (
-              <button className="signup-button" type="submit" style={{ width: step > 1 ? '48%' : '100%' }}>회원가입</button>
+              <button className="signup-button" type="submit" style={{ width: step > 1 ? '48%' : '100%' }} disabled={isLoading}>
+                {isLoading ? '처리 중...' : '회원가입'}
+              </button>
             )}
           </div>
           <div className="social-login-title">소셜로그인으로 함께하기</div>
