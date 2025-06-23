@@ -41,6 +41,7 @@ const Prompt = () => {
   const [isLoadingRecommendations, setIsLoadingRecommendations] = useState(false); // 로딩 상태
   const [currentAgencies, setCurrentAgencies] = useState([]); // 현재 표시할 지점들
   const [currentLocation, setCurrentLocation] = useState("제주도"); // 현재 지역
+  const [gptRecommendationMessage, setGptRecommendationMessage] = useState(""); // GPT 추천 메시지
   const is400px = use400px();
   const messagesEndRef = useRef(null);
   const [isSignUpOpen, setIsSignUpOpen] = useState(false); // 해더 추가용
@@ -162,13 +163,15 @@ const Prompt = () => {
     setIsLoadingRecommendations(true);
     try {
       const apiResponse = await getRecommendations(userInput);
-      const transformedCars = transformRecommendationData(apiResponse);
-      setRecommendedCars(transformedCars);
-      return transformedCars;
+      const { cars, gptMessage } = transformRecommendationData(apiResponse);
+      setRecommendedCars(cars);
+      setGptRecommendationMessage(gptMessage);
+      return cars;
     } catch (error) {
       console.error('추천 API 호출 실패:', error);
       // 에러 시 빈 배열 반환
       setRecommendedCars([]);
+      setGptRecommendationMessage("");
       return [];
     } finally {
       setIsLoadingRecommendations(false);
@@ -180,7 +183,59 @@ const Prompt = () => {
     try {
       console.log(`🏢 ${location} 지역 지점 조회 중...`);
       const agencies = await getAgenciesByLocation(location);
+      console.log(`📊 ${location} 지역 조회 결과: ${agencies.length}개 지점`);
       const transformedAgencies = transformAgencyData(agencies);
+
+      // 지점이 없는 경우 폴백 로직
+      if (agencies.length === 0) {
+        console.log(`❌ ${location} 지역에 지점이 없음, 폴백 시도...`);
+
+        // 폴백 매핑 테이블
+        const fallbackMap = {
+          '홍대': '서울',
+          '강남': '서울',
+          '마포': '서울',
+          '수원': '경기',
+          '인천': '서울',
+        };
+
+        const fallbackLocation = fallbackMap[location] || '서울'; // 기본 서울 폴백
+        console.log(`🗺️ 폴백 매핑: ${location} → ${fallbackLocation}`);
+
+        if (fallbackLocation !== location) {
+          console.log(`🔄 폴백 실행: ${location} → ${fallbackLocation}`);
+          try {
+            const fallbackAgencies = await getAgenciesByLocation(fallbackLocation);
+            console.log(`📊 폴백 조회 결과: ${fallbackAgencies.length}개 지점`);
+
+            if (fallbackAgencies.length > 0) {
+              console.log(`✅ 폴백 성공: ${fallbackLocation}에서 ${fallbackAgencies.length}개 지점 발견`);
+              const transformedFallbackAgencies = transformAgencyData(fallbackAgencies);
+              setCurrentAgencies(transformedFallbackAgencies);
+              setCurrentLocation(fallbackLocation);
+
+              // 폴백 안내 메시지
+              setTimeout(() => {
+                addMessage({
+                  text: `💡 ${location} 지역에는 직접적인 렌터카 지점이 없어서, 인근 ${fallbackLocation} 지역의 지점들을 안내해드립니다.`,
+                  mine: false,
+                });
+              }, 1000);
+
+              return { agencies: transformedFallbackAgencies, actualLocation: fallbackLocation };
+            } else {
+              console.log(`❌ 폴백도 실패: ${fallbackLocation}에도 지점이 없음`);
+            }
+          } catch (fallbackError) {
+            console.error(`❌ 폴백 API 호출 실패:`, fallbackError);
+          }
+        } else {
+          console.log(`⚠️ 폴백 불가: ${location}은 이미 기본 지역`);
+        }
+      } else {
+        console.log(`✅ ${location} 지역에서 ${agencies.length}개 지점 발견, 폴백 불필요`);
+      }
+
       setCurrentAgencies(transformedAgencies);
 
       // 실제 조회된 지점들의 지역 확인
@@ -226,7 +281,7 @@ const Prompt = () => {
     // 서울 구 단위 지역들 (서울로 매핑)
     const seoulDistricts = ["강남", "강북", "강서", "강동", "관악", "광진", "구로", "금천", "노원",
                            "도봉", "동대문", "동작", "마포", "서대문", "서초", "성동", "성북",
-                           "송파", "양천", "영등포", "용산", "은평", "종로", "중구", "중랑"];
+                           "송파", "양천", "영등포", "용산", "은평", "종로", "중구", "중랑", "홍대"];
 
     // 서울 구 단위 체크
     for (const district of seoulDistricts) {
@@ -366,6 +421,7 @@ const Prompt = () => {
     setCurrentAgencies([]);
     setCurrentLocation("제주도");
     setDateRange([null, null]);
+    setGptRecommendationMessage("");
   };
 
   const handleCreateChat = (initialMessage, botResponse) => {
@@ -388,6 +444,7 @@ const Prompt = () => {
     setCurrentAgencies([]);
     setCurrentLocation("제주도");
     setDateRange([null, null]);
+    setGptRecommendationMessage("");
   };
 
   const handleSubmit = (e) => {
@@ -423,6 +480,7 @@ const Prompt = () => {
         setRecommendedCars([]);
         setCurrentAgencies([]);
         setDateRange([null, null]);
+        setGptRecommendationMessage("");
 
         // 이전 메시지들의 지도/차량 플래그 제거
         setChatHistory((prev) =>
@@ -577,6 +635,12 @@ const Prompt = () => {
                             <p>추천 차량을 불러오는 중... ⏳</p>
                         ) : recommendedCars.length > 0 ? (
                             <>
+                                {/* GPT 추천 메시지 표시 */}
+                                {gptRecommendationMessage && (
+                                    <div className="gpt-recommendation-message">
+                                        <p>{gptRecommendationMessage}</p>
+                                    </div>
+                                )}
                                 <p>추천드릴&nbsp;<span style={{ fontSize: '20px'}}> 차량</span> 을 찾아왔습니다! &nbsp;🚗</p>
                                 <div className="car-cards">
                                     {recommendedCars.map((car, idx) => (

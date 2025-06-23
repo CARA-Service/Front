@@ -27,7 +27,8 @@ const CAR_IMAGE_MAP = {
   
   // 쉐보레 차량
   'Spark': 'Spark_Chevrolet.png',
-  'Trax': 'Trax_Chevrolet.png'
+  'Trax': 'Trax_Chevrolet.png',
+  'Malibu' : 'Malibu_Chevrolet.png'
 };
 
 /**
