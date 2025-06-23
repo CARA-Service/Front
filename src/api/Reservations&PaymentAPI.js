@@ -16,10 +16,10 @@ API.interceptors.request.use((config) => {
 export const getUserProfile = async () => {
   try {
     const response = await API.get("/api/v1/users/me");
-    console.log("프로필 조회 성공:", response.data); // 성공 콘솔
+    console.log("프로필 조회 성공:", response.data);
     return response.data;
   } catch (error) {
-    console.error("프로필 조회 실패:", error); // 실패 콘솔
+    console.error("프로필 조회 실패:", error);
     return null;
   }
 };

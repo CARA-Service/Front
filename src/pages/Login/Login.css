@@ -1,8 +1,11 @@
 /* 로그인 모달 오버레이 */
 .login-overlay {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: rgba(0,0,0,0.5);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -179,20 +182,19 @@
 }
 
 .social-button.google {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   font-size: 3rem;
 }
 
 .social-button.naver {
-  background-color: #03C75A;
+  background-color: #03c75a;
   font-size: 1.1rem;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .social-button:hover {
   opacity: 0.8;
 }
-
 
 .signup-link-row {
   display: flex;
@@ -219,7 +221,10 @@
 /* Error Popup Styles (SignUp과 동일) */
 .error-popup {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
@@ -286,22 +291,42 @@
   box-shadow: 0 2px 8px rgba(255, 141, 19, 0.2);
 }
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 @keyframes fadeOut {
-  from { opacity: 1; }
-  to { opacity: 0; }
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 @keyframes slideIn {
-  from { transform: translateY(-30px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 @keyframes slideOut {
-  from { transform: translateY(0); opacity: 1; }
-  to { transform: translateY(-30px); opacity: 0; }
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
 }
-.login-divider{
+.login-divider {
   background: #e0e0e0;
   height: 1.5px;
   margin-top: 2%;
