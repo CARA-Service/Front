@@ -4,6 +4,7 @@ import "./PayMentModal.css";
 import { FaCreditCard, FaRegMoneyBillAlt, FaCheckCircle } from "react-icons/fa";
 import { MdClose, MdArrowBack, MdInfoOutline } from "react-icons/md";
 import { getCarImagePath } from "../../utils/carImageMapping.js";
+import { getInsuranceOptions } from "../../api/insuranceAPI.js";
 
 const paymentMethods = [
   { id: "visa", label: "Visa", icon: "/visa.png" },
@@ -12,12 +13,7 @@ const paymentMethods = [
   { id: "paypal", label: "PayPal", icon: "/paypal.png" },
 ];
 
-const insuranceOptions = [
-  { id: "basic", label: "기본 보험", price: 3000 },
-  { id: "standard", label: "표준 보험", price: 6000 },
-  { id: "premium", label: "프리미엄 보험", price: 12000 },
-  { id: "super", label: "슈퍼 보험", price: 20000 },
-];
+// 보험 옵션은 API에서 가져옴
 
 const PaymentModal = ({
   car,
@@ -25,7 +21,7 @@ const PaymentModal = ({
   userInfo = {},
   onBack,
   onClose,
-  price = 14000000,
+  price = 0,
   discount = -1.4,
   originPrice = 1000000,
   currency = "원",
@@ -37,11 +33,25 @@ const PaymentModal = ({
   const [imageError, setImageError] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [insuranceOptions, setInsuranceOptions] = useState([]);
+  const [insuranceLoading, setInsuranceLoading] = useState(true);
   const navigate = useNavigate();
 
   // 실제 차량 데이터만 사용, 기본값 제거
   const brand = car?.manufacturer || car?.brand || "차량정보없음";
   const model = car?.model_name || car?.model || "모델정보없음";
+
+  // 차량 일일 가격 가져오기 (dailyPrice 또는 daily_price)
+  const carDailyPrice = Number(car?.dailyPrice || car?.daily_price || price || 0);
+
+  // 디버깅용 로그
+  console.log('💰 PaymentModal - 차량 가격 정보:', {
+    car: car,
+    dailyPrice: car?.dailyPrice,
+    daily_price: car?.daily_price,
+    price: price,
+    carDailyPrice: carDailyPrice
+  });
 
   // 이미지 경로 생성
   let imageUrl;
@@ -57,6 +67,29 @@ const PaymentModal = ({
 
   useEffect(() => {
     document.body.classList.add("modal-open");
+
+    // 보험 옵션 가져오기
+    const fetchInsuranceOptions = async () => {
+      try {
+        setInsuranceLoading(true);
+        const options = await getInsuranceOptions();
+        setInsuranceOptions(options);
+      } catch (error) {
+        console.error('보험 옵션 로딩 실패:', error);
+        // 에러 시 기본 옵션 사용
+        setInsuranceOptions([
+          { id: 1, label: "기본 보험", price: 3000 },
+          { id: 2, label: "표준 보험", price: 6000 },
+          { id: 3, label: "프리미엄 보험", price: 12000 },
+          { id: 4, label: "슈퍼 보험", price: 20000 },
+        ]);
+      } finally {
+        setInsuranceLoading(false);
+      }
+    };
+
+    fetchInsuranceOptions();
+
     return () => {
       document.body.classList.remove("modal-open");
     };
@@ -66,7 +99,7 @@ const PaymentModal = ({
   const insuranceTotal = selectedInsurance
     ? insuranceOptions.find((opt) => opt.id === selectedInsurance)?.price || 0
     : 0;
-  const totalPrice = price + insuranceTotal;
+  const totalPrice = carDailyPrice + insuranceTotal;
 
   const handleInsuranceChange = (id) => {
     setSelectedInsurance(id);
@@ -150,8 +183,9 @@ const PaymentModal = ({
             </div>
             <div className="pay-modal-car-meta">
               <span>연식: 2023년</span>
-              <span>연료: 가솔린</span>
+              <span>연료: {car?.fuelType || car?.fuel_type || "가솔린"}</span>
               <span>변속기: 자동</span>
+              <span>일일 요금: {carDailyPrice.toLocaleString()}원</span>
             </div>
           </div>
         </div>
@@ -188,20 +222,24 @@ const PaymentModal = ({
             <FaRegMoneyBillAlt /> 보험 선택
           </div>
           <div className="pay-insurance-options">
-            {insuranceOptions.map((opt) => (
-              <label key={opt.id} className="pay-insurance-row">
-                <input
-                  type="radio"
-                  name="insurance" // 같은 name을 지정해야 그룹으로 동작[2][4][5]
-                  checked={selectedInsurance === opt.id}
-                  onChange={() => handleInsuranceChange(opt.id)}
-                />
-                <span className="pay-insurance-label">{opt.label}</span>
-                <span className="pay-insurance-price">
-                  +{opt.price.toLocaleString()}원
-                </span>
-              </label>
-            ))}
+            {insuranceLoading ? (
+              <div className="pay-insurance-loading">보험 옵션 로딩 중...</div>
+            ) : (
+              insuranceOptions.map((opt) => (
+                <label key={opt.id} className="pay-insurance-row">
+                  <input
+                    type="radio"
+                    name="insurance" // 같은 name을 지정해야 그룹으로 동작[2][4][5]
+                    checked={selectedInsurance === opt.id}
+                    onChange={() => handleInsuranceChange(opt.id)}
+                  />
+                  <span className="pay-insurance-label">{opt.label}</span>
+                  <span className="pay-insurance-price">
+                    +{opt.price.toLocaleString()}원
+                  </span>
+                </label>
+              ))
+            )}
           </div>
         </div>
         {/* 안내문구 */}
