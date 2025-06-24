@@ -12,6 +12,7 @@ import {
 } from "react-icons/fa";
 import Profile from "../Profile/Profile";
 import { useAuth } from "../../contexts/AuthContext.jsx";
+import { getChatTitle } from "../../utils/chatTitleUtils.js";
 import "../Profile/Profile.css";
 import "../Header/Header.css";
 import "./PromptHeader.css";
@@ -132,7 +133,7 @@ export default function PromptHeader({
                         onSelectChat(chat.id);
                         setSidebarOpen(false);
                       }}>
-                      Chat {chat.id}
+                      {getChatTitle(chat)}
                     </li>
                   ))}
                 </ul>

@@ -23,6 +23,7 @@ import {
   transformAgencyData,
 } from "../../api/agencyAPI.js";
 import { useAuth } from "../../contexts/AuthContext.jsx";
+import { getChatTitle } from "../../utils/chatTitleUtils.js";
 
 registerLocale("ko", ko);
 
@@ -985,7 +986,7 @@ const Prompt = () => {
                   className="chat-item-content"
                   onClick={() => setSelectedChat(chat.id)}
                 >
-                  Chat {chat.id}
+                  {getChatTitle(chat)}
                 </div>
                 <button
                   className="chat-delete-btn"
