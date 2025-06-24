@@ -28,7 +28,14 @@ export default function PromptHeader({
   const [chatOpen, setChatOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [profileImage, setProfileImage] = useState("/default-profile.png");
+  const [dotAnim, setDotAnim] = useState(0);
   const navigate = useNavigate();
+
+  // 로딩 애니메이션을 위한 useEffect
+  useEffect(() => {
+    const interval = setInterval(() => setDotAnim((d) => (d + 1) % 4), 500);
+    return () => clearInterval(interval);
+  }, []);
 
   // 로그인 상태 및 프로필 이미지 관리
   useEffect(() => {
@@ -126,16 +133,23 @@ export default function PromptHeader({
               </div>
               {chatOpen && (
                 <ul className="ph-submenu">
-                  {chatHistory.map((chat) => (
-                    <li
-                      key={chat.id}
-                      onClick={() => {
-                        onSelectChat(chat.id);
-                        setSidebarOpen(false);
-                      }}>
-                      {getChatTitle(chat)}
-                    </li>
-                  ))}
+                  {chatHistory.map((chat) => {
+                    const title = getChatTitle(chat);
+                    return (
+                      <li
+                        key={chat.id}
+                        onClick={() => {
+                          onSelectChat(chat.id);
+                          setSidebarOpen(false);
+                        }}>
+                        {title || (
+                          <span className="chat-dots">
+                            {".".repeat(dotAnim)}
+                          </span>
+                        )}
+                      </li>
+                    );
+                  })}
                 </ul>
               )}
             </li>

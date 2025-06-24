@@ -89,19 +89,19 @@ const extractMainContent = (text) => {
 /**
  * 채팅 객체에서 제목을 생성합니다.
  * @param {Object} chat - 채팅 객체 (id, messages 포함)
- * @returns {string} 생성된 채팅 제목
+ * @returns {string|null} 생성된 채팅 제목 또는 null (로딩 상태)
  */
 export const getChatTitle = (chat) => {
   if (!chat || !chat.messages || chat.messages.length === 0) {
-    return `Chat ${chat?.id || ''}`;
+    return null; // 로딩 상태를 나타내기 위해 null 반환
   }
-  
+
   // 첫 번째 사용자 메시지 찾기
   const firstUserMessage = chat.messages.find(msg => msg.mine);
-  
+
   if (!firstUserMessage || !firstUserMessage.text) {
-    return `Chat ${chat.id}`;
+    return null; // 로딩 상태를 나타내기 위해 null 반환
   }
-  
+
   return generateChatTitle(firstUserMessage.text);
 };

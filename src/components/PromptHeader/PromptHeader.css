@@ -151,3 +151,18 @@
 .ph-submenu a:hover {
   color: #ff8d13;
 }
+
+/* 채팅 제목 로딩 애니메이션 */
+.chat-dots {
+  display: inline-block;
+  min-width: 18px;
+  font-size: 1.1em;
+  letter-spacing: 2px;
+  color: #1e8fff;
+  animation: chat-dots-blink 1.2s infinite steps(1);
+}
+
+@keyframes chat-dots-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
