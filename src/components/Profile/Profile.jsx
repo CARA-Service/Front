@@ -11,9 +11,11 @@ import ProfilePage from "../../pages/ProfilePage/ProfilePage.jsx";
 import ReservationHistoryPage from "../../pages/ReservationHistoryPage/ReservationHistoryPage.jsx";
 import HistoryPage from "../../pages/HistoryPage/HistoryPage.jsx";
 import AnalysisPage from "../../pages/AnalysisPage/AnalysisPage.jsx";
+import { useAuth } from "../../contexts/AuthContext.jsx";
 import './Profile.css';
 
 const Profile = ({ onLogout }) => {
+  const { smartLogout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeModal, setActiveModal] = useState(null);
   const [profileImage, setProfileImage] = useState("/default-profile.png");
@@ -63,7 +65,14 @@ const Profile = ({ onLogout }) => {
   }, [activeModal]);
 
   const handleLogout = () => {
-    onLogout();
+    // AuthContext의 스마트 로그아웃 사용 (카카오/일반 자동 판별)
+    smartLogout();
+
+    // 기존 onLogout 콜백도 호출 (Header 상태 업데이트용)
+    if (onLogout) {
+      onLogout();
+    }
+
     setIsMenuOpen(false);
     setActiveModal(null);
   };

@@ -5,6 +5,8 @@ import { FaCreditCard, FaRegMoneyBillAlt, FaCheckCircle } from "react-icons/fa";
 import { MdClose, MdArrowBack, MdInfoOutline } from "react-icons/md";
 import { getCarImagePath } from "../../utils/carImageMapping.js";
 import { getInsuranceOptions } from "../../api/insuranceAPI.js";
+import { useAuth } from "../../contexts/AuthContext.jsx";
+import api from "../../api/api.js";
 
 const paymentMethods = [
   { id: "visa", label: "Visa", icon: "/visa.png" },
@@ -26,6 +28,7 @@ const PaymentModal = ({
   originPrice = 1000000,
   currency = "원",
 }) => {
+  const { user } = useAuth(); // 현재 로그인된 사용자 정보 가져오기
   const [selected, setSelected] = useState("visa");
   const [selectedInsurance, setSelectedInsurance] = useState(null);
   const [hide, setHide] = useState(false);
@@ -51,6 +54,13 @@ const PaymentModal = ({
     daily_price: car?.daily_price,
     price: price,
     carDailyPrice: carDailyPrice
+  });
+
+  console.log('👤 PaymentModal - 사용자 정보:', {
+    user: user,
+    fullName: user?.fullName,
+    phoneNumber: user?.phoneNumber,
+    userInfo: userInfo
   });
 
   // 이미지 경로 생성
@@ -105,40 +115,55 @@ const PaymentModal = ({
     setSelectedInsurance(id);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => {
-      // 예약 정보 생성
+
+    try {
+      // 예약 API 호출
+      const reservationData = {
+        recommendation_id: car?.recommendation_id,
+        insurance_option_id: selectedInsurance,
+        rental_date: dateRange && dateRange[0] ? dateRange[0].toISOString().split('T')[0] : null,
+        return_date: dateRange && dateRange[1] ? dateRange[1].toISOString().split('T')[0] : null,
+        total_price: totalPrice,
+        payment: paymentMethods.find((m) => m.id === selected)?.label
+      };
+
+      console.log('📝 예약 요청 데이터:', reservationData);
+
+      const response = await api.post('/api/v1/reservations', reservationData);
+
+      console.log('✅ 예약 성공:', response.data);
+
+      // 성공 시 localStorage에도 저장 (기존 기능 유지)
       const reservation = {
-        id: Date.now(),
+        id: response.data.reservationId || Date.now(),
         carName: brand + " " + model,
         carImage: imageUrl,
-        date:
-          dateRange && dateRange[0] ? dateRange[0].toLocaleDateString() : "",
-        time:
-          dateRange && dateRange[0] ? dateRange[0].toLocaleTimeString() : "",
+        date: dateRange && dateRange[0] ? dateRange[0].toLocaleDateString() : "",
+        time: dateRange && dateRange[0] ? dateRange[0].toLocaleTimeString() : "",
         price: totalPrice,
         paymentMethod: paymentMethods.find((m) => m.id === selected)?.label,
         insurances: selectedInsurance
-          ? [
-              insuranceOptions.find((opt) => opt.id === selectedInsurance)
-                ?.label,
-            ].filter(Boolean)
+          ? [insuranceOptions.find((opt) => opt.id === selectedInsurance)?.label].filter(Boolean)
           : [],
-        userName: userInfo.name || "",
-        userPhone: userInfo.phone || "",
+        userName: user?.fullName || "사용자",
+        userPhone: user?.phoneNumber || "연락처 없음",
         status: "결제완료",
       };
+
       const prev = JSON.parse(localStorage.getItem("reservations") || "[]");
-      localStorage.setItem(
-        "reservations",
-        JSON.stringify([...prev, reservation])
-      );
+      localStorage.setItem("reservations", JSON.stringify([...prev, reservation]));
       window.dispatchEvent(new Event("storageChange"));
-      setLoading(false);
+
       setShowSuccess(true);
-    }, 1200);
+    } catch (error) {
+      console.error('❌ 예약 실패:', error);
+      alert('예약 처리 중 오류가 발생했습니다. 다시 시도해주세요.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleBack = () => {

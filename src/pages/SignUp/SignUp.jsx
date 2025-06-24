@@ -40,12 +40,15 @@ const SignUp = ({ isOpen, onClose, onSwitchLogin }) => {
 
   const handleSocialLogin = (provider) => {
     if (provider === "kakao") {
-      const KAKAO_CLIENT_ID =
-        import.meta.env.VITE_KAKAO_CLIENT_ID ||
-        "7c13edee67bab4b026ddc1256ec88eeb";
+      const KAKAO_CLIENT_ID = import.meta.env.VITE_KAKAO_CLIENT_ID;
+      if (!KAKAO_CLIENT_ID) {
+        console.error("카카오 클라이언트 ID가 설정되지 않았습니다.");
+        return;
+      }
       const REDIRECT_URI = encodeURIComponent(
         "http://localhost:8080/api/v1/auth/kakao/callback"
       );
+      console.log("카카오 로그인 요청:", { KAKAO_CLIENT_ID, REDIRECT_URI });
       window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
     }
   };

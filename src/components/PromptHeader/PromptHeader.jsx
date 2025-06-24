@@ -11,6 +11,7 @@ import {
   FaPlus, // 새 채팅방 버튼 아이콘
 } from "react-icons/fa";
 import Profile from "../Profile/Profile";
+import { useAuth } from "../../contexts/AuthContext.jsx";
 import "../Profile/Profile.css";
 import "../Header/Header.css";
 import "./PromptHeader.css";
@@ -21,6 +22,7 @@ export default function PromptHeader({
   onSelectChat,
   onCreateChat,
 }) {
+  const { smartLogout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -50,8 +52,10 @@ export default function PromptHeader({
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("profileImage");
+    // AuthContext의 스마트 로그아웃 사용 (카카오/일반 자동 판별)
+    smartLogout();
+
+    // 로컬 상태 업데이트
     setIsLoggedIn(false);
     setProfileImage("/default-profile.png");
   };

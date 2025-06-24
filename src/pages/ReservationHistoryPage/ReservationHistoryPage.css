@@ -360,6 +360,7 @@
   max-width: 90vw;
   text-align: center;
   z-index: 2010;
+  position: absolute;
 }
 .cancel-modal-title {
   font-size: 1.18em;
@@ -429,4 +430,74 @@
   font-size: 0.98em;
   font-weight: 500;
   cursor: pointer;
+}
+
+/* 새로운 카드 리스트 레이아웃 */
+.ReservationHistory-CardList {
+  max-width: 800px;
+  margin: 32px auto;
+  padding: 0 16px;
+}
+
+.reservation-cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.reservation-detail-card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(30,64,175,0.07);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+  border: 1px solid #e2e8f0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.reservation-detail-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(30,64,175,0.12);
+}
+
+.reservation-detail-card.fade-in {
+  animation: fadeInUp 0.6s cubic-bezier(0.4,0,0.2,1) both;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .ReservationHistory-CardList {
+    padding: 0 12px;
+  }
+
+  .reservation-detail-card {
+    padding: 24px 20px;
+    gap: 16px;
+  }
+
+  .reservation-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .reservation-car-image {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+  }
 }

@@ -1,24 +1,13 @@
 // 차량 추천 API 호출 함수
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+import api from './api.js';
 
 export const getRecommendations = async (userInput) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/v1/llm/recommendations`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        userInput: userInput
-      })
+    const response = await api.post('/api/v1/llm/recommendations', {
+      userInput: userInput
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
+    return response.data;
   } catch (error) {
     console.error('추천 API 호출 실패:', error);
     throw error;
@@ -34,6 +23,7 @@ export const transformRecommendationData = (apiResponse) => {
   const cars = apiResponse
     .filter(item => item.car) // car 객체가 있는 항목만
     .map(item => ({
+      recommendation_id: item.recommendationId, // 추천 ID 추가
       car_id: item.car.carId,
       manufacturer: item.car.manufacturer,
       model_name: item.car.modelName,
