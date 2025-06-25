@@ -31,11 +31,8 @@ const KakaoCallback = () => {
         setUser(response.data);
 
         // 로그인 성공 후 리다이렉트
-        if (isNewUser) {
-          navigate("/welcome"); // 신규 사용자 환영 페이지
-        } else {
-          navigate("/"); // 메인 페이지
-        }
+        console.log("✅ 카카오 로그인 성공, 메인 페이지로 이동");
+        navigate("/"); // 메인 페이지로 이동
       } catch (err) {
         console.error("카카오 로그인 처리 중 오류:", err);
         setError("로그인 처리 중 오류가 발생했습니다.");

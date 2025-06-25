@@ -3,17 +3,30 @@ import {useNavigate} from "react-router-dom";
 import Footer from "../../components/Footer/Footer.jsx";
 import Header from "../../components/Header/Header.jsx";
 import SignUp from "../../pages/SignUp/SignUp.jsx";
+import Login from "../../pages/Login/Login.jsx";
+import { useAuth } from "../../contexts/AuthContext.jsx";
 import "./Home.css";
 
 const Home = () => {
     const navigate = useNavigate();
+    const { user, loading } = useAuth(); // 인증 상태 가져오기
     const [inputText, setInputText] = useState("");
     const [currentReviewIndex, setCurrentReviewIndex] = useState(1);
     const [isTransitioning, setIsTransitioning] = useState(false);
     const [isSignUpOpen, setIsSignUpOpen] = useState(false);
+    const [isLoginOpen, setIsLoginOpen] = useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        // 로그인 상태 확인
+        if (!user) {
+            // 로그인되지 않은 경우 로그인 모달 표시
+            setIsLoginOpen(true);
+            return;
+        }
+
+        // 로그인된 경우 prompt 페이지로 이동
         navigate("/prompt");
     };
 
@@ -122,7 +135,7 @@ const Home = () => {
                     <div className="button-container">
                         <button className="faq-button">자주 묻는 질문</button>
                         <button type="submit" className="start-button">
-                            시작하기
+                            {user ? "시작하기" : "로그인하고 시작하기"}
                         </button>
                     </div>
                 </form>
@@ -184,7 +197,25 @@ const Home = () => {
                 <Footer/>
             </div>
             {isSignUpOpen && (
-                <SignUp isOpen={isSignUpOpen} onClose={() => setIsSignUpOpen(false)}/>
+                <SignUp
+                    isOpen={isSignUpOpen}
+                    onClose={() => setIsSignUpOpen(false)}
+                    onSwitchLogin={() => {
+                        setIsSignUpOpen(false);
+                        setIsLoginOpen(true);
+                    }}
+                />
+            )}
+            {isLoginOpen && (
+                <Login
+                    isOpen={isLoginOpen}
+                    onClose={() => setIsLoginOpen(false)}
+                    onSwitchSignUp={() => {
+                        setIsLoginOpen(false);
+                        setIsSignUpOpen(true);
+                    }}
+                    redirectTo="/prompt"
+                />
             )}
         </div>
     );

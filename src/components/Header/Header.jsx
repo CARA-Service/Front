@@ -4,9 +4,11 @@ import { FaUser, FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import Profile from "../Profile/Profile";
 import Login from "../../pages/Login/Login";
 import SignUp from "../../pages/SignUp/SignUp";
+import { useAuth } from "../../contexts/AuthContext.jsx";
 import "./Header.css";
 
 function Header() {
+  const { smartLogout } = useAuth();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [profileImage, setProfileImage] = useState("/default-profile.png");
   const [showModal, setShowModal] = useState(false);
@@ -60,16 +62,12 @@ function Header() {
   }, [showModal]);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("profileImage");
+    // AuthContext의 스마트 로그아웃 사용 (카카오/일반 자동 판별)
+    smartLogout();
+
+    // 로컬 상태 업데이트
     setIsLoggedIn(false);
     setProfileImage("/default-profile.png");
-
-    // 커스텀 이벤트 발생시켜 다른 컴포넌트들에 로그아웃 상태 변경 알림
-    window.dispatchEvent(new Event("storageChange"));
-
-    // 커스텀 이벤트 발생시켜 다른 컴포넌트들에 로그아웃 상태 변경 알림
-    window.dispatchEvent(new Event("storageChange"));
   };
 
   // 드래그 이벤트 핸들러

@@ -6,10 +6,12 @@ import { SiNaver } from "react-icons/si";
 import { FcGoogle } from "react-icons/fc";
 import { RiKakaoTalkFill } from "react-icons/ri";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
+import { useAuth } from "../../contexts/AuthContext";
 import ErrorPopup from "../../components/ErrorPopup/ErrorPopup";
 
-const Login = ({ isOpen, onClose, onSwitchSignUp }) => {
+const Login = ({ isOpen, onClose, onSwitchSignUp, redirectTo = "/" }) => {
   const navigate = useNavigate();
+  const { setUser } = useAuth();
   const [form, setForm] = useState({
     loginId: "",
     password: "",
@@ -35,8 +37,22 @@ const Login = ({ isOpen, onClose, onSwitchSignUp }) => {
       });
       localStorage.setItem("token", response.data.token);
       window.dispatchEvent(new Event("storageChange"));
+
+      // 사용자 정보 즉시 업데이트
+      try {
+        const userResponse = await api.get("/api/v1/users/me");
+        setUser(userResponse.data);
+        console.log('✅ 로그인 성공 - 사용자 정보 업데이트:', userResponse.data);
+      } catch (userError) {
+        console.error('사용자 정보 조회 실패:', userError);
+      }
+
       onClose();
-      navigate("/");
+
+      // PromptPage에서 호출된 경우 페이지 이동하지 않음
+      if (redirectTo !== "/prompt" || window.location.pathname !== "/prompt") {
+        navigate(redirectTo);
+      }
     } catch (error) {
       console.error("로그인 실패:", error);
       setError("로그인 실패!");
@@ -44,10 +60,21 @@ const Login = ({ isOpen, onClose, onSwitchSignUp }) => {
   };
 
   const handleSocialLogin = (provider) => {
-    // TODO: 소셜로그인
-    localStorage.setItem("token", "social-login-token");
-    window.dispatchEvent(new Event("storageChange"));
-    onClose();
+    if (provider === "kakao") {
+      const KAKAO_CLIENT_ID = import.meta.env.VITE_KAKAO_CLIENT_ID;
+      if (!KAKAO_CLIENT_ID) {
+        console.error("카카오 클라이언트 ID가 설정되지 않았습니다.");
+        return;
+      }
+      const REDIRECT_URI = encodeURIComponent(
+        "http://localhost:8080/api/v1/auth/kakao/callback"
+      );
+      console.log("카카오 로그인 요청:", { KAKAO_CLIENT_ID, REDIRECT_URI });
+      window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+    } else {
+      // TODO: 다른 소셜로그인
+      console.log(`${provider} 로그인은 아직 구현되지 않았습니다.`);
+    }
   };
 
   const socialProviders = [

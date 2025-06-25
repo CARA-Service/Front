@@ -1,22 +1,11 @@
 // 지점 조회 API 호출 함수
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+import api from './api.js';
 
 // 모든 지점 조회
 export const getAllAgencies = async () => {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/v1/agencies`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
+    const response = await api.get('/api/v1/agencies');
+    return response.data;
   } catch (error) {
     console.error('지점 조회 API 호출 실패:', error);
     throw error;
@@ -28,18 +17,9 @@ export const getAgenciesByLocation = async (location) => {
   try {
     console.log(`🔍 지점 조회 시작: ${location}`);
 
-    const response = await fetch(`${API_BASE_URL}/api/v1/agencies/by-location?location=${encodeURIComponent(location)}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    });
+    const response = await api.get(`/api/v1/agencies/by-location?location=${encodeURIComponent(location)}`);
+    const data = response.data;
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
     console.log(`📍 ${location} 지점 조회 결과: ${data.length}개`);
 
     // 지점이 없으면 폴백 로직 실행
@@ -80,18 +60,10 @@ const getAgenciesWithFallback = async (originalLocation) => {
     console.log(`🔄 폴백: ${originalLocation} → ${fallbackLocation}`);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/v1/agencies/by-location?location=${encodeURIComponent(fallbackLocation)}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log(`✅ 폴백 성공: ${fallbackLocation}에서 ${data.length}개 지점 발견`);
-        return data;
-      }
+      const response = await api.get(`/api/v1/agencies/by-location?location=${encodeURIComponent(fallbackLocation)}`);
+      const data = response.data;
+      console.log(`✅ 폴백 성공: ${fallbackLocation}에서 ${data.length}개 지점 발견`);
+      return data;
     } catch (error) {
       console.error(`폴백 실패: ${fallbackLocation}`, error);
     }
@@ -100,18 +72,10 @@ const getAgenciesWithFallback = async (originalLocation) => {
   // 최종 폴백: 서울 지점 조회
   console.log(`🏃 최종 폴백: 서울 지점 조회`);
   try {
-    const response = await fetch(`${API_BASE_URL}/api/v1/agencies/by-location?location=서울`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      console.log(`✅ 최종 폴백 성공: 서울에서 ${data.length}개 지점 발견`);
-      return data;
-    }
+    const response = await api.get('/api/v1/agencies/by-location?location=서울');
+    const data = response.data;
+    console.log(`✅ 최종 폴백 성공: 서울에서 ${data.length}개 지점 발견`);
+    return data;
   } catch (error) {
     console.error('최종 폴백 실패:', error);
   }

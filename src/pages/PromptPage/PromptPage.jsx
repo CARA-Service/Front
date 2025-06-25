@@ -9,8 +9,10 @@ import Header from "../../components/Header/Header.jsx";
 import "./PromptPage.css";
 import use500px from "../../hooks/use500px.jsx";
 import SignUp from "../SignUp/SignUp.jsx";
+import Login from "../Login/Login.jsx";
 import { HiArrowUp } from "react-icons/hi";
-import { AiOutlinePlus } from "react-icons/ai";
+import { AiOutlinePlus, AiOutlineDelete } from "react-icons/ai";
+import { MdClearAll } from "react-icons/md";
 import {
   getRecommendations,
   transformRecommendationData,
@@ -20,6 +22,7 @@ import {
   getAllAgencies,
   transformAgencyData,
 } from "../../api/agencyAPI.js";
+import { useAuth } from "../../contexts/AuthContext.jsx";
 
 registerLocale("ko", ko);
 
@@ -39,9 +42,59 @@ const REQUIRED_DOCS = [
 ];
 
 const Prompt = () => {
+  const { user, loading } = useAuth(); // 인증 상태 가져오기
   const [input, setInput] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
   const [selectedChat, setSelectedChat] = useState(null);
+
+  // 채팅 내역 localStorage에서 불러오기
+  useEffect(() => {
+    const loadChatHistory = () => {
+      try {
+        const savedHistory = localStorage.getItem('chatHistory');
+        const savedSelectedChat = localStorage.getItem('selectedChat');
+
+        if (savedHistory) {
+          const parsedHistory = JSON.parse(savedHistory);
+          setChatHistory(parsedHistory);
+
+          // 선택된 채팅이 있고, 해당 채팅이 존재하면 복원
+          if (savedSelectedChat && parsedHistory.find(chat => chat.id === parseInt(savedSelectedChat))) {
+            setSelectedChat(parseInt(savedSelectedChat));
+          } else if (parsedHistory.length > 0) {
+            // 저장된 선택 채팅이 없으면 첫 번째 채팅 선택
+            setSelectedChat(parsedHistory[0].id);
+          }
+        }
+      } catch (error) {
+        console.error('채팅 내역 로드 실패:', error);
+      }
+    };
+
+    loadChatHistory();
+  }, []);
+
+  // 채팅 내역이 변경될 때마다 localStorage에 저장
+  useEffect(() => {
+    if (chatHistory.length > 0) {
+      try {
+        localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+      } catch (error) {
+        console.error('채팅 내역 저장 실패:', error);
+      }
+    }
+  }, [chatHistory]);
+
+  // 선택된 채팅이 변경될 때마다 localStorage에 저장
+  useEffect(() => {
+    if (selectedChat !== null) {
+      try {
+        localStorage.setItem('selectedChat', selectedChat.toString());
+      } catch (error) {
+        console.error('선택된 채팅 저장 실패:', error);
+      }
+    }
+  }, [selectedChat]);
   const [showCalendar, setShowCalendar] = useState(false);
   const [dateRange, setDateRange] = useState([null, null]);
   const [showMap, setShowMap] = useState(false);
@@ -55,6 +108,8 @@ const Prompt = () => {
   const is500px = use500px();
   const messagesEndRef = useRef(null);
   const [isSignUpOpen, setIsSignUpOpen] = useState(false); // 해더 추가용
+  const [isLoginOpen, setIsLoginOpen] = useState(false); // 로그인 모달
+  const [pendingUserInput, setPendingUserInput] = useState(""); // 로그인 대기 중인 사용자 입력
 
   const mapContainer = useRef(null);
   const map = useRef(null);
@@ -64,6 +119,105 @@ const Prompt = () => {
 
   const currentMessages =
     chatHistory.find((chat) => chat.id === selectedChat)?.messages || [];
+
+  // 로그인 성공 후 대기 중인 추천 요청 처리
+  useEffect(() => {
+    if (user && pendingUserInput && !loading) {
+      console.log('✅ 로그인 완료 - 대기 중인 추천 요청 처리:', pendingUserInput);
+
+      addMessage({
+        text: "로그인이 완료되었습니다! 차량 추천을 진행하겠습니다.",
+        mine: false
+      });
+
+      // 차량 관련 질문인지 확인
+      const isCarRelated = isCarRentalRelated(pendingUserInput);
+
+      if (isCarRelated) {
+        // 캘린더 표시
+        addMessage({
+          text: "언제부터 언제까지 이용하시겠어요?",
+          mine: false,
+          showCalendarAfter: true,
+        });
+
+        // 캘린더 안내 메시지 추가
+        setTimeout(() => {
+          addMessage({
+            text: "📅 날짜를 선택해주세요",
+            mine: false,
+          });
+        }, 500);
+
+        setShowCalendar(true);
+        setShowMap(false);
+        setShowCars(false);
+      } else {
+        // 직접 API 호출
+        setTimeout(() => {
+          fetchRecommendations(pendingUserInput);
+        }, 1000);
+      }
+
+      setPendingUserInput(""); // 처리 완료 후 초기화
+    }
+  }, [user, pendingUserInput, loading]);
+
+  // 사용자 상태 변화 감지 (로그아웃 감지)
+  useEffect(() => {
+    console.log('👤 사용자 상태 변화 감지:', { user, loading, token: localStorage.getItem('token') });
+
+    // 로그아웃된 경우 (토큰이 없고 로딩이 완료된 상태)
+    if (!user && !loading && !localStorage.getItem('token')) {
+      console.log('🚪 로그아웃 감지됨 - 모든 UI 상태 초기화');
+
+      // 진행 중인 요청 취소
+      setPendingUserInput("");
+      setIsLoadingRecommendations(false);
+
+      // UI 상태 완전 초기화
+      setShowCalendar(false);
+      setShowMap(false);
+      setShowCars(false);
+      setRecommendedCars([]);
+      setCurrentAgencies([]);
+      setCurrentLocation("제주도");
+      setDateRange([null, null]);
+      setGptRecommendationMessage("");
+
+      // 입력창도 초기화
+      setInput("");
+
+      // 모든 채팅 메시지의 UI 플래그 제거
+      setChatHistory((prev) =>
+        prev.map((chat) => ({
+          ...chat,
+          messages: chat.messages.map((msg) => ({
+            ...msg,
+            showCalendarAfter: false,
+            showMapAfter: false,
+            showCarsAfter: false,
+          })),
+        }))
+      );
+
+      console.log('✅ 로그아웃 후 UI 상태 및 메시지 플래그 초기화 완료');
+    }
+  }, [user, loading]);
+
+  // localStorage 변화 감지 (다른 탭에서 로그아웃 시에도 반응)
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const token = localStorage.getItem('token');
+      if (!token && user) {
+        console.log('🔄 다른 탭에서 로그아웃 감지됨');
+        // AuthContext의 logout이 호출되어 user 상태가 업데이트됨
+      }
+    };
+
+    window.addEventListener('storageChange', handleStorageChange);
+    return () => window.removeEventListener('storageChange', handleStorageChange);
+  }, [user]);
 
   // 카카오맵 SDK 로드
   useEffect(() => {
@@ -176,6 +330,25 @@ const Prompt = () => {
 
   // API에서 차량 추천 받기
   const fetchRecommendations = async (userInput) => {
+    // 디버깅 로그 추가
+    console.log('🔍 fetchRecommendations 호출됨');
+    console.log('👤 현재 사용자 상태:', { user, loading });
+    console.log('🎫 현재 토큰:', localStorage.getItem("token"));
+
+    // 토큰과 사용자 상태 재검증
+    const token = localStorage.getItem("token");
+    if (!token || !user) {
+      console.log('❌ 토큰 또는 사용자 정보 없음 - API 호출 중단');
+      addMessage({
+        text: "🔐 인증이 필요합니다. 다시 로그인해주세요.",
+        mine: false,
+        showLoginButton: true
+      });
+      return [];
+    }
+
+    console.log('✅ 사용자 로그인 확인됨, API 호출 시작');
+
     setIsLoadingRecommendations(true);
     try {
       const apiResponse = await getRecommendations(userInput);
@@ -185,6 +358,31 @@ const Prompt = () => {
       return cars;
     } catch (error) {
       console.error("추천 API 호출 실패:", error);
+
+      // 401 에러 (인증 실패) 처리
+      if (error.response?.status === 401) {
+        console.log('🔐 401 인증 오류 - 로그아웃 처리');
+        addMessage({
+          text: "🔐 인증이 만료되었습니다. 다시 로그인해주세요.",
+          mine: false,
+          showLoginButton: true
+        });
+        // 자동 로그아웃 처리는 AuthContext의 인터셉터에서 처리됨
+      } else if (error.response?.status === 400) {
+        console.log('❌ 400 Bad Request - 요청 데이터 오류');
+        addMessage({
+          text: "❌ 요청 처리 중 오류가 발생했습니다. 로그인 상태를 확인해주세요.",
+          mine: false,
+          showLoginButton: true
+        });
+      } else {
+        console.log('❌ 기타 오류:', error.response?.status);
+        addMessage({
+          text: "❌ 차량 추천 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+          mine: false
+        });
+      }
+
       // 에러 시 빈 배열 반환
       setRecommendedCars([]);
       setGptRecommendationMessage("");
@@ -552,9 +750,73 @@ const Prompt = () => {
     setGptRecommendationMessage("");
   };
 
+  // 채팅 내역 전체 삭제
+  const handleClearAllChats = () => {
+    if (window.confirm('모든 채팅 내역을 삭제하시겠습니까?')) {
+      setChatHistory([]);
+      setSelectedChat(null);
+      localStorage.removeItem('chatHistory');
+      localStorage.removeItem('selectedChat');
+
+      // 상태 초기화
+      setShowCalendar(false);
+      setShowMap(false);
+      setShowCars(false);
+      setRecommendedCars([]);
+      setCurrentAgencies([]);
+      setCurrentLocation("제주도");
+      setDateRange([null, null]);
+      setGptRecommendationMessage("");
+    }
+  };
+
+  // 개별 채팅 삭제
+  const handleDeleteChat = (chatId) => {
+    if (window.confirm('이 채팅을 삭제하시겠습니까?')) {
+      const updatedHistory = chatHistory.filter(chat => chat.id !== chatId);
+      setChatHistory(updatedHistory);
+
+      // 삭제된 채팅이 현재 선택된 채팅이면 다른 채팅 선택
+      if (selectedChat === chatId) {
+        if (updatedHistory.length > 0) {
+          setSelectedChat(updatedHistory[0].id);
+        } else {
+          setSelectedChat(null);
+          localStorage.removeItem('selectedChat');
+        }
+      }
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!input.trim()) return;
+
+    // 맨 먼저 로그인 상태 확인 (다른 로직 실행 전에)
+    if (!loading && !user) {
+      console.log('❌ 로그인되지 않은 상태에서 입력 시도');
+
+      // 사용자 메시지만 추가 (봇 응답은 추가하지 않음)
+      if (chatHistory.length === 0) {
+        handleCreateChat({ text: input, mine: true });
+      } else {
+        addMessage({ text: input, mine: true });
+      }
+
+      // 로그인 필요 메시지 및 모달 표시
+      addMessage({
+        text: "🔐 차량 추천 서비스를 이용하려면 로그인이 필요합니다.",
+        mine: false
+      });
+
+      setPendingUserInput(input);
+      setTimeout(() => {
+        setIsLoginOpen(true);
+      }, 1000);
+
+      setInput("");
+      return; // 여기서 함수 종료 - 아래 로직 실행 안 함
+    }
 
     if (chatHistory.length === 0) {
       const isCarRelated = isCarRentalRelated(input);
@@ -570,6 +832,14 @@ const Prompt = () => {
           };
       handleCreateChat({ text: input, mine: true }, botResponse);
       if (isCarRelated) {
+        // 캘린더 안내 메시지 추가
+        setTimeout(() => {
+          addMessage({
+            text: "📅 날짜를 선택해주세요",
+            mine: false,
+          });
+        }, 500);
+
         setShowCalendar(true);
         setShowMap(false);
         setShowCars(false);
@@ -608,6 +878,15 @@ const Prompt = () => {
           mine: false,
           showCalendarAfter: true,
         });
+
+        // 캘린더 안내 메시지 추가
+        setTimeout(() => {
+          addMessage({
+            text: "📅 날짜를 선택해주세요",
+            mine: false,
+          });
+        }, 500);
+
         setShowCalendar(true);
       } else {
         // 렌터카 관련이 아닌 질문이지만 API 호출 시도
@@ -683,17 +962,41 @@ const Prompt = () => {
           <Header onSignUpClick={() => setIsSignUpOpen(true)} />
           <div className="chat-sidebar-header">
             <h2>채팅 내역</h2>
-            <button className="chat-new-btn" onClick={() => handleCreateChat()}>
-              <AiOutlinePlus size={20} />
-            </button>
+            <div className="chat-header-buttons">
+              <button
+                className="chat-clear-btn"
+                onClick={handleClearAllChats}
+                title="모든 채팅 삭제"
+              >
+                <MdClearAll size={18} />
+              </button>
+              <button className="chat-new-btn" onClick={() => handleCreateChat()}>
+                <AiOutlinePlus size={20} />
+              </button>
+            </div>
           </div>
           <ul>
             {chatHistory.map((chat) => (
               <li
                 key={chat.id}
                 className={selectedChat === chat.id ? "active" : ""}
-                onClick={() => setSelectedChat(chat.id)}>
-                Chat {chat.id}
+              >
+                <div
+                  className="chat-item-content"
+                  onClick={() => setSelectedChat(chat.id)}
+                >
+                  Chat {chat.id}
+                </div>
+                <button
+                  className="chat-delete-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteChat(chat.id);
+                  }}
+                  title="채팅 삭제"
+                >
+                  <AiOutlineDelete size={14} />
+                </button>
               </li>
             ))}
           </ul>
@@ -721,8 +1024,26 @@ const Prompt = () => {
                         <br />
                       </span>
                     ))}
+                    {/* 로그인 버튼 표시 */}
+                    {msg.showLoginButton && (
+                      <button
+                        className="login-prompt-button"
+                        onClick={() => setIsLoginOpen(true)}
+                        style={{
+                          marginTop: "10px",
+                          padding: "8px 16px",
+                          backgroundColor: "#007bff",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "4px",
+                          cursor: "pointer"
+                        }}
+                      >
+                        로그인하기
+                      </button>
+                    )}
                   </div>
-                  {showCalendar && msg.showCalendarAfter && (
+                  {showCalendar && msg.showCalendarAfter && user && localStorage.getItem('token') && (
                     <div className="calendar-popup">
                       <DatePicker
                         selectsRange
@@ -739,10 +1060,10 @@ const Prompt = () => {
                       />
                     </div>
                   )}
-                  {showMap && msg.showMapAfter && (
+                  {showMap && msg.showMapAfter && user && localStorage.getItem('token') && (
                     <div className="map-container" ref={mapContainer} />
                   )}
-                  {showCars && msg.showCarsAfter && (
+                  {showCars && msg.showCarsAfter && user && localStorage.getItem('token') && (
                     <div className="cars-list">
                       {isLoadingRecommendations ? (
                         <p>추천 차량을 불러오는 중... ⏳</p>
@@ -798,20 +1119,26 @@ const Prompt = () => {
               <input
                 type="text"
                 placeholder={
-                  showCalendar
-                    ? "날짜를 선택해주세요"
+                  !user
+                    ? "로그인이 필요합니다"
                     : isLoadingRecommendations
                     ? "추천 중..."
                     : "채팅을 입력하세요"
                 }
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
+                onClick={() => {
+                  // 로그인되지 않은 상태에서 입력창 클릭 시 로그인 모달 표시
+                  if (!user && !loading) {
+                    setIsLoginOpen(true);
+                  }
+                }}
                 disabled={showCalendar || isLoadingRecommendations}
               />
               <button
                 type="submit"
                 className="chat-send-btn"
-                disabled={showCalendar || isLoadingRecommendations}>
+                disabled={!user || showCalendar || isLoadingRecommendations}>
                 <HiArrowUp className="arrow-up" />
               </button>
             </form>
@@ -820,6 +1147,20 @@ const Prompt = () => {
       </div>
       {isSignUpOpen && (
         <SignUp isOpen={isSignUpOpen} onClose={() => setIsSignUpOpen(false)} />
+      )}
+      {isLoginOpen && (
+        <Login
+          isOpen={isLoginOpen}
+          onClose={() => {
+            setIsLoginOpen(false);
+            setPendingUserInput(""); // 모달 닫을 때 대기 입력 초기화
+          }}
+          onSwitchSignUp={() => {
+            setIsLoginOpen(false);
+            setIsSignUpOpen(true);
+          }}
+          redirectTo="/prompt" // 로그인 후 현재 페이지 유지
+        />
       )}
     </div>
   );

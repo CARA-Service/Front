@@ -4,6 +4,9 @@ import "./PayMentModal.css";
 import { FaCreditCard, FaRegMoneyBillAlt, FaCheckCircle } from "react-icons/fa";
 import { MdClose, MdArrowBack, MdInfoOutline } from "react-icons/md";
 import { getCarImagePath } from "../../utils/carImageMapping.js";
+import { getInsuranceOptions } from "../../api/insuranceAPI.js";
+import { useAuth } from "../../contexts/AuthContext.jsx";
+import api from "../../api/api.js";
 
 const paymentMethods = [
   { id: "visa", label: "Visa", icon: "/visa.png" },
@@ -12,12 +15,7 @@ const paymentMethods = [
   { id: "paypal", label: "PayPal", icon: "/paypal.png" },
 ];
 
-const insuranceOptions = [
-  { id: "basic", label: "기본 보험", price: 3000 },
-  { id: "standard", label: "표준 보험", price: 6000 },
-  { id: "premium", label: "프리미엄 보험", price: 12000 },
-  { id: "super", label: "슈퍼 보험", price: 20000 },
-];
+// 보험 옵션은 API에서 가져옴
 
 const PaymentModal = ({
   car,
@@ -25,11 +23,12 @@ const PaymentModal = ({
   userInfo = {},
   onBack,
   onClose,
-  price = 14000000,
+  price = 0,
   discount = -1.4,
   originPrice = 1000000,
   currency = "원",
 }) => {
+  const { user } = useAuth(); // 현재 로그인된 사용자 정보 가져오기
   const [selected, setSelected] = useState("visa");
   const [selectedInsurance, setSelectedInsurance] = useState(null);
   const [hide, setHide] = useState(false);
@@ -37,11 +36,32 @@ const PaymentModal = ({
   const [imageError, setImageError] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [insuranceOptions, setInsuranceOptions] = useState([]);
+  const [insuranceLoading, setInsuranceLoading] = useState(true);
   const navigate = useNavigate();
 
   // 실제 차량 데이터만 사용, 기본값 제거
   const brand = car?.manufacturer || car?.brand || "차량정보없음";
   const model = car?.model_name || car?.model || "모델정보없음";
+
+  // 차량 일일 가격 가져오기 (dailyPrice 또는 daily_price)
+  const carDailyPrice = Number(car?.dailyPrice || car?.daily_price || price || 0);
+
+  // 디버깅용 로그
+  console.log('💰 PaymentModal - 차량 가격 정보:', {
+    car: car,
+    dailyPrice: car?.dailyPrice,
+    daily_price: car?.daily_price,
+    price: price,
+    carDailyPrice: carDailyPrice
+  });
+
+  console.log('👤 PaymentModal - 사용자 정보:', {
+    user: user,
+    fullName: user?.fullName,
+    phoneNumber: user?.phoneNumber,
+    userInfo: userInfo
+  });
 
   // 이미지 경로 생성
   let imageUrl;
@@ -57,6 +77,29 @@ const PaymentModal = ({
 
   useEffect(() => {
     document.body.classList.add("modal-open");
+
+    // 보험 옵션 가져오기
+    const fetchInsuranceOptions = async () => {
+      try {
+        setInsuranceLoading(true);
+        const options = await getInsuranceOptions();
+        setInsuranceOptions(options);
+      } catch (error) {
+        console.error('보험 옵션 로딩 실패:', error);
+        // 에러 시 기본 옵션 사용
+        setInsuranceOptions([
+          { id: 1, label: "기본 보험", price: 3000 },
+          { id: 2, label: "표준 보험", price: 6000 },
+          { id: 3, label: "프리미엄 보험", price: 12000 },
+          { id: 4, label: "슈퍼 보험", price: 20000 },
+        ]);
+      } finally {
+        setInsuranceLoading(false);
+      }
+    };
+
+    fetchInsuranceOptions();
+
     return () => {
       document.body.classList.remove("modal-open");
     };
@@ -66,46 +109,61 @@ const PaymentModal = ({
   const insuranceTotal = selectedInsurance
     ? insuranceOptions.find((opt) => opt.id === selectedInsurance)?.price || 0
     : 0;
-  const totalPrice = price + insuranceTotal;
+  const totalPrice = carDailyPrice + insuranceTotal;
 
   const handleInsuranceChange = (id) => {
     setSelectedInsurance(id);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => {
-      // 예약 정보 생성
+
+    try {
+      // 예약 API 호출
+      const reservationData = {
+        recommendation_id: car?.recommendation_id,
+        insurance_option_id: selectedInsurance,
+        rental_date: dateRange && dateRange[0] ? dateRange[0].toISOString().split('T')[0] : null,
+        return_date: dateRange && dateRange[1] ? dateRange[1].toISOString().split('T')[0] : null,
+        total_price: totalPrice,
+        payment: paymentMethods.find((m) => m.id === selected)?.label
+      };
+
+      console.log('📝 예약 요청 데이터:', reservationData);
+
+      const response = await api.post('/api/v1/reservations', reservationData);
+
+      console.log('✅ 예약 성공:', response.data);
+
+      // 성공 시 localStorage에도 저장 (기존 기능 유지)
       const reservation = {
-        id: Date.now(),
+        id: response.data.reservationId || Date.now(),
         carName: brand + " " + model,
         carImage: imageUrl,
-        date:
-          dateRange && dateRange[0] ? dateRange[0].toLocaleDateString() : "",
-        time:
-          dateRange && dateRange[0] ? dateRange[0].toLocaleTimeString() : "",
+        date: dateRange && dateRange[0] ? dateRange[0].toLocaleDateString() : "",
+        time: dateRange && dateRange[0] ? dateRange[0].toLocaleTimeString() : "",
         price: totalPrice,
         paymentMethod: paymentMethods.find((m) => m.id === selected)?.label,
         insurances: selectedInsurance
-          ? [
-              insuranceOptions.find((opt) => opt.id === selectedInsurance)
-                ?.label,
-            ].filter(Boolean)
+          ? [insuranceOptions.find((opt) => opt.id === selectedInsurance)?.label].filter(Boolean)
           : [],
-        userName: userInfo.name || "",
-        userPhone: userInfo.phone || "",
+        userName: user?.fullName || "사용자",
+        userPhone: user?.phoneNumber || "연락처 없음",
         status: "결제완료",
       };
+
       const prev = JSON.parse(localStorage.getItem("reservations") || "[]");
-      localStorage.setItem(
-        "reservations",
-        JSON.stringify([...prev, reservation])
-      );
+      localStorage.setItem("reservations", JSON.stringify([...prev, reservation]));
       window.dispatchEvent(new Event("storageChange"));
-      setLoading(false);
+
       setShowSuccess(true);
-    }, 1200);
+    } catch (error) {
+      console.error('❌ 예약 실패:', error);
+      alert('예약 처리 중 오류가 발생했습니다. 다시 시도해주세요.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleBack = () => {
@@ -150,8 +208,9 @@ const PaymentModal = ({
             </div>
             <div className="pay-modal-car-meta">
               <span>연식: 2023년</span>
-              <span>연료: 가솔린</span>
+              <span>연료: {car?.fuelType || car?.fuel_type || "가솔린"}</span>
               <span>변속기: 자동</span>
+              <span>일일 요금: {carDailyPrice.toLocaleString()}원</span>
             </div>
           </div>
         </div>
@@ -188,20 +247,24 @@ const PaymentModal = ({
             <FaRegMoneyBillAlt /> 보험 선택
           </div>
           <div className="pay-insurance-options">
-            {insuranceOptions.map((opt) => (
-              <label key={opt.id} className="pay-insurance-row">
-                <input
-                  type="radio"
-                  name="insurance" // 같은 name을 지정해야 그룹으로 동작[2][4][5]
-                  checked={selectedInsurance === opt.id}
-                  onChange={() => handleInsuranceChange(opt.id)}
-                />
-                <span className="pay-insurance-label">{opt.label}</span>
-                <span className="pay-insurance-price">
-                  +{opt.price.toLocaleString()}원
-                </span>
-              </label>
-            ))}
+            {insuranceLoading ? (
+              <div className="pay-insurance-loading">보험 옵션 로딩 중...</div>
+            ) : (
+              insuranceOptions.map((opt) => (
+                <label key={opt.id} className="pay-insurance-row">
+                  <input
+                    type="radio"
+                    name="insurance" // 같은 name을 지정해야 그룹으로 동작[2][4][5]
+                    checked={selectedInsurance === opt.id}
+                    onChange={() => handleInsuranceChange(opt.id)}
+                  />
+                  <span className="pay-insurance-label">{opt.label}</span>
+                  <span className="pay-insurance-price">
+                    +{opt.price.toLocaleString()}원
+                  </span>
+                </label>
+              ))
+            )}
           </div>
         </div>
         {/* 안내문구 */}
