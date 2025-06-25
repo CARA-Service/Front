@@ -690,11 +690,9 @@ const Prompt = () => {
           const actualLocation = result.actualLocation;
           console.log(`🔄 지점 조회 완료: ${location} → ${actualLocation}`);
 
-          // 실제 지역으로 차량 추천 API 호출
-          const fullUserInput = `${actualLocation}에서 차량 추천해줘 ${format(
-            start
-          )}부터 ${format(end)}까지`;
-          console.log("🚗 API 호출 입력 (실제 지역):", fullUserInput);
+          // 원본 사용자 입력에 날짜 정보 추가 (지역은 원본 유지)
+          const fullUserInput = `${latestUserInput} ${format(start)}부터 ${format(end)}까지`;
+          console.log("🚗 API 호출 입력 (원본 + 날짜):", fullUserInput);
 
           return fetchRecommendations(fullUserInput);
         })
