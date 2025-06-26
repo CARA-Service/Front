@@ -71,15 +71,18 @@ const ReservationHistoryPage = () => {
           {reservations.map((reservation, idx) => (
             <div
               key={reservation.id}
-              className="reservation-detail-card fade-in"
-              style={{ animationDelay: `${idx * 0.1}s` }} // 순차적 애니메이션
+              className={`reservation-detail-card fade-in`}
+              style={{ animationDelay: `${idx * 0.1}s` }}
             >
               <div className="reservation-header-row">
                 <img src={reservation.carImage} alt={reservation.carName} className="reservation-car-image" />
                 <div className="reservation-header-info">
                   <div className="reservation-car-name">{reservation.carName}</div>
                   <div className="reservation-date-status">
-                    <span>{reservation.date} {reservation.time}</span>
+                    <div className="reservation-date-time">
+                      <span className="reservation-date">{reservation.date}</span>
+                      <span className="reservation-time">{reservation.time}</span>
+                    </div>
                     <span className="reservation-status">{reservation.status}</span>
                   </div>
                 </div>
@@ -108,6 +111,25 @@ const ReservationHistoryPage = () => {
                 <div className="reservation-info-row">
                   <span className="reservation-info-label">연락처</span>
                   <span className="reservation-info-value">{reservation.userPhone || '-'}</span>
+                </div>
+              </div>
+              <div className="reservation-section">
+                <div className="reservation-section-title">예약 정보</div>
+                <div className="reservation-info-row">
+                  <span className="reservation-info-label">대여일</span>
+                  <span className="reservation-info-value">{reservation.rental_date || '-'}</span>
+                </div>
+                <div className="reservation-info-row">
+                  <span className="reservation-info-label">반납일</span>
+                  <span className="reservation-info-value">{reservation.return_date || '-'}</span>
+                </div>
+                <div className="reservation-info-row">
+                  <span className="reservation-info-label">렌트장소</span>
+                  <span className="reservation-info-value">{reservation.rental_location || '-'}</span>
+                </div>
+                <div className="reservation-info-row">
+                  <span className="reservation-info-label">반납장소</span>
+                  <span className="reservation-info-value">{reservation.return_location || '-'}</span>
                 </div>
               </div>
               <div className="reservation-action-row">

@@ -122,6 +122,15 @@ function Header() {
   const switchToLogin = () => setModalType("login");
   const switchToSignUp = () => setModalType("signup");
 
+  // 임시 로그인 함수 추가
+  const handleTempLogin = () => {
+    localStorage.setItem("token", "dummy-token");
+    localStorage.setItem("profileImage", "/default-profile.png");
+    setIsLoggedIn(true);
+    setProfileImage("/default-profile.png");
+    window.dispatchEvent(new Event("storageChange"));
+  };
+
   return (
     <header className="header">
       <div className="header-content">
