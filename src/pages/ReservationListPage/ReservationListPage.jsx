@@ -106,7 +106,7 @@ const ReservationListPage = () => {
                     <img src={reservation.carImage} alt={reservation.carName} className="reservation-list-car-image" />
                     <div className="reservation-list-main-info">
                       <div className="reservation-list-car-name">{reservation.carName}</div>
-                      <div className="reservation-list-period">{reservation.date} ~ {reservation.time}</div>
+                      <div className="reservation-list-period">{reservation.date} {reservation.time}</div>
                       <div className="reservation-list-status-badge"
                         style={{ color: STATUS_LABELS[reservation.status]?.color || '#222' }}>
                         {reservation.status}
@@ -134,6 +134,25 @@ const ReservationListPage = () => {
                         <div className="reservation-list-info-row">
                           <span className="reservation-list-info-label">보험</span>
                           <span className="reservation-list-info-value">{reservation.insurances && reservation.insurances.length > 0 ? reservation.insurances.join(', ') : '-'}</span>
+                        </div>
+                      </div>
+                      <div className="reservation-list-section">
+                        <div className="reservation-list-section-title">예약 정보</div>
+                        <div className="reservation-list-info-row">
+                          <span className="reservation-list-info-label">대여일</span>
+                          <span className="reservation-list-info-value">{reservation.rental_date || '-'}</span>
+                        </div>
+                        <div className="reservation-list-info-row">
+                          <span className="reservation-list-info-label">반납일</span>
+                          <span className="reservation-list-info-value">{reservation.return_date || '-'}</span>
+                        </div>
+                        <div className="reservation-list-info-row">
+                          <span className="reservation-list-info-label">렌트장소</span>
+                          <span className="reservation-list-info-value">{reservation.rental_location || '-'}</span>
+                        </div>
+                        <div className="reservation-list-info-row">
+                          <span className="reservation-list-info-label">반납장소</span>
+                          <span className="reservation-list-info-value">{reservation.return_location || '-'}</span>
                         </div>
                       </div>
                       <div className="reservation-list-section">

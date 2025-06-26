@@ -151,6 +151,8 @@ const PaymentModal = ({
         userName: user?.fullName || "사용자",
         userPhone: user?.phoneNumber || "연락처 없음",
         status: "결제완료",
+        rental_date: dateRange && dateRange[0] ? dateRange[0].toISOString().split('T')[0] : null,
+        return_date: dateRange && dateRange[1] ? dateRange[1].toISOString().split('T')[0] : null,
       };
 
       const prev = JSON.parse(localStorage.getItem("reservations") || "[]");
