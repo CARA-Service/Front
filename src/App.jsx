@@ -18,6 +18,8 @@ import KakaoCallback from "./pages/Auth/KakaoCallBack.jsx";
 // 차후 삭제 필요
 import CarListPage from "./pages/CarListPage/CarListPage";
 // 차후 삭제 필요
+import ReservationHistoryPage from "./pages/ReservationHistoryPage/ReservationHistoryPage.jsx";
+import ReservationListPage from "./pages/ReservationListPage/ReservationListPage.jsx";
 import "./App.css";
 // import use400px from "./hooks/use500px";
 
@@ -57,6 +59,8 @@ function App() {
           <Route path="/analysis" element={<AnalysisPage />} />
           <Route path="/cars" element={<CarListPage />} />
           <Route path="/auth/kakao/callback" element={<KakaoCallback />} />
+          <Route path="/reservation-history" element={<ReservationHistoryPage />} />
+          <Route path="/reservation-list" element={<ReservationListPage />} />
         </Routes>
       </div>
       {isSignUpOpen && (

@@ -343,7 +343,8 @@ const PaymentModal = ({
             <div className="pay-success-actions">
               <button
                 className="pay-success-btn"
-                onClick={() => navigate("/reservation-history")}>
+                onClick={() => navigate("/reservation-list")}
+              >
                 예약기록으로 이동
               </button>
               <button

@@ -1,5 +1,5 @@
 .ReservationHistory-Container {
-  max-width: 520px;
+  max-width: 820px;
   margin: 0 auto;
   padding: 32px 0 0 0;
 }
@@ -103,8 +103,12 @@
   color: #222;
 }
 .reservation-summary-date {
-  font-size: 0.85em;
-  color: #666;
+  font-size: 0.91em;
+  color: #aaa;
+  font-weight: 400;
+  margin-top: 1px;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
 }
 .no-history {
   color: #888;
@@ -157,21 +161,22 @@
 .reservation-info-row {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
-  margin-bottom: 7px;
-  padding-bottom: 2px;
+  gap: 8px;
+  margin-bottom: 3px;
+  padding-bottom: 1px;
 }
 .reservation-info-label {
-  min-width: 70px;
+  min-width: 62px;
   color: #444;
-  font-size: 1em;
+  font-size: 0.97em;
   font-weight: 600;
   text-align: left;
   flex-shrink: 0;
+  margin-right: 4px;
 }
 .reservation-info-value {
   color: #222;
-  font-size: 1.08em;
+  font-size: 0.97em;
   font-weight: 500;
   word-break: break-all;
   text-align: left;
@@ -273,39 +278,42 @@
   width: 80%;
   border-radius: 18px;
   box-shadow: 0 4px 24px rgba(30,64,175,0.07);
-  padding: 32px 32px 24px 32px;
+  padding: 22px 18px 18px 18px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 12px;
   position: relative;
 }
 
 .reservation-header-row {
   display: flex;
   align-items: center;
-  gap: 24px;
-  min-height: 80px;
+  gap: 14px;
+  min-height: 60px;
 }
 
 .reservation-header-info {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 6px;
 }
 
 .reservation-car-name {
   font-size: 1.25em;
   font-weight: 700;
-  margin-left: 5px;
+  margin: 0;
   color: #222;
 }
 
 .reservation-date-status {
   display: flex;
-  margin-top: 10px;
-  font-size: 1em;
-  color: #666;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  font-size: 0.95em;
+  color: #888;
+  font-weight: 500;
+  letter-spacing: 0.01em;
 }
 
 .reservation-status {
@@ -313,27 +321,45 @@
   color: #1e8fff;
   border-radius: 12px;
   padding: 2px 12px;
-  font-size: 0.98em;
+  font-size: 0.97em;
   font-weight: 600;
+  white-space: nowrap;
+  margin-left: 8px;
+  display: flex;
+  align-items: center;
+  height: 24px;
 }
 
 .reservation-section {
   background: #fff;
   border-radius: 12px;
-  padding: 20px 22px 14px 22px;
+  padding: 12px 12px 8px 12px;
   box-shadow: 0 6px 24px rgba(30, 64, 175, 0.13);
-  margin-bottom: 10px;
+  margin-bottom: 6px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 7px;
 }
 
 .reservation-section-title {
+  font-size: 1.09em;
   font-weight: 700;
-  color: #1976d2;
-  margin-bottom: 12px;
-  font-size: 1.08em;
+  color: #2d5be3;
+  margin-bottom: 10px;
   letter-spacing: 0.01em;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  position: relative;
+}
+.reservation-section-title::before {
+  content: "";
+  display: inline-block;
+  width: 5px;
+  height: 18px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #2d5be3 60%, #7bb7ff 100%);
+  margin-right: 7px;
 }
 
 .reservation-action-row {
@@ -435,8 +461,15 @@
 /* 새로운 카드 리스트 레이아웃 */
 .ReservationHistory-CardList {
   max-width: 800px;
-  margin: 32px auto;
-  padding: 0 16px;
+  height: 100%;
+  flex: 1;
+  overflow-y: auto;
+  /* 스크롤바 숨김 */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE, Edge */
+}
+.ReservationHistory-CardList::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
 .reservation-cards-container {
@@ -456,6 +489,7 @@
   position: relative;
   border: 1px solid #e2e8f0;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  margin: auto;
 }
 
 .reservation-detail-card:hover {
@@ -478,26 +512,41 @@
   }
 }
 
-/* 반응형 디자인 */
-@media (max-width: 768px) {
-  .ReservationHistory-CardList {
-    padding: 0 12px;
-  }
+.reservation-date-time {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  margin-right: 6px;
+}
+.reservation-date {
+  font-size: 0.97em;
+  color: #888;
+  font-weight: 500;
+  line-height: 1.1;
+}
+.reservation-time {
+  font-size: 0.93em;
+  color: #b5b5b5;
+  font-weight: 400;
+  line-height: 1.1;
+}
 
-  .reservation-detail-card {
-    padding: 24px 20px;
-    gap: 16px;
-  }
-
-  .reservation-header-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-  }
-
-  .reservation-car-image {
-    width: 100%;
-    max-width: 200px;
-    height: auto;
-  }
+.reservation-summary-date-time {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+}
+.reservation-summary-date {
+  font-size: 0.91em;
+  color: #aaa;
+  font-weight: 400;
+  line-height: 1.1;
+}
+.reservation-summary-time {
+  font-size: 0.89em;
+  color: #c5c5c5;
+  font-weight: 400;
+  line-height: 1.1;
 }
