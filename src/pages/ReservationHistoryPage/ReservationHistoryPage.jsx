@@ -113,6 +113,25 @@ const ReservationHistoryPage = () => {
                   <span className="reservation-info-value">{reservation.userPhone || '-'}</span>
                 </div>
               </div>
+              <div className="reservation-section">
+                <div className="reservation-section-title">예약 정보</div>
+                <div className="reservation-info-row">
+                  <span className="reservation-info-label">대여일</span>
+                  <span className="reservation-info-value">{reservation.rental_date || '-'}</span>
+                </div>
+                <div className="reservation-info-row">
+                  <span className="reservation-info-label">반납일</span>
+                  <span className="reservation-info-value">{reservation.return_date || '-'}</span>
+                </div>
+                <div className="reservation-info-row">
+                  <span className="reservation-info-label">렌트장소</span>
+                  <span className="reservation-info-value">{reservation.rental_location || '-'}</span>
+                </div>
+                <div className="reservation-info-row">
+                  <span className="reservation-info-label">반납장소</span>
+                  <span className="reservation-info-value">{reservation.return_location || '-'}</span>
+                </div>
+              </div>
               <div className="reservation-action-row">
                 <button
                   className="reservation-cancel-btn"
