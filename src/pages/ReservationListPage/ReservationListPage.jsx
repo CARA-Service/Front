@@ -37,16 +37,13 @@ const ReservationListPage = () => {
     return () => window.removeEventListener('storageChange', load);
   }, []);
 
-  // 필터링
   const filtered = filter === "전체" ? reservations : reservations.filter(r => r.status === filter);
 
-  // 예약 상태별 개수
   const statusCounts = reservations.reduce((acc, cur) => {
     acc[cur.status] = (acc[cur.status] || 0) + 1;
     return acc;
   }, {});
 
-  // 예약 취소 처리 (완전 삭제)
   const handleCancelReservation = () => {
     if (cancelInput !== "예약 취소 동의하기") {
       setCancelError("정확히 '예약 취소 동의하기'를 입력해야 합니다.");
@@ -56,7 +53,6 @@ const ReservationListPage = () => {
       setCancelError("위약금 발생에 동의해야 취소가 가능합니다.");
       return;
     }
-    // 실제 삭제 처리
     const idx = cancelIdx;
     if (idx === null || idx < 0 || idx >= reservations.length) return;
     const updated = reservations.filter((_, i) => i !== idx);
@@ -78,24 +74,22 @@ const ReservationListPage = () => {
         <div className="reservation-list-topbar">
           <h1 className="reservation-list-title">나의 예약내역</h1>
           <div className="reservation-list-status-summary">
-            <span>전체 <b>{reservations.length}</b></span>
+            <span
+              className={`reservation-list-status-badge${filter === '전체' ? ' selected' : ''}`}
+              onClick={() => setFilter('전체')}
+            >
+              전체 <b>{reservations.length}</b>
+            </span>
             {Object.keys(STATUS_LABELS).map((status) => (
               <span
                 key={status}
                 className={`reservation-list-status-badge${filter === status ? ' selected' : ''}`}
-                style={{ background: STATUS_LABELS[status].color + '22', color: STATUS_LABELS[status].color, borderColor: STATUS_LABELS[status].color }}
+                style={{ color: STATUS_LABELS[status].color }}
                 onClick={() => setFilter(status)}
               >
                 {STATUS_LABELS[status].label} {statusCounts[status] ? `(${statusCounts[status]})` : ''}
               </span>
             ))}
-            <span
-              className={`reservation-list-status-badge${filter === '전체' ? ' selected' : ''}`}
-              style={{ background: '#aaa2', color: '#222', borderColor: '#aaa' }}
-              onClick={() => setFilter('전체')}
-            >
-              전체
-            </span>
           </div>
         </div>
         <div className="ReservationListPage-CardList">
@@ -114,7 +108,7 @@ const ReservationListPage = () => {
                       <div className="reservation-list-car-name">{reservation.carName}</div>
                       <div className="reservation-list-period">{reservation.date} ~ {reservation.time}</div>
                       <div className="reservation-list-status-badge"
-                        style={{ background: (STATUS_LABELS[reservation.status]?.color || '#aaa') + '22', color: STATUS_LABELS[reservation.status]?.color || '#222', borderColor: STATUS_LABELS[reservation.status]?.color || '#aaa' }}>
+                        style={{ color: STATUS_LABELS[reservation.status]?.color || '#222' }}>
                         {reservation.status}
                       </div>
                     </div>
@@ -122,7 +116,7 @@ const ReservationListPage = () => {
                       <button className="reservation-list-detail-btn" onClick={() => setExpandedIdx(expandedIdx === idx ? null : idx)}>
                         {expandedIdx === idx ? '접기' : '상세'}
                       </button>
-                      <button className="reservation-list-receipt-btn">영수증</button>
+                      <button className="reservation-list-cancel-btn" onClick={() => { setShowCancelModal(true); setCancelIdx(idx); }}>예약 취소하기</button>
                     </div>
                   </div>
                   {expandedIdx === idx && (
@@ -153,9 +147,6 @@ const ReservationListPage = () => {
                           <span className="reservation-list-info-value">{reservation.userPhone || '-'}</span>
                         </div>
                       </div>
-                      <div className="reservation-list-action-row">
-                        <button className="reservation-list-cancel-btn" onClick={() => { setShowCancelModal(true); setCancelIdx(idx); }}>예약 취소하기</button>
-                      </div>
                     </div>
                   )}
                 </div>
@@ -165,7 +156,7 @@ const ReservationListPage = () => {
         </div>
         <div className="reservation-list-bottom-info">
           <div className="reservation-list-guide">
-            예약 관련 문의는 <a href="/support">고객센터</a>로 연락해 주세요.<br />
+            예약 관련 문의는 <a href="/support">고객센터 </a>로 연락해 주세요.<br />
             예약 취소 시 위약금이 발생할 수 있습니다.
           </div>
         </div>
